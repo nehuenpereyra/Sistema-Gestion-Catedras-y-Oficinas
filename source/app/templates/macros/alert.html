@@ -1,0 +1,6 @@
+
+{% macro show_alert(alert) %}
+  <div class="{{"alert alert-{}".format(alert.state)}} mt-2" role="alert">
+    {{alert.message}}
+  </div>
+{% endmacro %}

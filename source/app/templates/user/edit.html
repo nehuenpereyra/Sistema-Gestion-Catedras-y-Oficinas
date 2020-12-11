@@ -1,0 +1,65 @@
+{% extends "authorized_layout.html" %}
+
+{% macro input(field, class_="form-control", style=False) %}
+  {{ field.label }}
+  {% if ( field.errors|length == 0) %}
+    {{ field(class_=class_, style=style) }}
+  {% else %}
+    {{ field(class_=class_ + " is-invalid", style=style) }}
+    {% for error in field.errors %}
+      <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% block title %}Registrar Usuario{% endblock %}
+
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+
+
+{% block sub_content %}
+
+    <h4 class="mt-3">Información de Cuenta</h4>
+    <div class="shadow-sm mt-3 p-3">
+        <form action="{{ url_for('user_update', id=user_id) }}" method="POST">
+            {{ update_form.csrf_token }}
+            <div class="form-row">
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">{{ input(update_form.name) }}</div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">{{ input(update_form.surname) }}</div>
+                </div>
+            </div>
+            <div class="form-group">{{ input(update_form.email) }}</div>
+            <div class="form-row">
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">{{ input(update_form.username) }}</div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">{{ input(update_form.password) }}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ input(update_form.roles, style="overflow: hidden") }}
+            </div>
+            
+            {% if not is_admin %}
+                <div class="form-check">
+                    {{ update_form.is_active(class_="form-check-input") }}
+                    {{ update_form.is_active.label(class_="form-check-label") }}
+                </div>
+            {% else %}
+                <input type="hidden" name="is_active" value="on">
+            {% endif %}
+
+            <div class="mt-3 d-flex justify-content-center justify-content-sm-end">
+                {{ update_form.submit(class_="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

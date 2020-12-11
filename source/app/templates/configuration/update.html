@@ -1,0 +1,57 @@
+{% extends "authorized_layout.html" %}
+
+{% macro input(field, placeholder) %}
+    <div class="text-center justify-content-xl-center align-items-xl-center"><span>{{field.label.text}}</span></div>
+    
+            {% if ( field.errors|length == 0) %}
+              {{ field(class_="form-control form-control-user",placeholder=placeholder) }}
+            {% else %}
+              {{ field(class_="form-control form-control-user is-invalid",placeholder=placeholder) }}
+              {% for error in field.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+{% endmacro %}
+
+    {% block sub_content %}
+    <div class="container" style="overflow: auto;padding-bottom: 150px;">
+        <h4 class="mt-3">Configuraciones</h4>
+        <div class="row justify-content-center">
+                <div class="col-md-9 col-lg-12 col-xl-10" style="width: 933px;height: 660px;">
+                    <div class="card shadow-lg o-hidden border-0 my-5">
+                        <div class="card-body p-0">
+                            <div class="row d-sm-flex d-lg-flex d-xl-flex justify-content-sm-center justify-content-lg-center justify-content-xl-center">
+                                <div class="col-lg-6">
+                                    <div class="p-5">
+                                    <!--
+                                        <div class="text-center">
+                                            <h4 class="text-dark mb-4">Configuraciones</h4>
+                                        </div>
+                                    -->
+                                        <form action="{{ url_for('configuration_update') }}" method="post"  class="needs-validation user">
+                                            {{ form.hidden_tag() }}
+                                            <div class="form-group">{{input(form.title,"Ingrese el titulo de la página")}} </div>
+                                            <div class="form-group">{{input(form.description,"Ingrese la descripción de la página")}} </div>
+                                            <div class="text-center"></div>
+                                            <div class="form-group">{{input(form.contact_email,"Ingrese el mail de contacto de la página")}} </div>
+                                            <div class="form-group">{{input(form.pagination_elements,"Ingrese la cantidad de elementos en los listados")}} </div>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox small">
+                                                    <div class="form-check">
+                                                        {{form.enabled_site(class_="form-check-input")}} 
+                                                        <label class="form-check-label">
+                                                            Página activa
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>{{form.submit(class_="btn btn-primary btn-block text-white btn-user",style="background-color: #3a6ba6;")}} </form>
+                                        <div class="text-center"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
