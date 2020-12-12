@@ -21,7 +21,7 @@ def update():
     form = ConfigurationForm()
     if form.validate_on_submit():
         Configuration.update(title=form.title.data, description=form.description.data, contact_email=form.contact_email.data,
-                             pagination_elements=form.pagination_elements.data, enabled_site=form.enabled_site.data)
+                             items_per_page=form.items_per_page.data, enabled_site=form.enabled_site.data)
         add_alert(
             Alert("success", f"La configuración se actualizo correctamente."))
         return redirect(url_for("index"))

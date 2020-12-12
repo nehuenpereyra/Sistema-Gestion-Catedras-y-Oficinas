@@ -26,7 +26,7 @@ def index():
     users = User.search(search_query=search_form.search_query.data,
                         user_state=search_form.user_state.data,
                         page=int(request.args.get('page', 1)),
-                        per_page=Configuration.query.first().pagination_elements)
+                        per_page=Configuration.query.first().items_per_page)
 
     return render_template("user/index.html", users=users, search_form=search_form, alert=get_alert())
 
