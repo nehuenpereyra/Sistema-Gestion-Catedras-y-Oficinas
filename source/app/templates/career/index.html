@@ -1,0 +1,65 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Carrera{% endblock %}
+
+{% block sub_content %}
+
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Carrera</h5>
+
+    {% if verify_permission('career_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('career_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Carrera</span>
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if careers.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for career in careers.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {{ career.name }}
+                                </span>
+                             </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('career_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('career_show', id=career.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('career_update') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('career_edit', id=career.id) }}">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('career_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{career.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('career_delete', id=career.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(careers, 'career_index' )}}
+    
+{% endblock %}

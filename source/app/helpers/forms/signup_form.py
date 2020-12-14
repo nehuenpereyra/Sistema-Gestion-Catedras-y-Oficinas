@@ -1,7 +1,7 @@
 from wtforms import PasswordField
 from wtforms.validators import DataRequired, Length
 
-from app.helpers.forms.user_form import UserForm
+from app.helpers.forms import UserForm
 
 
 class SignupForm(UserForm):

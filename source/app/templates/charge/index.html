@@ -1,0 +1,65 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Cargo{% endblock %}
+
+{% block sub_content %}
+
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Cargo</h5>
+
+    {% if verify_permission('charge_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('charge_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Cargo</span>
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if charges.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for charge in charges.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {{ charge.name }}
+                                </span>
+                             </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('charge_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('charge_show', id=charge.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('charge_update') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('charge_edit', id=charge.id) }}">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('charge_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{charge.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('charge_delete', id=charge.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(charges, 'charge_index' )}}
+    
+{% endblock %}

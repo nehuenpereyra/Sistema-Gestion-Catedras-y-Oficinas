@@ -1,39 +1,29 @@
+
 {% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
 {% extends "authorized_layout.html" %}
+
+{% block title %}Usuario{% endblock %}
+
 {% block sub_content %}
 
-    {% if state %}
-    <div class="alert alert-success mt-3" role="alert">
-        {{ notification_state }}
-    </div>
-    {% endif %}
     
     {% if alert %}
         {{ show_alert(alert) }}
     {% endif %}
     
-    <h4 class="mt-3">Usuarios</h4>
-    <div class="d-flex justify-content-end mt-3"><a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('user_new') }}"><i class="fas fa-user-plus"></i><span class="ml-2">Nuevo Usuario</span></a></div>
+    <h5 class="mt-3">Usuario</h5>
+
+    {% if verify_permission('user_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('user_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Usuario</span>
+            </a>
+        </div>
+    {% endif %}
     
-    <div class="shadow-sm mt-3">
-        <form action="{{url_for('user_index')}}" method="GET" class="border rounded p-2">
-            <div class="input-group">
-                <div class="input-group-prepend"><span class="input-group-text">Usuario</span></div>{{search_form.search_query(class_="form-control")}}
-                <div class="input-group-append d-none d-sm-inline">{{search_form.submit(class_="btn btn-primary")}}</div>
-            </div>
-            <div class="pt-2">
-                <a href="javascript:clear_search_form(['search_query'], ['user_state'])" style="text-decoration: none"> Limpiar Filtros </a> 
-                {% for field in search_form.user_state %}
-                    <div class="form-check">
-                        {{field(class_="form-check-input")}}
-                        {{field.label(class_="form-check-label")}}
-                    </div>
-                {% endfor %}
-            </div>
-        </form>
-    </div>
-
-
     {% if users.items %}
         <ul class="list-group border rounded shadow-sm mt-3">
             {% for user in users.items %}
@@ -41,23 +31,28 @@
                     <div class="row d-flex">
                         <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
                             <div class="text-center text-sm-left">
-                                <span class="d-block">{{ user.name }} {{ user.surname }}</span>
-                                <small>{{ user.email }}</small>
-                            </div>
+                                <span class="d-block">
+                                    {{ user.name }}
+                                </span>
+                             </div>
                         </div>
-                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center mb-2 mb-sm-0">
-                            {% if not user.is_active %}
-                                <i class="fas fa-user-lock text-danger mr-3"></i>
-                            {% endif %}
-                            <span class="d-block">{{ user.username }}</span>
-                        </div>
+                        
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('user_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_show', id=user.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('user_update') %}
                             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_edit', id=user.id) }}">
-                                <i class="fas fa-user-edit"></i>
+                                <i class="fas fa-cog"></i>
                             </a>
-                            <a onclick="return confirm('¿Seguro que deseas eliminar a {{user.username}}?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('user_delete', id=user.id) }}">
-                                <i class="far fa-trash-alt"></i>
-                            </a>
+                            {% endif %}
+                            {% if verify_permission('user_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{user.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('user_delete', id=user.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </li>
@@ -65,34 +60,6 @@
         </ul>
     {% endif %}
 
-    <nav class="d-flex justify-content-center justify-content-sm-end mt-3">
-        <ul class="pagination">
-            <!-- <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li> -->
-            {%- for page in users.iter_pages() %}
-                {% if page %}
-                    {% if page != users.page %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for_page('user_index', page) }}">{{ page }}</a>
-                        </li>
-                    {% else %}
-                        <li class="page-item active">
-                            <a class="page-link">{{ page }}</a>
-                        </li>
-                    {% endif %}
-                {% else %}
-                    <li class="page-item">
-                        <span class="page-link">…</span>
-                    </li>
-                {% endif %}
-            {%- endfor %}
-            <!-- <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li> -->
-        </ul>
-    </nav>
-
-{% endblock %}
-
-
-{% block scripts %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/clear_search_form.js') }}"></script>
+    {{ pagination(users, 'user_index' )}}
+    
 {% endblock %}

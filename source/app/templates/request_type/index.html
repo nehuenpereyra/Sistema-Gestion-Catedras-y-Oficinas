@@ -1,0 +1,65 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Tipo de Solicitud{% endblock %}
+
+{% block sub_content %}
+
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Tipo de Solicitud</h5>
+
+    {% if verify_permission('request_type_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('request_type_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Tipo de Solicitud</span>
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if request_types.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for request_type in request_types.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {{ request_type.name }}
+                                </span>
+                             </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('request_type_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('request_type_show', id=request_type.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('request_type_update') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('request_type_edit', id=request_type.id) }}">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('request_type_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{request_type.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_type_delete', id=request_type.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(request_types, 'request_type_index' )}}
+    
+{% endblock %}

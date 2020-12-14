@@ -1,0 +1,65 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Solicitud{% endblock %}
+
+{% block sub_content %}
+
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Solicitud</h5>
+
+    {% if verify_permission('request_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('request_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Solicitud</span>
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if requests.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for request in requests.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {{ request.content }}
+                                </span>
+                             </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('request_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('request_show', id=request.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('request_update') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('request_edit', id=request.id) }}">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('request_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{request.content}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_delete', id=request.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(requests, 'request_index' )}}
+    
+{% endblock %}

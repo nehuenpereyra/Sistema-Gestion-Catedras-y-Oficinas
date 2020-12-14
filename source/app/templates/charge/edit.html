@@ -1,0 +1,28 @@
+
+{% from 'macros/input.html' import  input %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %} Editar Cargo {% endblock %}
+
+{% block sub_content %}
+
+  <h5 class="mt-3">Editar Cargo</h5>
+  <h6 class="mt-3">Los campos <span class="text-danger">*</span> son obligatorios.</h6>
+        <div class="bg-white border rounded shadow-sm mt-3 p-3">
+            <form class="text-left user" action="{{ url_for('charge_update', id=charge.id) }}" method="post" >
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ input(form.name) }}
+                </div>
+                <div class="form-group">
+                    {{ input(form.is_docent) }}
+                </div>
+                <div class="form-group">
+                    {{ input(form.order) }}
+                </div>
+                {{ form.submit(class_="btn btn-primary btn-block text-white") }}
+            </form>
+        </div>
+    
+{% endblock %}

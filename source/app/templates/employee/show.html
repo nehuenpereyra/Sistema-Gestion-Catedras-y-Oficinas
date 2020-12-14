@@ -1,0 +1,51 @@
+
+
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Empleado - {{ employee.name }}{% endblock %}
+
+{% block sub_content %}
+
+    <h5 class="mt-3">Informacion de Empleado</h5>
+
+    <div class="d-flex justify-content-end mt-3">
+        {% if verify_permission('employee_index') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('employee_index') }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('employee_update') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('employee_edit', id=employee.id) }}">
+                <i class="fas fa-cog"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('employee_delete') %}
+            <a onclick="return confirm('¿Seguro que deseas eliminar {{employee.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('employee_delete', id=employee.id) }}">
+                <i class="far fa-trash-alt"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    <ul class="list-group shadow-sm my-4 mx-2">
+        <li class="list-group-item">
+            <h6 class="mb-0">Nombre</h6>{{ show_field(employee.name, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Apellido</h6>{{ show_field(employee.surname, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">DNI</h6>{{ show_field(employee.dni, required=False)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Correo Electrónico Institucional</h6>{{ show_field(employee.institutional_email, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Correo Electrónico Secundario</h6>{{ show_field(employee.secondary_email, required=False)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6>Puestos Asignados</h6>{{ show_field(employee.get_job_positions(), list=True, attribute="start_date", link="job_position_show", required=False)|safe }}
+        </li>
+    </ul>
+    
+{% endblock %}

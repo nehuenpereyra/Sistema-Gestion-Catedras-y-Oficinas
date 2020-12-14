@@ -28,7 +28,7 @@
   <form action="{{ url_for('auth_authenticate') }}" method="post" class="text-center border rounded shadow-sm p-4 bg-white">
       {{ form.hidden_tag() }}
       <div class="mb-2" style="font-size: 100px;color: #395e85;"><i class="fas fa-user-circle"></i></div>
-      <div class="form-group">{{input(form.email, "email", "Correo Electrónico")}}</div>
+      <div class="form-group">{{input(form.username, "username", "Nombre de usuario")}}</div>
       <div class="form-group">{{input(form.password, "password", "Contraseña")}}</div>
       <div class="form-group">
       <div class="custom-control custom-checkbox small" style="float: left;">                             

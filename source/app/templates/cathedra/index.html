@@ -1,0 +1,65 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Cátedra{% endblock %}
+
+{% block sub_content %}
+
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Cátedra</h5>
+
+    {% if verify_permission('cathedra_create') %}
+        <div class="d-flex justify-content-end mt-3">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('cathedra_new') }}">
+                <i class="fas fa-plus"></i>
+                <span class="ml-2">Nuevo Cátedra</span>
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if cathedras.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for cathedra in cathedras.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {{ cathedra.name }}
+                                </span>
+                             </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('cathedra_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('cathedra_show', id=cathedra.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('cathedra_update') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('cathedra_edit', id=cathedra.id) }}">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('cathedra_delete') %}
+                                <a onclick="return confirm('¿Seguro que deseas eliminar {{cathedra.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(cathedras, 'cathedra_index' )}}
+    
+{% endblock %}

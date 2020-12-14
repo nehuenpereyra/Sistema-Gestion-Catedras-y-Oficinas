@@ -1,0 +1,27 @@
+body {
+  background: #f1f7fc;
+  $primary: purple;
+}
+
+.card-header {
+  background: #395e85;
+  border-color: #395e85;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #395e85;
+  border-color: #395e85;
+}
+
+.btn-primary:hover {
+  background: #224a74;
+  border-color: #224a74;
+}
+
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #224a74;
+  border-color: #224a74;
+}

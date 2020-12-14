@@ -1,0 +1,39 @@
+
+
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Carrera - {{ career.name }}{% endblock %}
+
+{% block sub_content %}
+
+    <h5 class="mt-3">Informacion de Carrera</h5>
+
+    <div class="d-flex justify-content-end mt-3">
+        {% if verify_permission('career_index') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('career_index') }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('career_update') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('career_edit', id=career.id) }}">
+                <i class="fas fa-cog"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('career_delete') %}
+            <a onclick="return confirm('¿Seguro que deseas eliminar {{career.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('career_delete', id=career.id) }}">
+                <i class="far fa-trash-alt"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    <ul class="list-group shadow-sm my-4 mx-2">
+        <li class="list-group-item">
+            <h6 class="mb-0">Nombre</h6>{{ show_field(career.name, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6>Catedras</h6>{{ show_field(career.get_cathedras(), list=True, attribute="name", link="cathedra_show", required=False)|safe }}
+        </li>
+    </ul>
+    
+{% endblock %}

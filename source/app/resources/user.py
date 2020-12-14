@@ -1,92 +1,85 @@
-from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask import redirect, render_template, request, url_for, abort
-from flask_login import login_user, login_required, current_user
-from app.helpers.forms.signup_form import SignupForm
-from app.helpers.forms.user_seeker_form import UserSeekerForm
-from app.helpers.forms.update_user_form import UpdateUserForm
-from app.helpers.permission import permission
-from app.helpers.alert import add_alert, get_alert
-from app.models.user import User
-from app.models.alert import Alert
+from flask import redirect, render_template, request, url_for
+from flask_login import current_user
+
 from app.models.configuration import Configuration
-
-
-@login_required
-def profile():
-    return render_template("user/profile.html", user=current_user)
-
-
+from app.models.alert import Alert
+from app.helpers.alert import add_alert, get_alert
+from app.helpers.permission import permission
+from app.models import User, Role
+from app.helpers.forms import UserForm
 
 @permission('user_index')
 def index():
+    allowed_user_ids = None
 
-    search_form = UserSeekerForm(request.args)
+    if not current_user.is_admin():
+        allowed_user_ids = current_user.allowed_user_id_list()
 
-    users = User.search(search_query=search_form.search_query.data,
-                        user_state=search_form.user_state.data,
-                        page=int(request.args.get('page', 1)),
-                        per_page=Configuration.query.first().items_per_page)
+    users = User.all_paginated(page=int(request.args.get('page', 1)),
+                        per_page=Configuration.get().items_per_page, ids=allowed_user_ids)
+    return render_template("user/index.html", users=users, alert=get_alert())
 
-    return render_template("user/index.html", users=users, search_form=search_form, alert=get_alert())
+
+@permission('user_show')
+def show(id):
+    user = User.get(id)
+    if not user:
+        add_alert(Alert("danger", "El usuario no existe."))
+        return redirect(url_for("user_index"))
+
+    return render_template("user/show.html", user=user)
 
 @permission('user_create')
 def new():
-    return render_template("user/new.html", form=SignupForm())
+    return render_template("user/new.html", form=UserForm())
 
 @permission('user_create')
 def create():
-    form = SignupForm(id=None)
-
+    form = UserForm(id=None)
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data,
-                    name=form.name.data, surname=form.surname.data,
-                    password=generate_password_hash(form.password.data),
-                    roles=form.roles.data)
+        user = User(name = form.name.data, surname = form.surname.data, username = form.username.data, password = form.password.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data, roles = Role.get_all(form.roles.data))
+        user.set_password(form.password.data)
         user.save()
         add_alert(
-            Alert("success", f"El usuario {user.username} se creo correctamente."))
+            Alert("success", f"El {user.name} se a creado correctamente."))
         return redirect(url_for("user_index"))
-
     return render_template("user/new.html", form=form)
 
-
-@ permission('user_update')
+@permission('user_update')
 def edit(id):
-    user = User.query.get(id)
-
+    user = User.get(id)
     if not user:
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
 
-    return render_template("user/edit.html", user_id=id, is_admin=user.has_role("Administrador"), update_form=UpdateUserForm(obj=user))
+    form = UserForm(obj=user)
+    form.roles.data = user.roles.collect(lambda each: each.id)    
 
-@ permission('user_update')
+    return render_template("user/edit.html", user=user, form=form)
+
+@permission('user_update')
 def update(id):
-    update_form = UpdateUserForm(id=id)
-
-    if not update_form.validate_on_submit():
-        return render_template("user/edit.html", user_id=id, update_form=update_form)
-
-    user = User.update(id, update_form.name.data, update_form.surname.data,
-                       update_form.email.data, update_form.username.data, update_form.roles.data, update_form.is_active.data, update_form.password.data)
-
+    user = User.get(id)
     if not user:
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
-
+    form = UserForm(id=id)
+    if not form.validate_on_submit():
+        return render_template("user/edit.html", user=user, form=form)
+    user.set_password(form.password.data)
+    user.update(name = form.name.data, surname = form.surname.data, username = form.username.data, password = form.password.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data, roles = Role.get_all(form.roles.data))
     add_alert(
-        Alert("success", f"El usuario {user.username} se actualizo correctamente."))
-
+        Alert("success", f"El {user.name} se a modificado correctamente."))
     return redirect(url_for("user_index"))
 
-@ permission('user_delete')
+@permission('user_delete')
 def delete(id):
-    user = User.delete(id)
-    if user:
-        add_alert(
-            Alert("success", f"El usuario {user.username} se borro con exito."))
-    else:
+    user = User.get(id)
+    if not user or user.is_deleted:
         add_alert(Alert("danger", "El usuario no existe."))
-
+    else:
+        user.remove()
+        add_alert(
+                Alert("success", f"El {user.name} se a borrado correctamente."))
     return redirect(url_for("user_index"))

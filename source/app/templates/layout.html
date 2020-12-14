@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fontawesome-all.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Navigation-Clean.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
 <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
@@ -29,7 +30,7 @@
               <div class="col-auto d-flex align-items-center">
                   <div class="dropdown" text-decoration="none"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#" text-decoration="none" style="color: rgb(255,255,255);"><i class="fas fa-user-circle" style="color: white;font-size: 22px;"></i></a>
                       <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in"
-                          role="menu"><a class="d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center align-items-xl-center" href="{{ url_for('user_profile') }}"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i><span>Perfil</span></a>
+                          role="menu"><a class="d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center align-items-xl-center" href="{{ url_for('user_show', id=current_user.id) }}"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i><span>Perfil</span></a>
                           <div class="dropdown-divider"></div><a class="d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center align-items-xl-center" href="{{ url_for('auth_logout') }}"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i><span>Salir</span></a></div>
                   </div>
               </div>

@@ -1,4 +1,7 @@
+# Sistema de Cátedras y oficinas
 
-# Sistema de Catedras y Oficinas
+## Integrantes
 
-El sistema esta destinado a la gestión del plantel docente/no docente de la Facultad de Ciencias Médicas de la UNLP.
+Iyael Lihue Pereyra - 16440/6
+
+Nehuen Pereyra - 15926/1

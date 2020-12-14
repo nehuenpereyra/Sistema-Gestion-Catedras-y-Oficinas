@@ -10,10 +10,9 @@ from app.models.alert import Alert
 
 @permission('configuration_update')
 def edit():
-    config = Configuration.query.all()[0]
+    config = Configuration.get()
     form = ConfigurationForm(obj=config)
     return render_template("configuration/update.html", form=form)
-
 
 
 @permission('configuration_update')

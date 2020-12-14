@@ -1,77 +1,73 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 
 from app.db import db
-from app.models.user_role import UserRole, link_user_role
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+ 
+from .database_links import link_user_role
 
+def get_permission_method(user, permission):
+
+    permission_mapper = {
+        "user": user.allowed_user_id_list,
+        "role": user.allowed_role_id_list,
+        "permission": user.allowed_permission_id_list,
+        "request": user.allowed_request_id_list,
+        "career": user.allowed_career_id_list,
+        "cathedra": user.allowed_cathedra_id_list,
+        "office": user.allowed_office_id_list,
+        "charge": user.allowed_charge_id_list,
+        "employee": user.allowed_employee_id_list,
+        "job_position": user.allowed_job_position_id_list,
+        "request_type": user.allowed_request_type_id_list
+    }
+
+    return permission_mapper[permission]
 
 class User(UserMixin, db.Model):
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32), nullable=False)
-    surname = db.Column(db.String(32), nullable=False)
-    email = db.Column(db.String(32), unique=True, nullable=False)
-    username = db.Column(db.String(32), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-    roles = db.relationship(
-        "UserRole", secondary=link_user_role, back_populates="users")
-    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    id = db.Column("id", db.Integer, primary_key=True)
+    name = db.Column("name", db.String(32), nullable=False, unique=False)
+    surname = db.Column("surname", db.String(32), nullable=False, unique=False)
+    username = db.Column("username", db.String(32), nullable=False, unique=False)
+    password = db.Column("password", db.String(128), nullable=False, unique=False)
+    institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=False)
+    secondary_email = db.Column("secondary_email", db.String(64), nullable=False, unique=False)
+    roles = db.relationship("Role", back_populates="users", secondary=link_user_role)
+    requests = db.relationship("Request", back_populates="user")
+    is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
-    def has_role(self, role):
-        for each in self.roles:
-            if each.name == role:
-                return True
-        return False
+    def get_roles(self):
+        return self.roles.select(lambda each: not each.is_deleted)
 
-    @property
-    def get_email(self):
-        return self.email
+    def set_roles(self, roles):
+        self.roles = self.roles.select(
+            lambda each: each.is_deleted) + roles
+    def get_requests(self):
+        return self.requests.select(lambda each: not each.is_deleted)
 
-    def set_email(self, value):
-        self.email = value
-
-    @property
-    def get_name(self):
-        return self.name
-
-    @property
-    def get_surname(self):
-        return self.surname
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+    def set_requests(self, requests):
+        self.requests = self.requests.select(
+            lambda each: each.is_deleted) + requests
 
     def save(self):
         if not self.id:
             db.session.add(self)
         db.session.commit()
 
+    def update(self, name, surname, username, password, institutional_email, secondary_email, roles):
+        self.name = name
+        self.surname = surname
+        self.username = username
+        self.password = password
+        self.institutional_email = institutional_email
+        self.secondary_email = secondary_email
+        self.set_roles(roles)
+        self.save()
+
     def remove(self):
         if self.id:
-            db.session.delete(self)
-            db.session.commit()
-
-    def __repr__(self):
-        return f'<User {self.email}>'
-
-    @staticmethod
-    def update(id, name, surname, email, username, roles, is_active, password):
-        user = User.query.get(id)
-        if user:
-            user.name = name
-            user.surname = surname
-            user.email = email
-            user.username = username
-            user.roles = roles
-            user.is_active = is_active
-            if password:
-                user.set_password(password)
-            user.save()
-            return user
-        return None
+            self.is_deleted = True
+            self.save()
 
     @staticmethod
     def delete(id):
@@ -82,25 +78,130 @@ class User(UserMixin, db.Model):
         return None
 
     @staticmethod
-    def search(search_query, user_state, page, per_page):
+    def all():
         query = User.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(User.name.asc())
+        return query.all()
 
-        if (search_query):
-            query = query.filter(User.username.like(f"%{search_query}%"))
-
-        if (user_state):
-            query = query.filter_by(is_active=user_state == "active")
-
+    @staticmethod
+    def all_paginated(page, per_page, ids=None):
+        query = User.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(User.name.asc())
+        if ids:
+            query = query.filter(User.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
     @staticmethod
-    def all():
-        return User.query.all()
+    def get(id):
+        user = User.query.get(id)
+        return user if user and user.is_deleted==False else None
+        
 
     @staticmethod
-    def get_by_id(id):
-        return User.query.get(id)
+    def get_all(ids):
+        if not ids:
+            return []
+        query = User.query
+        query = query.filter_by(is_deleted=False)
+        return query.filter(User.id.in_(ids)).all()
 
     @staticmethod
-    def find_by_email(email):
-        return User.query.filter_by(email=email).first()
+    def find_by_name(name):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(name=name, is_deleted=False)
+
+    @staticmethod
+    def find_by_surname(surname):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(surname=surname, is_deleted=False)
+
+    @staticmethod
+    def find_by_username(username):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(username=username, is_deleted=False)
+
+    @staticmethod
+    def find_by_password(password):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(password=password, is_deleted=False)
+
+    @staticmethod
+    def find_by_institutional_email(institutional_email):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(institutional_email=institutional_email, is_deleted=False)
+
+    @staticmethod
+    def find_by_secondary_email(secondary_email):
+        query = User.query.order_by(User.name.asc())
+        return query.filter_by(secondary_email=secondary_email, is_deleted=False)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    @staticmethod
+    def login(username, password):
+        user = User.query.filter_by(username=username).first()
+        if user and (check_password_hash(user.password, password)):
+            return user
+        return None
+    
+    def is_admin(self):
+        return self.roles.any_satisfy(lambda each: each.name == "Administrador")
+
+    def has_permission_for(self, permission, id):
+        has_permission = self.roles.flat_collect(lambda each: each.permissions). \
+            any_satisfy(lambda each: each.name == permission)
+
+        if not has_permission:
+            return False
+        elif not id or self.is_admin():
+            return True
+
+        allowed_id_list_method = get_permission_method(
+            self, permission.split("_").first())
+
+        allowed_id_list = allowed_id_list_method()
+
+        if allowed_id_list is None:
+            return True
+
+        return allowed_id_list.includes(id)
+
+    def allowed_user_id_list(self):
+        return [self.id]
+
+    def allowed_role_id_list(self):
+        return self.roles.collect(lambda each: each.id)
+
+    def allowed_permission_id_list(self):
+        return self.roles.flat_collect(lambda each: each.permissions). \
+            remove_duplicated(). \
+            collect(lambda each: each.id)
+
+    def allowed_request_id_list(self):
+        return self.requests.collect(lambda each: each.id)
+    
+    def allowed_request_type_id_list(self):
+        return None
+
+    def allowed_career_id_list(self):
+        return None
+
+    def allowed_cathedra_id_list(self):
+        return None
+
+    def allowed_office_id_list(self):
+        return None
+
+    def allowed_charge_id_list(self):
+        return None
+
+    def allowed_employee_id_list(self):
+        return None
+
+    def allowed_job_position_id_list(self):
+        return None
+
+ 
