@@ -35,52 +35,52 @@ class RequestType(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        request_type = RequestType.query.get(id)
+    @classmethod
+    def delete(self, id):
+        request_type = self.query.get(id)
         if request_type:
             request_type.remove()
             return request_type
         return None
 
-    @staticmethod
-    def all():
-        query = RequestType.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(RequestType.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = RequestType.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(RequestType.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(RequestType.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        request_type = RequestType.query.get(id)
+    @classmethod
+    def get(self, id):
+        request_type = self.query.get(id)
         return request_type if request_type and request_type.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = RequestType.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(RequestType.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = RequestType.query.order_by(RequestType.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_state(state):
-        query = RequestType.query.order_by(RequestType.name.asc())
-        return query.filter_by(state=state, is_deleted=False)
+    @classmethod
+    def find_by_state(self, state):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(state=state, is_deleted=False).all()
 
  

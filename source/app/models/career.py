@@ -31,47 +31,47 @@ class Career(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        career = Career.query.get(id)
+    @classmethod
+    def delete(self, id):
+        career = self.query.get(id)
         if career:
             career.remove()
             return career
         return None
 
-    @staticmethod
-    def all():
-        query = Career.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Career.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Career.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Career.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Career.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        career = Career.query.get(id)
+    @classmethod
+    def get(self, id):
+        career = self.query.get(id)
         return career if career and career.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Career.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Career.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = Career.query.order_by(Career.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
  

@@ -40,42 +40,42 @@ class Role(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        role = Role.query.get(id)
+    @classmethod
+    def delete(self, id):
+        role = self.query.get(id)
         if role:
             role.remove()
             return role
         return None
 
-    @staticmethod
-    def all():
-        query = Role.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Role.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Role.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Role.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Role.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        role = Role.query.get(id)
+    @classmethod
+    def get(self, id):
+        role = self.query.get(id)
         return role if role and role.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Role.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Role.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
  

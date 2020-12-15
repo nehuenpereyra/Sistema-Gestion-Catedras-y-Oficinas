@@ -36,52 +36,52 @@ class Request(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        request = Request.query.get(id)
+    @classmethod
+    def delete(self, id):
+        request = self.query.get(id)
         if request:
             request.remove()
             return request
         return None
 
-    @staticmethod
-    def all():
-        query = Request.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Request.content.asc())
+        query = query.order_by(self.content.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Request.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Request.content.asc())
+        query = query.order_by(self.content.asc())
         if ids:
-            query = query.filter(Request.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        request = Request.query.get(id)
+    @classmethod
+    def get(self, id):
+        request = self.query.get(id)
         return request if request and request.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Request.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Request.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_is_resolved(is_resolved):
-        query = Request.query.order_by(Request.content.asc())
-        return query.filter_by(is_resolved=is_resolved, is_deleted=False)
+    @classmethod
+    def find_by_is_resolved(self, is_resolved):
+        query = self.query.order_by(self.content.asc())
+        return query.filter_by(is_resolved=is_resolved, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_timestamp(timestamp):
-        query = Request.query.order_by(Request.content.asc())
-        return query.filter_by(timestamp=timestamp, is_deleted=False)
+    @classmethod
+    def find_by_timestamp(self, timestamp):
+        query = self.query.order_by(self.content.asc())
+        return query.filter_by(timestamp=timestamp, is_deleted=False).all()
 
  

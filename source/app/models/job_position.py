@@ -35,52 +35,52 @@ class JobPosition(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        job_position = JobPosition.query.get(id)
+    @classmethod
+    def delete(self, id):
+        job_position = self.query.get(id)
         if job_position:
             job_position.remove()
             return job_position
         return None
 
-    @staticmethod
-    def all():
-        query = JobPosition.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(JobPosition.start_date.asc())
+        query = query.order_by(self.start_date.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = JobPosition.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(JobPosition.start_date.asc())
+        query = query.order_by(self.start_date.asc())
         if ids:
-            query = query.filter(JobPosition.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        job_position = JobPosition.query.get(id)
+    @classmethod
+    def get(self, id):
+        job_position = self.query.get(id)
         return job_position if job_position and job_position.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = JobPosition.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(JobPosition.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_start_date(start_date):
-        query = JobPosition.query.order_by(JobPosition.start_date.asc())
-        return query.filter_by(start_date=start_date, is_deleted=False)
+    @classmethod
+    def find_by_start_date(self, start_date):
+        query = self.query.order_by(self.start_date.asc())
+        return query.filter_by(start_date=start_date, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_end_date(end_date):
-        query = JobPosition.query.order_by(JobPosition.start_date.asc())
-        return query.filter_by(end_date=end_date, is_deleted=False)
+    @classmethod
+    def find_by_end_date(self, end_date):
+        query = self.query.order_by(self.start_date.asc())
+        return query.filter_by(end_date=end_date, is_deleted=False).all()
 
  

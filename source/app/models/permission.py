@@ -33,42 +33,42 @@ class Permission(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        permission = Permission.query.get(id)
+    @classmethod
+    def delete(self, id):
+        permission = self.query.get(id)
         if permission:
             permission.remove()
             return permission
         return None
 
-    @staticmethod
-    def all():
-        query = Permission.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Permission.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Permission.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Permission.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Permission.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        permission = Permission.query.get(id)
+    @classmethod
+    def get(self, id):
+        permission = self.query.get(id)
         return permission if permission and permission.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Permission.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Permission.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
  

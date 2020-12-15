@@ -30,57 +30,57 @@ class Office(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        office = Office.query.get(id)
+    @classmethod
+    def delete(self, id):
+        office = self.query.get(id)
         if office:
             office.remove()
             return office
         return None
 
-    @staticmethod
-    def all():
-        query = Office.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Office.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Office.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Office.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Office.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        office = Office.query.get(id)
+    @classmethod
+    def get(self, id):
+        office = self.query.get(id)
         return office if office and office.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Office.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Office.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = Office.query.order_by(Office.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_email(email):
-        query = Office.query.order_by(Office.name.asc())
-        return query.filter_by(email=email, is_deleted=False)
+    @classmethod
+    def find_by_email(self, email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(email=email, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_phone(phone):
-        query = Office.query.order_by(Office.name.asc())
-        return query.filter_by(phone=phone, is_deleted=False)
+    @classmethod
+    def find_by_phone(self, phone):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(phone=phone, is_deleted=False).all()
 
  

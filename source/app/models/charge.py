@@ -35,57 +35,57 @@ class Charge(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        charge = Charge.query.get(id)
+    @classmethod
+    def delete(self, id):
+        charge = self.query.get(id)
         if charge:
             charge.remove()
             return charge
         return None
 
-    @staticmethod
-    def all():
-        query = Charge.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Charge.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Charge.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Charge.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Charge.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        charge = Charge.query.get(id)
+    @classmethod
+    def get(self, id):
+        charge = self.query.get(id)
         return charge if charge and charge.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Charge.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Charge.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = Charge.query.order_by(Charge.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_is_docent(is_docent):
-        query = Charge.query.order_by(Charge.name.asc())
-        return query.filter_by(is_docent=is_docent, is_deleted=False)
+    @classmethod
+    def find_by_is_docent(self, is_docent):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(is_docent=is_docent, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_order(order):
-        query = Charge.query.order_by(Charge.name.asc())
-        return query.filter_by(order=order, is_deleted=False)
+    @classmethod
+    def find_by_order(self, order):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(order=order, is_deleted=False).all()
 
  

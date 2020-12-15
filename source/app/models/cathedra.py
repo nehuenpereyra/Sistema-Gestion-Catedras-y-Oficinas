@@ -42,57 +42,57 @@ class Cathedra(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        cathedra = Cathedra.query.get(id)
+    @classmethod
+    def delete(self, id):
+        cathedra = self.query.get(id)
         if cathedra:
             cathedra.remove()
             return cathedra
         return None
 
-    @staticmethod
-    def all():
-        query = Cathedra.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Cathedra.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Cathedra.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Cathedra.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Cathedra.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        cathedra = Cathedra.query.get(id)
+    @classmethod
+    def get(self, id):
+        cathedra = self.query.get(id)
         return cathedra if cathedra and cathedra.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Cathedra.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Cathedra.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = Cathedra.query.order_by(Cathedra.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_email(email):
-        query = Cathedra.query.order_by(Cathedra.name.asc())
-        return query.filter_by(email=email, is_deleted=False)
+    @classmethod
+    def find_by_email(self, email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(email=email, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_phone(phone):
-        query = Cathedra.query.order_by(Cathedra.name.asc())
-        return query.filter_by(phone=phone, is_deleted=False)
+    @classmethod
+    def find_by_phone(self, phone):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(phone=phone, is_deleted=False).all()
 
  

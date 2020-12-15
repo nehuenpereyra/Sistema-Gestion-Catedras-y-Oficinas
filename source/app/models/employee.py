@@ -39,67 +39,67 @@ class Employee(db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        employee = Employee.query.get(id)
+    @classmethod
+    def delete(self, id):
+        employee = self.query.get(id)
         if employee:
             employee.remove()
             return employee
         return None
 
-    @staticmethod
-    def all():
-        query = Employee.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Employee.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = Employee.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(Employee.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(Employee.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        employee = Employee.query.get(id)
+    @classmethod
+    def get(self, id):
+        employee = self.query.get(id)
         return employee if employee and employee.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = Employee.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(Employee.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = Employee.query.order_by(Employee.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_surname(surname):
-        query = Employee.query.order_by(Employee.name.asc())
-        return query.filter_by(surname=surname, is_deleted=False)
+    @classmethod
+    def find_by_surname(self, surname):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(surname=surname, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_dni(dni):
-        query = Employee.query.order_by(Employee.name.asc())
-        return query.filter_by(dni=dni, is_deleted=False)
+    @classmethod
+    def find_by_dni(self, dni):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(dni=dni, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_institutional_email(institutional_email):
-        query = Employee.query.order_by(Employee.name.asc())
-        return query.filter_by(institutional_email=institutional_email, is_deleted=False)
+    @classmethod
+    def find_by_institutional_email(self, institutional_email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(institutional_email=institutional_email, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_secondary_email(secondary_email):
-        query = Employee.query.order_by(Employee.name.asc())
-        return query.filter_by(secondary_email=secondary_email, is_deleted=False)
+    @classmethod
+    def find_by_secondary_email(self, secondary_email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
 
  

@@ -69,73 +69,73 @@ class User(UserMixin, db.Model):
             self.is_deleted = True
             self.save()
 
-    @staticmethod
-    def delete(id):
-        user = User.query.get(id)
+    @classmethod
+    def delete(self, id):
+        user = self.query.get(id)
         if user:
             user.remove()
             return user
         return None
 
-    @staticmethod
-    def all():
-        query = User.query
+    @classmethod
+    def all(self):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(User.name.asc())
+        query = query.order_by(self.name.asc())
         return query.all()
 
-    @staticmethod
-    def all_paginated(page, per_page, ids=None):
-        query = User.query
+    @classmethod
+    def all_paginated(self, page, per_page, ids=None):
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(User.name.asc())
+        query = query.order_by(self.name.asc())
         if ids:
-            query = query.filter(User.id.in_(ids))
+            query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
-    @staticmethod
-    def get(id):
-        user = User.query.get(id)
+    @classmethod
+    def get(self, id):
+        user = self.query.get(id)
         return user if user and user.is_deleted==False else None
         
 
-    @staticmethod
-    def get_all(ids):
+    @classmethod
+    def get_all(self, ids):
         if not ids:
             return []
-        query = User.query
+        query = self.query
         query = query.filter_by(is_deleted=False)
-        return query.filter(User.id.in_(ids)).all()
+        return query.filter(self.id.in_(ids)).all()
 
-    @staticmethod
-    def find_by_name(name):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(name=name, is_deleted=False)
+    @classmethod
+    def find_by_name(self, name):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(name=name, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_surname(surname):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(surname=surname, is_deleted=False)
+    @classmethod
+    def find_by_surname(self, surname):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(surname=surname, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_username(username):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(username=username, is_deleted=False)
+    @classmethod
+    def find_by_username(self, username):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(username=username, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_password(password):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(password=password, is_deleted=False)
+    @classmethod
+    def find_by_password(self, password):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(password=password, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_institutional_email(institutional_email):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(institutional_email=institutional_email, is_deleted=False)
+    @classmethod
+    def find_by_institutional_email(self, institutional_email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(institutional_email=institutional_email, is_deleted=False).all()
 
-    @staticmethod
-    def find_by_secondary_email(secondary_email):
-        query = User.query.order_by(User.name.asc())
-        return query.filter_by(secondary_email=secondary_email, is_deleted=False)
+    @classmethod
+    def find_by_secondary_email(self, secondary_email):
+        query = self.query.order_by(self.name.asc())
+        return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
