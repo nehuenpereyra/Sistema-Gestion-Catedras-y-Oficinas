@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('cathedra_delete') %}
-            <a onclick="return confirm('¿Seguro que deseas eliminar {{cathedra.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el cátedra "{{cathedra.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}
@@ -44,7 +44,7 @@
             <h6 class="mb-0">Hora de Atención</h6>{{ show_field(cathedra.attention_time, required=True)|safe }}
         </li>
         <li class="list-group-item">
-            <h6>Carreras</h6>{{ show_field(cathedra.get_careers(), list=True, attribute="name", link="career_show", required=True)|safe }}
+            <h6 class="mb-0">Carrera</h6>{{ show_field(cathedra.career, attribute="name", link="career_show", required=True)|safe }}
         </li>
         <li class="list-group-item">
             <h6>Plantel</h6>{{ show_field(cathedra.get_staff(), list=True, attribute="start_date", link="job_position_show", required=False)|safe }}

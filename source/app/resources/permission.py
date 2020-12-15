@@ -41,7 +41,7 @@ def create():
         permission = Permission(name = form.name.data, roles = Role.get_all(form.roles.data))
         permission.save()
         add_alert(
-            Alert("success", f"El {permission.name} se a creado correctamente."))
+            Alert("success", f'El permiso "{permission.name}" se ha creado correctamente.'))
         return redirect(url_for("permission_index"))
     return render_template("permission/new.html", form=form)
 
@@ -69,7 +69,7 @@ def update(id):
         return render_template("permission/edit.html", permission=permission, form=form)
     permission.update(name = form.name.data, roles = Role.get_all(form.roles.data))
     add_alert(
-        Alert("success", f"El {permission.name} se a modificado correctamente."))
+        Alert("success", f'El permiso "{permission.name}" se ha modificado correctamente.'))
     return redirect(url_for("permission_index"))
 
 @permission('permission_delete')
@@ -80,5 +80,5 @@ def delete(id):
     else:
         permission.remove()
         add_alert(
-                Alert("success", f"El {permission.name} se a borrado correctamente."))
+                Alert("success", f'El permiso "{permission.name}" se ha borrado correctamente.'))
     return redirect(url_for("permission_index"))

@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('charge_delete') %}
-            <a onclick="return confirm('¿Seguro que deseas eliminar {{charge.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('charge_delete', id=charge.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el cargo "{{charge.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('charge_delete', id=charge.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}

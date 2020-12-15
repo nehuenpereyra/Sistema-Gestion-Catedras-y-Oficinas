@@ -41,7 +41,7 @@ def create():
         employee = Employee(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
         employee.save()
         add_alert(
-            Alert("success", f"El {employee.name} se a creado correctamente."))
+            Alert("success", f'El empleado "{employee.name}" se ha creado correctamente.'))
         return redirect(url_for("employee_index"))
     return render_template("employee/new.html", form=form)
 
@@ -67,7 +67,7 @@ def update(id):
         return render_template("employee/edit.html", employee=employee, form=form)
     employee.update(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
     add_alert(
-        Alert("success", f"El {employee.name} se a modificado correctamente."))
+        Alert("success", f'El empleado "{employee.name}" se ha modificado correctamente.'))
     return redirect(url_for("employee_index"))
 
 @permission('employee_delete')
@@ -78,5 +78,5 @@ def delete(id):
     else:
         employee.remove()
         add_alert(
-                Alert("success", f"El {employee.name} se a borrado correctamente."))
+                Alert("success", f'El empleado "{employee.name}" se ha borrado correctamente.'))
     return redirect(url_for("employee_index"))

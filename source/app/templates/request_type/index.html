@@ -49,7 +49,7 @@
                             </a>
                             {% endif %}
                             {% if verify_permission('request_type_delete') %}
-                                <a onclick="return confirm('¿Seguro que deseas eliminar {{request_type.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_type_delete', id=request_type.id) }}">
+                                <a onclick='return confirm(`¿Seguro que deseas eliminar el tipo de solicitud "{{request_type.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_type_delete', id=request_type.id) }}">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                             {% endif %}

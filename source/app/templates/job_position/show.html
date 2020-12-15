@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('job_position_delete') %}
-            <a onclick="return confirm('¿Seguro que deseas eliminar {{job_position.start_date}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', id=job_position.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el puesto de trabajo "{{job_position.start_date}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', id=job_position.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}

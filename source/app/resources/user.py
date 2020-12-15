@@ -42,7 +42,7 @@ def create():
         user.set_password(form.password.data)
         user.save()
         add_alert(
-            Alert("success", f"El {user.name} se a creado correctamente."))
+            Alert("success", f'El usuario "{user.name}" se ha creado correctamente.'))
         return redirect(url_for("user_index"))
     return render_template("user/new.html", form=form)
 
@@ -70,7 +70,7 @@ def update(id):
     user.set_password(form.password.data)
     user.update(name = form.name.data, surname = form.surname.data, username = form.username.data, password = form.password.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data, roles = Role.get_all(form.roles.data))
     add_alert(
-        Alert("success", f"El {user.name} se a modificado correctamente."))
+        Alert("success", f'El usuario "{user.name}" se ha modificado correctamente.'))
     return redirect(url_for("user_index"))
 
 @permission('user_delete')
@@ -81,5 +81,5 @@ def delete(id):
     else:
         user.remove()
         add_alert(
-                Alert("success", f"El {user.name} se a borrado correctamente."))
+                Alert("success", f'El usuario "{user.name}" se ha borrado correctamente.'))
     return redirect(url_for("user_index"))

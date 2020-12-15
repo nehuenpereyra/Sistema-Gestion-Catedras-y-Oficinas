@@ -41,7 +41,7 @@ def create():
         request = Request(content = form.content.data, is_resolved = form.is_resolved.data, receive_email = form.receive_email.data, timestamp = form.timestamp.data, user = User.get(form.user.data), request_type = RequestType.get(form.request_type.data))
         request.save()
         add_alert(
-            Alert("success", f"El {request.content} se a creado correctamente."))
+            Alert("success", f'El solicitud "{request.content}" se ha creado correctamente.'))
         return redirect(url_for("request_index"))
     return render_template("request/new.html", form=form)
 
@@ -69,7 +69,7 @@ def update(id):
         return render_template("request/edit.html", request=request, form=form)
     request.update(content = form.content.data, is_resolved = form.is_resolved.data, receive_email = form.receive_email.data, timestamp = form.timestamp.data, user = User.get(form.user.data), request_type = RequestType.get(form.request_type.data))
     add_alert(
-        Alert("success", f"El {request.content} se a modificado correctamente."))
+        Alert("success", f'El solicitud "{request.content}" se ha modificado correctamente.'))
     return redirect(url_for("request_index"))
 
 @permission('request_delete')
@@ -80,5 +80,5 @@ def delete(id):
     else:
         request.remove()
         add_alert(
-                Alert("success", f"El {request.content} se a borrado correctamente."))
+                Alert("success", f'El solicitud "{request.content}" se ha borrado correctamente.'))
     return redirect(url_for("request_index"))

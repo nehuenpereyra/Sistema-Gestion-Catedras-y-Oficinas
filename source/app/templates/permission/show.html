@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('permission_delete') %}
-            <a onclick="return confirm('¿Seguro que deseas eliminar {{permission.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('permission_delete', id=permission.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el permiso "{{permission.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('permission_delete', id=permission.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}

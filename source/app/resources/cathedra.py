@@ -38,10 +38,10 @@ def new():
 def create():
     form = CathedraForm(id=None)
     if form.validate_on_submit():
-        cathedra = Cathedra(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data, attention_time = form.attention_time.data, careers = Career.get_all(form.careers.data))
+        cathedra = Cathedra(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data, attention_time = form.attention_time.data, career = Career.get(form.career.data))
         cathedra.save()
         add_alert(
-            Alert("success", f"El {cathedra.name} se a creado correctamente."))
+            Alert("success", f'El cátedra "{cathedra.name}" se ha creado correctamente.'))
         return redirect(url_for("cathedra_index"))
     return render_template("cathedra/new.html", form=form)
 
@@ -53,7 +53,7 @@ def edit(id):
         return redirect(url_for("cathedra_index"))
 
     form = CathedraForm(obj=cathedra)
-    form.careers.data = cathedra.careers.collect(lambda each: each.id)    
+    form.career.data = cathedra.career.id    
 
     return render_template("cathedra/edit.html", cathedra=cathedra, form=form)
 
@@ -66,9 +66,9 @@ def update(id):
     form = CathedraForm(id=id)
     if not form.validate_on_submit():
         return render_template("cathedra/edit.html", cathedra=cathedra, form=form)
-    cathedra.update(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data, attention_time = form.attention_time.data, careers = Career.get_all(form.careers.data))
+    cathedra.update(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data, attention_time = form.attention_time.data, career = Career.get(form.career.data))
     add_alert(
-        Alert("success", f"El {cathedra.name} se a modificado correctamente."))
+        Alert("success", f'El cátedra "{cathedra.name}" se ha modificado correctamente.'))
     return redirect(url_for("cathedra_index"))
 
 @permission('cathedra_delete')
@@ -79,5 +79,5 @@ def delete(id):
     else:
         cathedra.remove()
         add_alert(
-                Alert("success", f"El {cathedra.name} se a borrado correctamente."))
+                Alert("success", f'El cátedra "{cathedra.name}" se ha borrado correctamente.'))
     return redirect(url_for("cathedra_index"))

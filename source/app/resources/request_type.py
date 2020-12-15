@@ -41,7 +41,7 @@ def create():
         request_type = RequestType(name = form.name.data, message = form.message.data, state = form.state.data)
         request_type.save()
         add_alert(
-            Alert("success", f"El {request_type.name} se a creado correctamente."))
+            Alert("success", f'El tipo de solicitud "{request_type.name}" se ha creado correctamente.'))
         return redirect(url_for("request_type_index"))
     return render_template("request_type/new.html", form=form)
 
@@ -67,7 +67,7 @@ def update(id):
         return render_template("request_type/edit.html", request_type=request_type, form=form)
     request_type.update(name = form.name.data, message = form.message.data, state = form.state.data)
     add_alert(
-        Alert("success", f"El {request_type.name} se a modificado correctamente."))
+        Alert("success", f'El tipo de solicitud "{request_type.name}" se ha modificado correctamente.'))
     return redirect(url_for("request_type_index"))
 
 @permission('request_type_delete')
@@ -78,5 +78,5 @@ def delete(id):
     else:
         request_type.remove()
         add_alert(
-                Alert("success", f"El {request_type.name} se a borrado correctamente."))
+                Alert("success", f'El tipo de solicitud "{request_type.name}" se ha borrado correctamente.'))
     return redirect(url_for("request_type_index"))

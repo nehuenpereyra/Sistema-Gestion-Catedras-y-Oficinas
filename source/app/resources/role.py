@@ -41,7 +41,7 @@ def create():
         role = Role(name = form.name.data, permissions = Permission.get_all(form.permissions.data))
         role.save()
         add_alert(
-            Alert("success", f"El {role.name} se a creado correctamente."))
+            Alert("success", f'El rol "{role.name}" se ha creado correctamente.'))
         return redirect(url_for("role_index"))
     return render_template("role/new.html", form=form)
 
@@ -69,7 +69,7 @@ def update(id):
         return render_template("role/edit.html", role=role, form=form)
     role.update(name = form.name.data, permissions = Permission.get_all(form.permissions.data))
     add_alert(
-        Alert("success", f"El {role.name} se a modificado correctamente."))
+        Alert("success", f'El rol "{role.name}" se ha modificado correctamente.'))
     return redirect(url_for("role_index"))
 
 @permission('role_delete')
@@ -80,5 +80,5 @@ def delete(id):
     else:
         role.remove()
         add_alert(
-                Alert("success", f"El {role.name} se a borrado correctamente."))
+                Alert("success", f'El rol "{role.name}" se ha borrado correctamente.'))
     return redirect(url_for("role_index"))

@@ -41,7 +41,7 @@ def create():
         charge = Charge(name = form.name.data, is_docent = form.is_docent.data, order = form.order.data)
         charge.save()
         add_alert(
-            Alert("success", f"El {charge.name} se a creado correctamente."))
+            Alert("success", f'El cargo "{charge.name}" se ha creado correctamente.'))
         return redirect(url_for("charge_index"))
     return render_template("charge/new.html", form=form)
 
@@ -67,7 +67,7 @@ def update(id):
         return render_template("charge/edit.html", charge=charge, form=form)
     charge.update(name = form.name.data, is_docent = form.is_docent.data, order = form.order.data)
     add_alert(
-        Alert("success", f"El {charge.name} se a modificado correctamente."))
+        Alert("success", f'El cargo "{charge.name}" se ha modificado correctamente.'))
     return redirect(url_for("charge_index"))
 
 @permission('charge_delete')
@@ -78,5 +78,5 @@ def delete(id):
     else:
         charge.remove()
         add_alert(
-                Alert("success", f"El {charge.name} se a borrado correctamente."))
+                Alert("success", f'El cargo "{charge.name}" se ha borrado correctamente.'))
     return redirect(url_for("charge_index"))

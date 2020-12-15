@@ -1,7 +1,6 @@
 
 from app.db import db
  
-from .database_links import link_career_cathedra
 
 
 class Cathedra(db.Model):
@@ -12,16 +11,11 @@ class Cathedra(db.Model):
     phone = db.Column("phone", db.String(32), nullable=False, unique=False)
     location = db.Column("location", db.String(64), nullable=False, unique=False)
     attention_time = db.Column("attention_time", db.String(64), nullable=False, unique=False)
-    careers = db.relationship("Career", back_populates="cathedras", secondary=link_career_cathedra)
+    career = db.relationship("Career", back_populates="cathedras", uselist=False)
+    career_id = db.Column("career_id", db.Integer, db.ForeignKey("career.id"), nullable=False, unique=False)
     staff = db.relationship("JobPosition", back_populates="cathedra")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
-    def get_careers(self):
-        return self.careers.select(lambda each: not each.is_deleted)
-
-    def set_careers(self, careers):
-        self.careers = self.careers.select(
-            lambda each: each.is_deleted) + careers
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)
 
@@ -34,13 +28,13 @@ class Cathedra(db.Model):
             db.session.add(self)
         db.session.commit()
 
-    def update(self, name, email, phone, location, attention_time, careers):
+    def update(self, name, email, phone, location, attention_time, career):
         self.name = name
         self.email = email
         self.phone = phone
         self.location = location
         self.attention_time = attention_time
-        self.set_careers(careers)
+        self.career = career
         self.save()
 
     def remove(self):

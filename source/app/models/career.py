@@ -1,14 +1,13 @@
 
 from app.db import db
  
-from .database_links import link_career_cathedra
 
 
 class Career(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(64), nullable=False, unique=True)
-    cathedras = db.relationship("Cathedra", back_populates="careers", secondary=link_career_cathedra)
+    cathedras = db.relationship("Cathedra", back_populates="career")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
     def get_cathedras(self):

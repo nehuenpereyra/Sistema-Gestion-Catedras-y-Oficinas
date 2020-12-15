@@ -41,7 +41,7 @@ def create():
         career = Career(name = form.name.data)
         career.save()
         add_alert(
-            Alert("success", f"El {career.name} se a creado correctamente."))
+            Alert("success", f'El carrera "{career.name}" se ha creado correctamente.'))
         return redirect(url_for("career_index"))
     return render_template("career/new.html", form=form)
 
@@ -67,7 +67,7 @@ def update(id):
         return render_template("career/edit.html", career=career, form=form)
     career.update(name = form.name.data)
     add_alert(
-        Alert("success", f"El {career.name} se a modificado correctamente."))
+        Alert("success", f'El carrera "{career.name}" se ha modificado correctamente.'))
     return redirect(url_for("career_index"))
 
 @permission('career_delete')
@@ -78,5 +78,5 @@ def delete(id):
     else:
         career.remove()
         add_alert(
-                Alert("success", f"El {career.name} se a borrado correctamente."))
+                Alert("success", f'El carrera "{career.name}" se ha borrado correctamente.'))
     return redirect(url_for("career_index"))

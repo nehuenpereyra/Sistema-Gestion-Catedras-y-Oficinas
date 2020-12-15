@@ -2,7 +2,7 @@ from .translate_form import TranslateForm
 from wtforms import SubmitField
 from app.models import Cathedra, Career
 
-from wtforms import IntegerField, StringField, SelectMultipleField
+from wtforms import IntegerField, StringField, SelectField
 from wtforms.fields.html5 import EmailField
 
 from wtforms.validators import DataRequired, Length, Email, Optional
@@ -16,10 +16,10 @@ class CathedraForm(TranslateForm):
     phone = StringField("Teléfono de Contacto", validators=[ DataRequired(), Length(min=3, max=32)])
     location = StringField("Ubicación", validators=[ DataRequired(), Length(min=3, max=64)])
     attention_time = StringField("Hora de Atención", validators=[ DataRequired(), Length(min=3, max=64)])
-    careers = SelectMultipleField("Carreras", validators=[ DataRequired()], coerce=int)
+    career = SelectField("Carrera", validators=[ DataRequired()], coerce=int)
     submit = SubmitField('Enviar')
 
     def __init__(self, *args, **kwargs):
         super(CathedraForm, self).__init__(*args, **kwargs)
-        self.careers.choices = Career.all() \
+        self.career.choices = Career.all() \
             .collect(lambda each: (each.id, each.name))

@@ -41,7 +41,7 @@ def create():
         job_position = JobPosition(start_date = form.start_date.data, end_date = form.end_date.data, charge = Charge.get(form.charge.data), cathedra = Cathedra.get(form.cathedra.data), employee = Employee.get(form.employee.data))
         job_position.save()
         add_alert(
-            Alert("success", f"El {job_position.start_date} se a creado correctamente."))
+            Alert("success", f'El puesto de trabajo "{job_position.start_date}" se ha creado correctamente.'))
         return redirect(url_for("job_position_index"))
     return render_template("job_position/new.html", form=form)
 
@@ -70,7 +70,7 @@ def update(id):
         return render_template("job_position/edit.html", job_position=job_position, form=form)
     job_position.update(start_date = form.start_date.data, end_date = form.end_date.data, charge = Charge.get(form.charge.data), cathedra = Cathedra.get(form.cathedra.data), employee = Employee.get(form.employee.data))
     add_alert(
-        Alert("success", f"El {job_position.start_date} se a modificado correctamente."))
+        Alert("success", f'El puesto de trabajo "{job_position.start_date}" se ha modificado correctamente.'))
     return redirect(url_for("job_position_index"))
 
 @permission('job_position_delete')
@@ -81,5 +81,5 @@ def delete(id):
     else:
         job_position.remove()
         add_alert(
-                Alert("success", f"El {job_position.start_date} se a borrado correctamente."))
+                Alert("success", f'El puesto de trabajo "{job_position.start_date}" se ha borrado correctamente.'))
     return redirect(url_for("job_position_index"))

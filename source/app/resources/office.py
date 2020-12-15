@@ -41,7 +41,7 @@ def create():
         office = Office(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data)
         office.save()
         add_alert(
-            Alert("success", f"El {office.name} se a creado correctamente."))
+            Alert("success", f'El oficina "{office.name}" se ha creado correctamente.'))
         return redirect(url_for("office_index"))
     return render_template("office/new.html", form=form)
 
@@ -67,7 +67,7 @@ def update(id):
         return render_template("office/edit.html", office=office, form=form)
     office.update(name = form.name.data, email = form.email.data, phone = form.phone.data, location = form.location.data)
     add_alert(
-        Alert("success", f"El {office.name} se a modificado correctamente."))
+        Alert("success", f'El oficina "{office.name}" se ha modificado correctamente.'))
     return redirect(url_for("office_index"))
 
 @permission('office_delete')
@@ -78,5 +78,5 @@ def delete(id):
     else:
         office.remove()
         add_alert(
-                Alert("success", f"El {office.name} se a borrado correctamente."))
+                Alert("success", f'El oficina "{office.name}" se ha borrado correctamente.'))
     return redirect(url_for("office_index"))

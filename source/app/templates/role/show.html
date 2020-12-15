@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('role_delete') %}
-            <a onclick="return confirm('¿Seguro que deseas eliminar {{role.name}} del sistema?');" class="btn btn-danger btn-sm" role="button" href="{{ url_for('role_delete', id=role.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el rol "{{role.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('role_delete', id=role.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}
