@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='error.css') }}" />
-    {% endblock %}
-    <title>Error!</title>
-  </head>
-  <body>
-    <h1>{{ error_name }}</h1>
-    <p class="zoom-area"><b>Error!</b> {{ error_description }} </p>
-      <div class="link-container">
-        <a href="{{ url_for('index') }}" class="more-link">Go to the homepage</a>
-      </div>
-  </body>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Error {{ error_code }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="d-flex justify-content-center my-5">
+        <div class="card border rounded shadow-sm text-center h-100 py-4" style="width: 300px;">
+            <h2 class="text-dark mb-2">Error {{ error_code }}</h2>
+            <div class="card-body">
+                <p class="card-text">{{ error_description }}</p>
+                <a class="btn btn-primary mt-2" href="{{ url_for('index') }}">Ir a la pagina principal</a>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+
 </html>
