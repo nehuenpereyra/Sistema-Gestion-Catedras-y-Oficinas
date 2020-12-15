@@ -6,7 +6,7 @@ from app.models.configuration import Configuration
 from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
-from app.models import Employee
+from app.models import Employee, Docent, NotDocent, Administrative
 from app.helpers.forms import EmployeeForm
 
 @permission('employee_index')
@@ -38,10 +38,18 @@ def new():
 def create():
     form = EmployeeForm(id=None)
     if form.validate_on_submit():
-        employee = Employee(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
+
+        employee_class = {
+            "docent": Docent,
+            "not_docent": NotDocent,
+            "administrative": Administrative
+        }.get(form.type.data)
+
+        employee = employee_class(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
+
         employee.save()
         add_alert(
-            Alert("success", f'El empleado "{employee.name}" se ha creado correctamente.'))
+            Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha creado correctamente.'))
         return redirect(url_for("employee_index"))
     return render_template("employee/new.html", form=form)
 
@@ -62,12 +70,13 @@ def update(id):
     if not employee:
         add_alert(Alert("danger", "El empleado no existe."))
         return redirect(url_for("employee_index"))
-    form = EmployeeForm(id=id)
+
+    form = EmployeeForm(id=id, type="docent") # Linea de utilidad por el momento
     if not form.validate_on_submit():
         return render_template("employee/edit.html", employee=employee, form=form)
     employee.update(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
     add_alert(
-        Alert("success", f'El empleado "{employee.name}" se ha modificado correctamente.'))
+        Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha modificado correctamente.'))
     return redirect(url_for("employee_index"))
 
 @permission('employee_delete')
@@ -78,5 +87,5 @@ def delete(id):
     else:
         employee.remove()
         add_alert(
-                Alert("success", f'El empleado "{employee.name}" se ha borrado correctamente.'))
+                Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha borrado correctamente.'))
     return redirect(url_for("employee_index"))
