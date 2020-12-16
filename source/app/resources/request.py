@@ -42,7 +42,7 @@ def show(id):
     return render_template("request/show.html", request=request)
 
 @permission('request_create')
-def new():
+def support():
     return render_template("request/new.html", form=RequestForm())
 
 @permission('request_create')
