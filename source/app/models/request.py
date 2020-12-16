@@ -54,7 +54,7 @@ class Request(db.Model):
     @classmethod
     def all_paginated(self, page, per_page, ids=None):
         query = self.query
-        query = query.filter_by(is_deleted=False)
+        query = query.filter_by(is_resolved=False, is_deleted=False)
         query = query.order_by(self.content.asc())
         if ids:
             query = query.filter(self.id.in_(ids))
