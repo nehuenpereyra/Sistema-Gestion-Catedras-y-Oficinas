@@ -16,6 +16,6 @@ class EmployeeForm(TranslateForm):
     institutional_email = EmailField("Correo Electrónico Institucional", validators=[ DataRequired(), Email(), Length(min=3, max=64)])
     secondary_email = EmailField("Correo Electrónico Secundario", validators=[ Optional(), Email(), Length(min=3, max=64)], filters=[lambda value: value or None])
     type = SelectField("Tipo", validators=[ DataRequired()],
-        choices=[('docent', 'Docente'), ('not_docent', 'No Docente'), ('administrative', 'Empleado Administrativo')]
+        choices=[(1, 'Docente'), (2, 'No Docente'), (3, 'Empleado Administrativo')]
     )
     submit = SubmitField('Enviar')

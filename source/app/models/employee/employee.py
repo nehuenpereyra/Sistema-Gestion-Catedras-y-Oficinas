@@ -12,6 +12,7 @@ class Employee(db.Model):
     institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=False)
     secondary_email = db.Column("secondary_email", db.String(64), nullable=True, unique=False)
     job_positions = db.relationship("JobPosition", back_populates="employee")
+    pending_changes = db.relationship("PendingEmployee", back_populates="linked_employee")
     type = db.Column(db.Integer, nullable=False)
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 

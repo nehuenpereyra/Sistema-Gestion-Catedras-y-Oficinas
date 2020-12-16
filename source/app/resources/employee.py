@@ -6,7 +6,7 @@ from app.models.configuration import Configuration
 from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
-from app.models import Employee, Docent, NotDocent, Administrative
+from app.models import Employee, Docent, NotDocent, Administrative, PendingEmployee
 from app.helpers.forms import EmployeeForm
 
 @permission('employee_index')
@@ -36,22 +36,39 @@ def new():
 
 @permission('employee_create')
 def create():
+
     form = EmployeeForm(id=None)
-    if form.validate_on_submit():
+    
+    if not form.validate_on_submit():
+        return render_template("employee/new.html", form=form)
 
-        employee_class = {
-            "docent": Docent,
-            "not_docent": NotDocent,
-            "administrative": Administrative
-        }.get(form.type.data)
+    if not current_user.is_admin():
 
-        employee = employee_class(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
-
+        employee = PendingEmployee(
+            name = form.name.data,
+            surname = form.surname.data,
+            dni = form.dni.data,
+            institutional_email = form.institutional_email.data,
+            secondary_email = form.secondary_email.data,
+            type=form.type.data
+        )
         employee.save()
-        add_alert(
-            Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha creado correctamente.'))
-        return redirect(url_for("employee_index"))
-    return render_template("employee/new.html", form=form)
+        add_alert(Alert("success", f'El empleado "{employee.name} {employee.surname}" quedo pendiente de aprobación.'))
+
+    else:
+
+        employee = Employee(
+            name = form.name.data,
+            surname = form.surname.data,
+            dni = form.dni.data,
+            institutional_email = form.institutional_email.data,
+            secondary_email = form.secondary_email.data,
+            type=form.type.data
+        )
+        employee.save()
+        add_alert(Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha creado correctamente.'))
+
+    return redirect(url_for("employee_index"))
 
 @permission('employee_update')
 def edit(id):
@@ -71,12 +88,30 @@ def update(id):
         add_alert(Alert("danger", "El empleado no existe."))
         return redirect(url_for("employee_index"))
 
-    form = EmployeeForm(id=id, type="docent") # Linea de utilidad por el momento
+    form = EmployeeForm(id=id, type=1) # Linea de utilidad por el momento
     if not form.validate_on_submit():
         return render_template("employee/edit.html", employee=employee, form=form)
-    employee.update(name = form.name.data, surname = form.surname.data, dni = form.dni.data, institutional_email = form.institutional_email.data, secondary_email = form.secondary_email.data)
-    add_alert(
-        Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha modificado correctamente.'))
+    
+    if not current_user.is_admin():
+        pending_employee = PendingEmployee(
+            name = form.name.data,
+            surname = form.surname.data,
+            dni = form.dni.data,
+            institutional_email = form.institutional_email.data,
+            secondary_email = form.secondary_email.data,
+            linked_employee = employee
+        )
+        pending_employee.save()
+        add_alert(Alert("success", f'Los cambios realizados sobre el empleado "{employee.name} {employee.surname}" quedaron pendientes de aprobación.'))
+    else:
+        employee.update(
+            name = form.name.data,
+            surname = form.surname.data,
+            dni = form.dni.data,
+            institutional_email = form.institutional_email.data,
+            secondary_email = form.secondary_email.data
+        )
+        add_alert(Alert("success", f'El empleado "{employee.name} {employee.surname}" se ha modificado correctamente.'))
     return redirect(url_for("employee_index"))
 
 @permission('employee_delete')
