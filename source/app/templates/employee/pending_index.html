@@ -1,0 +1,63 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Empleados Pendientes de Aprobación{% endblock %}
+
+{% block sub_content %}
+    
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+    
+    <h5 class="mt-3">Empleados Pendientes de Aprobación</h5>
+    
+    {% if employees.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for employee in employees.items %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row d-flex">
+                                <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                    <div class="text-center text-sm-left">
+                                        <span class="d-block">{{ employee.get_full_name() }}</span>
+                                        <small>{{ employee.institutional_email }}</small><br>
+                                        <small>{{ employee.timestamp.strftime("%d/%m/%Y") }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center mb-2 mb-sm-0">
+                                    <small>{% if employee.is_new() %}Nuevo{% else %}Modificado{% endif %}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center justify-content-sm-end">
+                            {% if verify_permission('pending_employee_show') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('pending_employee_show', id=employee.id) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            {% if verify_permission('pending_employee_accept') %}
+                                <a onclick='return confirm(`¿Seguro que deseas aceptar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+                                    class="btn btn-success btn-sm mr-1" role="button" href="{{ url_for('pending_employee_accept', id=employee.id) }}">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                            {% endif %}
+                            {% if verify_permission('pending_employee_reject') %}
+                                <a onclick='return confirm(`¿Seguro que deseas rechazar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+                                    class="btn btn-danger btn-sm" role="button" href="{{ url_for('pending_employee_reject', id=employee.id) }}">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(employees, 'pending_employee_index' )}}
+    
+{% endblock %}

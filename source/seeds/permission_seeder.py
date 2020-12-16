@@ -92,3 +92,9 @@ class PermissionSeeder(Seeder):
         Permission(name="request_type_update").save()
         Permission(name="request_type_delete").save()
         print(f" - Request Type Permissions OK")
+
+        Permission(name="pending_employee_index").save()
+        Permission(name="pending_employee_show").save()
+        Permission(name="pending_employee_accept").save()
+        Permission(name="pending_employee_reject").save()
+        print(f" - Pending Employee Permissions OK")

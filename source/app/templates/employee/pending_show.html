@@ -1,0 +1,78 @@
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}{{ employee.get_label() }} Pendiente - {{ employee.get_full_name() }}{% endblock %}
+
+{% block sub_content %}
+
+    <h5 class="mt-3">Informacion de {{ employee.get_label() }}</h5>
+
+    <div class="d-flex justify-content-end mt-3">
+        {% if verify_permission('pending_employee_index') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('pending_employee_index') }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('pending_employee_accept') %}
+            <a onclick='return confirm(`¿Seguro que deseas aceptar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+                class="btn btn-success btn-sm mr-1" role="button" href="{{ url_for('pending_employee_accept', id=employee.id) }}">
+                <i class="fas fa-check"></i>
+            </a>
+        {% endif %}
+        {% if verify_permission('pending_employee_reject') %}
+            <a onclick='return confirm(`¿Seguro que deseas rechazar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+                class="btn btn-danger btn-sm" role="button" href="{{ url_for('pending_employee_reject', id=employee.id) }}">
+                <i class="fas fa-times"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if not employee.is_new() %}
+        <h6 class="mt-3">{{ employee.get_label() }} Actual</h6>
+
+        <ul class="list-group shadow-sm my-4 mx-2">
+            <li class="list-group-item">
+                <h6 class="mb-0">Nombre</h6>{{ show_field(employee.linked_employee.name, required=True)|safe }}
+            </li>
+            <li class="list-group-item">
+                <h6 class="mb-0">Apellido</h6>{{ show_field(employee.linked_employee.surname, required=True)|safe }}
+            </li>
+            <li class="list-group-item">
+                <h6 class="mb-0">DNI</h6>{{ show_field(employee.linked_employee.dni, required=False)|safe }}
+            </li>
+            <li class="list-group-item">
+                <h6 class="mb-0">Correo Electrónico Institucional</h6>{{ show_field(employee.linked_employee.institutional_email, required=True)|safe }}
+            </li>
+            <li class="list-group-item">
+                <h6 class="mb-0">Correo Electrónico Secundario</h6>{{ show_field(employee.linked_employee.secondary_email, required=False)|safe }}
+            </li>
+            <li class="list-group-item">
+                <h6 class="mb-0">Tipo</h6>{{ show_field(employee.linked_employee.get_label(), required=True)|safe }}
+            </li>
+        </ul>
+
+        <h6 class="mt-3">{{ employee.get_label() }} Nuevo</h6>
+    {% endif %}
+
+    <ul class="list-group shadow-sm my-4 mx-2">
+        <li class="list-group-item">
+            <h6 class="mb-0">Nombre</h6>{{ show_field(employee.name, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Apellido</h6>{{ show_field(employee.surname, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">DNI</h6>{{ show_field(employee.dni, required=False)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Correo Electrónico Institucional</h6>{{ show_field(employee.institutional_email, required=True)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Correo Electrónico Secundario</h6>{{ show_field(employee.secondary_email, required=False)|safe }}
+        </li>
+        <li class="list-group-item">
+            <h6 class="mb-0">Tipo</h6>{{ show_field(employee.get_label(), required=True)|safe }}
+        </li>
+    </ul>
+    
+{% endblock %}

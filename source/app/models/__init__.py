@@ -1,4 +1,5 @@
 
+from .configuration import Configuration
 from .user.user import User
 from .role import Role
 from .permission import Permission

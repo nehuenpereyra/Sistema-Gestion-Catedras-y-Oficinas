@@ -21,6 +21,21 @@ class PendingEmployee(db.Model):
     linked_employee = db.relationship("Employee", back_populates="pending_changes", uselist=False)
 
 
+    def get_label(self):
+        if self.linked_employee:
+            return self.linked_employee.get_label()
+        
+        return self.get_employee_class().get_label()
+
+    def get_full_name(self):
+        return f"{self.name} {self.surname}"
+
+    def get_current_full_name(self):
+        if self.is_new():
+            return self.get_full_name()
+        
+        return self.linked_employee.get_full_name()
+
     def save(self):
         if not self.id:
             db.session.add(self)
@@ -44,8 +59,7 @@ class PendingEmployee(db.Model):
 
     @classmethod
     def get(self, id):
-        employee = self.query.get(id)
-        return employee if employee and employee.is_deleted==False else None
+        return self.query.get(id)
         
     @classmethod
     def get_all(self, ids):
@@ -56,6 +70,9 @@ class PendingEmployee(db.Model):
 
     def is_new(self):
         return self.linked_employee is None
+
+    def is_change(self):
+        return self.linked_employee is not None
 
     def get_employee_class(self):
         employee_class = {
@@ -88,3 +105,6 @@ class PendingEmployee(db.Model):
     
     def reject(self):
         self.remove()
+    
+    def modify_to(self, employee):
+        return self.is_change() and self.linked_employee is employee

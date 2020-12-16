@@ -8,9 +8,9 @@ class Employee(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(32), nullable=False, unique=False)
     surname = db.Column("surname", db.String(32), nullable=False, unique=False)
-    dni = db.Column("dni", db.String(16), nullable=True, unique=False)
-    institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=False)
-    secondary_email = db.Column("secondary_email", db.String(64), nullable=True, unique=False)
+    dni = db.Column("dni", db.String(16), nullable=True, unique=True)
+    institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=True)
+    secondary_email = db.Column("secondary_email", db.String(64), nullable=True, unique=True)
     job_positions = db.relationship("JobPosition", back_populates="employee")
     pending_changes = db.relationship("PendingEmployee", back_populates="linked_employee")
     type = db.Column(db.Integer, nullable=False)
@@ -21,12 +21,19 @@ class Employee(db.Model):
         'polymorphic_identity': 0
     }
 
+    @staticmethod
+    def get_label():
+        return "Empleado"
+
     def get_job_positions(self):
         return self.job_positions.select(lambda each: not each.is_deleted)
 
     def set_job_positions(self, job_positions):
         self.job_positions = self.job_positions.select(
             lambda each: each.is_deleted) + job_positions
+
+    def get_full_name(self):
+        return f"{self.name} {self.surname}"
 
     def save(self):
         if not self.id:

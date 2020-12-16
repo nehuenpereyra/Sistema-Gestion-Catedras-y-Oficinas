@@ -11,6 +11,6 @@ def Unique(class_, query_filter):
             **{query_filter: field.data}).first()
 
         if object_db and object_db != object_form:
-            raise ValidationError(f'The value {field.data} is already loaded')
+            raise ValidationError(f'El valor {field.data} se encuentra en uso.')
 
     return _unique
