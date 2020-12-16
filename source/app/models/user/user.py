@@ -3,7 +3,11 @@ from app.db import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
  
-from .database_links import link_user_role
+from app.models.database_links import link_user_role
+from .user_state import UserState
+from .career_user import CareerUser
+from .cathedra_user import CathedraUser
+from .office_user import OfficeUser
 
 def get_permission_method(user, permission):
 
@@ -35,6 +39,7 @@ class User(UserMixin, db.Model):
     roles = db.relationship("Role", back_populates="users", secondary=link_user_role)
     requests = db.relationship("Request", back_populates="user")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
+    user_state = db.relationship("UserState", back_populates="user", uselist=False)
 
     def get_roles(self):
         return self.roles.select(lambda each: not each.is_deleted)
@@ -42,6 +47,19 @@ class User(UserMixin, db.Model):
     def set_roles(self, roles):
         self.roles = self.roles.select(
             lambda each: each.is_deleted) + roles
+        rol = roles.detect(lambda each: each.name == "Responsable de Catedra" or each.name == "Responsable de Oficina" or each.name == "Responsable de Carrera")
+        if rol:
+            if self.user_state:
+                self.user_state.remove()
+            if rol.name == "Responsable de Carrera":
+                self.user_state = CareerUser()
+            if rol.name == "Responsable de Catedra":
+                self.user_state = CathedraUser()
+            if rol.name == "Responsable de Oficina":
+                self.user_state = OfficeUser()
+        else:
+            self.user_state = None
+
     def get_requests(self):
         return self.requests.select(lambda each: not each.is_deleted)
 

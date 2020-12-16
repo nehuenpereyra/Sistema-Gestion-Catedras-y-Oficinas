@@ -9,4 +9,4 @@ def set_routes(app):
     app.add_url_rule("/request/create", "request_create", request.create, methods=["POST"])
     app.add_url_rule("/request/edit/<int:id>", "request_edit", request.edit)
     app.add_url_rule("/request/update/<int:id>", "request_update", request.update, methods=["POST"])
-    app.add_url_rule("/request/delete/<int:id>", "request_delete", request.delete)
+    app.add_url_rule("/request/solved/<int:id>", "request_solved", request.solved)

@@ -8,6 +8,7 @@ from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import Request, User, RequestType
 from app.helpers.forms import RequestForm
+from datetime import datetime
 
 @permission('request_index')
 def index():
@@ -18,7 +19,17 @@ def index():
 
     requests = Request.all_paginated(page=int(request.args.get('page', 1)),
                         per_page=Configuration.get().items_per_page, ids=allowed_request_ids)
-    return render_template("request/index.html", requests=requests, alert=get_alert())
+
+    if not current_user.is_admin():
+        request_types = RequestType.find_by_state(True)
+        query_tecnical = RequestType.all().detect(lambda each: each.name == "Consulta Tecnica")
+        request_types.remove(query_tecnical)
+        requests = {}
+        for request_type in request_types:
+            requests[str(request_type.id)] = Request.all().select(lambda each: each.request_type_id == request_type.id)
+        return render_template("request/index.html", requests=requests, request_types=request_types, form=RequestForm(), alert=get_alert())
+    
+    return render_template("request/authorized_index.html", requests=requests, alert=get_alert())
 
 
 @permission('request_show')
@@ -38,10 +49,13 @@ def new():
 def create():
     form = RequestForm(id=None)
     if form.validate_on_submit():
-        request = Request(content = form.content.data, is_resolved = form.is_resolved.data, receive_email = form.receive_email.data, timestamp = form.timestamp.data, user = User.get(form.user.data), request_type = RequestType.get(form.request_type.data))
-        request.save()
+        request_type_id = request.args.get("request_type")
+        if not request_type_id:
+            request_type_id = RequestType.all().detect(lambda each: each.name == "Consulta Tecnica").id
+        new_request = Request(content = form.content.data, is_resolved = False, receive_email = form.receive_email.data, timestamp = datetime.today(), user = User.get(current_user.id), request_type = RequestType.get(request_type_id))
+        new_request.save()
         add_alert(
-            Alert("success", f'El solicitud "{request.content}" se ha creado correctamente.'))
+            Alert("success", f'La solicitud se ha creado correctamente.'))
         return redirect(url_for("request_index"))
     return render_template("request/new.html", form=form)
 
@@ -53,9 +67,6 @@ def edit(id):
         return redirect(url_for("request_index"))
 
     form = RequestForm(obj=request)
-    form.user.data = request.user.id    
-    form.request_type.data = request.request_type.id    
-
     return render_template("request/edit.html", request=request, form=form)
 
 @permission('request_update')
@@ -73,12 +84,13 @@ def update(id):
     return redirect(url_for("request_index"))
 
 @permission('request_delete')
-def delete(id):
+def solved(id):
     request = Request.get(id)
     if not request or request.is_deleted:
         add_alert(Alert("danger", "El solicitud no existe."))
     else:
-        request.remove()
+        request.is_resolved = True
+        request.save()
         add_alert(
-                Alert("success", f'El solicitud "{request.content}" se ha borrado correctamente.'))
+                Alert("success", f'La solicitud de "{request.user.name}" se ha resuelto correctamente.'))
     return redirect(url_for("request_index"))
