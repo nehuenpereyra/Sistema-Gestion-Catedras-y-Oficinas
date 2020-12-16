@@ -14,7 +14,7 @@
         {{ show_alert(alert) }}
     {% endif %}
     
-    <h5 class="mt-3">Solicitudes usuarios</h5>
+    <h5 class="mt-3">Solicitudes</h5>
     
     <div role="tablist" id="accordion-1">
         {% for index in range(request_types.size()) %}
@@ -24,8 +24,7 @@
             </div>  
             <div class="collapse item-{{index}}" role="tabpanel" data-parent="#accordion-1">
                 <div class="card-body">
-                    <p class="card-text">{{request_types[index].message}}</p>
-                    <h6 class="mt-3">Los campos <span class="text-danger">*</span> son obligatorios.</h6>
+                    <p class="card-text">{{request_types[index].message|safe}}</p>
                     <form class="text-left user" action="{{ url_for('request_create', request_type=request_types[index].id) }}" method="post" >
                         {{ form.hidden_tag() }}
                         <div class="form-group">
@@ -41,16 +40,16 @@
                         <ul class="list-group mt-3">
                             {% for request in requests[request_types[index].id|string] %}
                                 <li class="list-group-item">
-                                    <div class="row d-flex">
-                                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
-                                            <div class="text-center text-sm-left">
-                                                <span class="d-block">
-                                                    {{ request.content[:20]+"..." }}
-                                                </span>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row d-flex">
+                                                <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                                    <div class="text-center text-sm-left"><span class="d-block">{{ request.content[:30]+"..." }}</span></div>
+                                                </div>
+                                                <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center mb-2 mb-sm-0"><small>{{ request.timestamp.strftime("%H:%M %d/%m/%Y") }}<br></small></div>
                                             </div>
                                         </div>
-                                        
-                                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center justify-content-sm-end">
                                             {% if verify_permission('request_show') %}
                                             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('request_show', id=request.id) }}">
                                                 <i class="fas fa-eye"></i>

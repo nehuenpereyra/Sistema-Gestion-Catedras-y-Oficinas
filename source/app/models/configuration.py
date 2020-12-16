@@ -8,13 +8,13 @@ class Configuration(db.Model):
     __tablename__ = 'configuration'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(30), nullable=False, default="")
-    description = db.Column(db.String(160), nullable=False, default="")
-    contact_email = db.Column(
+    mail_contact = db.Column(
         db.String(30), unique=True, nullable=False, default="")
     items_per_page = db.Column(db.Integer, nullable=False, default=10)
-    enabled_site = db.Column(db.Boolean, nullable=False, default=True)
-
+    mail_server = db.Column(db.String(160), nullable=False, default="")
+    mail_port = db.Column(db.Integer, nullable=False, default=465)
+    mail_password = db.Column(db.String(128), nullable=False, unique=False)
+    
     def __repr__(self):
         return f'<Configuration {self.title}>'
 
@@ -28,11 +28,11 @@ class Configuration(db.Model):
         return Configuration.query.first()
 
     @staticmethod
-    def update(title, description, contact_email, items_per_page, enabled_site):
+    def update(mail_server, mail_port, contact_email, items_per_page, mail_password):
         config = Configuration.get()
-        config.title = title
-        config.description = description
+        config.mail_server = mail_server
+        config.mail_port = mail_port
         config.contact_email = contact_email
         config.items_per_page = items_per_page
-        config.enabled_site = enabled_site
+        config.mail_password = mail_password
         config.save()

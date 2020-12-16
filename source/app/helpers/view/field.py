@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from flask import url_for
 
@@ -15,7 +16,7 @@ def __show_field_not_none(field, list, attribute, link):
 
     if not list:
         content = '<small class="ml-2">{}</small>'.format(
-            field if attribute is None else getattr(field, attribute)
+            __get_string_field(field if attribute is None else getattr(field, attribute))
         )
 
         if link and verify_permission(link):
@@ -28,6 +29,13 @@ def __show_field_not_none(field, list, attribute, link):
     else:
         return __show_list_field(field, attribute, link)
 
+
+def __get_string_field(field):
+    if type(field) is bool:
+        return "Si" if field else "No"
+    if type(field) is datetime:
+        return field.strftime("%d/%m/%Y")
+    return field
 
 def __show_list_field(field, attribute, link):
     if field:
