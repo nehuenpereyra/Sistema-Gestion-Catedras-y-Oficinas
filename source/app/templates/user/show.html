@@ -1,6 +1,4 @@
 
-
-
 {% extends "authorized_layout.html" %}
 
 {% block title %}Usuario - {{ user.name }}{% endblock %}
@@ -38,9 +36,6 @@
             <h6 class="mb-0">Usuario</h6>{{ show_field(user.username, required=True)|safe }}
         </li>
         <li class="list-group-item">
-            <h6 class="mb-0">Contraseña</h6>{{ show_field(user.password, required=True)|safe }}
-        </li>
-        <li class="list-group-item">
             <h6 class="mb-0">Correo Electrónico Institucional</h6>{{ show_field(user.institutional_email, required=True)|safe }}
         </li>
         <li class="list-group-item">
@@ -49,9 +44,19 @@
         <li class="list-group-item">
             <h6>Roles</h6>{{ show_field(user.get_roles(), list=True, attribute="name", link="role_show", required=True)|safe }}
         </li>
-        <li class="list-group-item">
-            <h6>Solicitudes</h6>{{ show_field(user.get_requests(), list=True, attribute="content", link="request_show", required=False)|safe }}
-        </li>
+        {% if user.is_career_manager() %}
+            <li class="list-group-item">
+                <h6 class="mb-0">Carrera</h6>{{ show_field(user.get_career(), attribute="name", link="career_show", required=False)|safe }}
+            </li>
+        {% elif user.is_cathedra_manager() %}
+            <li class="list-group-item">
+                <h6>Cátedras</h6>{{ show_field(user.get_cathedras(), list=True, attribute="name", link="cathedra_show", required=False)|safe }}
+            </li>
+        {% elif user.is_office_manager() %}
+            <li class="list-group-item">
+                <h6>Oficinas</h6>{{ show_field(user.get_offices(), list=True, attribute="name", link="office_show", required=False)|safe }}
+            </li>
+        {% endif %}
     </ul>
     
 {% endblock %}

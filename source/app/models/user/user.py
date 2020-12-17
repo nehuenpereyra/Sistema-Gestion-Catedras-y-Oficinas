@@ -41,6 +41,24 @@ class User(UserMixin, db.Model):
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
     user_state = db.relationship("UserState", back_populates="user", uselist=False)
 
+    def is_career_manager(self):
+        return self.roles.any_satisfy(lambda each: each.name == "Responsable de Carrera")
+
+    def is_cathedra_manager(self):
+        return self.roles.any_satisfy(lambda each: each.name == "Responsable de Catedra")
+
+    def is_office_manager(self):
+        return self.roles.any_satisfy(lambda each: each.name == "Responsable de Oficina")
+
+    def get_career(self):
+        return self.user_state.career
+
+    def get_cathedras(self):
+        return self.user_state.cathedras
+
+    def get_offices(self):
+        return self.user_state.offices
+
     def get_roles(self):
         return self.roles.select(lambda each: not each.is_deleted)
 
