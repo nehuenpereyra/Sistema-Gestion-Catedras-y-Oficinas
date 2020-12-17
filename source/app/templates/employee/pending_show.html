@@ -14,13 +14,13 @@
             </a>
         {% endif %}
         {% if verify_permission('pending_employee_accept') %}
-            <a onclick='return confirm(`¿Seguro que deseas aceptar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+            <a onclick='return confirm(`¿Seguro que deseas aceptar {% if employee.is_change() %}los cambios {% endif %}al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
                 class="btn btn-success btn-sm mr-1" role="button" href="{{ url_for('pending_employee_accept', id=employee.id) }}">
                 <i class="fas fa-check"></i>
             </a>
         {% endif %}
         {% if verify_permission('pending_employee_reject') %}
-            <a onclick='return confirm(`¿Seguro que deseas rechazar al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
+            <a onclick='return confirm(`¿Seguro que deseas rechazar {% if employee.is_change() %}los cambios {% endif %}al {{ employee.get_label().lower() }} "{{ employee.get_current_full_name() }}"?`);'
                 class="btn btn-danger btn-sm" role="button" href="{{ url_for('pending_employee_reject', id=employee.id) }}">
                 <i class="fas fa-times"></i>
             </a>
