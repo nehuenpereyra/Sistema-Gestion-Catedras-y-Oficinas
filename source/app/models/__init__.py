@@ -4,8 +4,8 @@ from .user.user import User
 from .role import Role
 from .permission import Permission
 from .career import Career
-from .cathedra import Cathedra
-from .office import Office
+from .workplace.cathedra import Cathedra
+from .workplace.office import Office
 from .charge import Charge
 from .employee.employee import Employee
 from .employee.docent import Docent

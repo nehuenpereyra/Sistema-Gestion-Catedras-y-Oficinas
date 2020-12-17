@@ -22,7 +22,7 @@ def index():
 
     if not current_user.is_admin():
         request_types = RequestType.find_by_state(True)
-        query_tecnical = RequestType.all().detect(lambda each: each.name == "Consulta Tecnica")
+        query_tecnical = RequestType.all().detect(lambda each: each.name == "Consulta Técnica")
         request_types.remove(query_tecnical)
         requests = {}
         for request_type in request_types:
@@ -53,7 +53,7 @@ def create():
         request_type_id = request.args.get("request_type")
         if not request_type_id:
             is_technical = True
-            request_type_id = RequestType.all().detect(lambda each: each.name == "Consulta Tecnica").id
+            request_type_id = RequestType.all().detect(lambda each: each.name == "Consulta Técnica").id
         try:
             MailSender.send(f"Nueva solicitud de: {RequestType.get(request_type_id).name}", form.content.data)
         except:

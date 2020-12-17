@@ -1,17 +1,27 @@
-
 from app.db import db
  
-
-
-class Office(db.Model):
+class Workplace(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(64), nullable=False, unique=False)
     email = db.Column("email", db.String(64), nullable=False, unique=True)
     phone = db.Column("phone", db.String(32), nullable=False, unique=False)
     location = db.Column("location", db.String(64), nullable=False, unique=False)
+    staff = db.relationship("JobPosition", back_populates="workplace")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
+    type = db.Column(db.Integer, nullable=False)
 
+    __mapper_args__ = {
+        'polymorphic_identity': 0,
+        'polymorphic_on':type
+    }
+
+    def get_staff(self):
+        return self.staff.select(lambda each: not each.is_deleted)
+
+    def set_staff(self, staff):
+        self.staff = self.staff.select(
+            lambda each: each.is_deleted) + staff
 
     def save(self):
         if not self.id:
@@ -32,10 +42,10 @@ class Office(db.Model):
 
     @classmethod
     def delete(self, id):
-        office = self.query.get(id)
-        if office:
-            office.remove()
-            return office
+        workplace = self.query.get(id)
+        if workplace:
+            workplace.remove()
+            return workplace
         return None
 
     @classmethod
@@ -56,8 +66,8 @@ class Office(db.Model):
 
     @classmethod
     def get(self, id):
-        office = self.query.get(id)
-        return office if office and office.is_deleted==False else None
+        workplace = self.query.get(id)
+        return workplace if workplace and workplace.is_deleted==False else None
         
 
     @classmethod

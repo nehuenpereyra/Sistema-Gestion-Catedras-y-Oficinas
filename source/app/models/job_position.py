@@ -10,8 +10,8 @@ class JobPosition(db.Model):
     end_date = db.Column("end_date", db.DateTime, nullable=True, unique=False)
     charge = db.relationship("Charge", back_populates="job_positions", uselist=False)
     charge_id = db.Column("charge_id", db.Integer, db.ForeignKey("charge.id"), nullable=False, unique=False)
-    cathedra = db.relationship("Cathedra", back_populates="staff", uselist=False)
-    cathedra_id = db.Column("cathedra_id", db.Integer, db.ForeignKey("cathedra.id"), nullable=False, unique=False)
+    workplace = db.relationship("Workplace", back_populates="staff", uselist=False)
+    workplace_id = db.Column("workplace_id", db.Integer, db.ForeignKey("workplace.id"), nullable=False, unique=False)
     employee = db.relationship("Employee", back_populates="job_positions", uselist=False)
     employee_id = db.Column("employee_id", db.Integer, db.ForeignKey("employee.id"), nullable=False, unique=False)
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
@@ -22,11 +22,11 @@ class JobPosition(db.Model):
             db.session.add(self)
         db.session.commit()
 
-    def update(self, start_date, end_date, charge, cathedra, employee):
+    def update(self, start_date, end_date, charge, workplace, employee):
         self.start_date = start_date
         self.end_date = end_date
         self.charge = charge
-        self.cathedra = cathedra
+        self.workplace = workplace
         self.employee = employee
         self.save()
 
