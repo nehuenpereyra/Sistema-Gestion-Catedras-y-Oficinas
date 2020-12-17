@@ -15,3 +15,4 @@ from .employee.pending_employee import PendingEmployee
 from .job_position import JobPosition
 from .request import Request
 from .request_type import RequestType
+from .mail_sender import MailSender

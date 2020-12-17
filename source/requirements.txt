@@ -13,3 +13,5 @@ autopep8==1.5.4
 Flask-Session==0.3
 requests==2.24.0
 phonenumbers==8.12.12
+Flask-CKEditor==0.4.4.1
+Flask-Mail==0.9.1

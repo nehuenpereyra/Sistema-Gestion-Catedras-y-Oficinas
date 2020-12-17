@@ -1,6 +1,6 @@
 
 from app.db import db
- 
+from sqlalchemy import DateTime, cast
 
 
 class Request(db.Model):
@@ -48,14 +48,21 @@ class Request(db.Model):
     def all(self):
         query = self.query
         query = query.filter_by(is_deleted=False)
-        query = query.order_by(self.content.asc())
+        query = query.order_by(cast(Request.timestamp, DateTime).asc())
+        return query.all()
+    
+    @classmethod
+    def reverse_all(self):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(cast(Request.timestamp, DateTime).desc())
         return query.all()
 
     @classmethod
     def all_paginated(self, page, per_page, ids=None):
         query = self.query
         query = query.filter_by(is_resolved=False, is_deleted=False)
-        query = query.order_by(self.content.asc())
+        query = query.order_by(cast(Request.timestamp, DateTime).asc())
         if ids:
             query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)

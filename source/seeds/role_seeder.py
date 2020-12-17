@@ -16,6 +16,8 @@ class RoleSeeder(Seeder):
 
         admin_role = Role(name="Administrador", permissions=list(
             permissions.values()))
+        admin_role.permissions.remove(permissions["request_create"])
+        admin_role.permissions.remove(permissions["request_update"])
         admin_role.save()
         print(f" - {admin_role.name} Role OK")
 

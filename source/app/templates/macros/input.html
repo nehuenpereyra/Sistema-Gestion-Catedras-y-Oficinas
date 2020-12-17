@@ -1,6 +1,6 @@
 
 {% macro input(field, class_="form-control", style=False) %}
-    {% if (field.type != BooleanField) %}
+    {% if (field.type != "BooleanField") %}
         {{ field.label }}{% if (field.flags.required) %}<span class="text-danger">*</span>{% endif %}
         {% if ( field.errors|length == 0) %}
             {{ field(class_=class_, style=style) }}
@@ -11,14 +11,16 @@
             {% endfor %}
         {% endif %}
     {% else %}
+        <div  class="form-check">
         {% if ( field.errors|length == 0) %}
-            {{ field(class_=class_, style=style) }}
+            {{ field(class_=class_+"form-check-input", style=style) }}
         {% else %}
             {{ field(class_=class_ + " is-invalid", style=style) }}
             {% for error in field.errors %}
                 <div class="invalid-feedback">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        {{ field.label }}
+        {{ field.label(class_="form-check-label") }}
+    </div>
     {% endif %}    
 {% endmacro %}

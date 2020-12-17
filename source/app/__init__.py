@@ -3,8 +3,10 @@ from os import path, environ
 from flask import Flask
 from flask_session import Session
 from smallthon import sm_list
+from flask_ckeditor import CKEditor
 
 from app.db import set_db
+from app.CKEditor import set_CKEditor
 from config.config import config
 from config.routes import set_routes
 from app.helpers.login import set_login, authenticated
@@ -48,6 +50,9 @@ def create_app(environment="development"):
 
     # Establece las rutas que posee la app
     set_routes(app)
+
+    # Agrega a la aplicación el CKEditor
+    set_CKEditor(app)
 
     # Retornar la instancia de app configurada
     return app
