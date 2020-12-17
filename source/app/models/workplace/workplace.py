@@ -21,6 +21,12 @@ class Workplace(db.Model):
 
     def all_staff(self):
         return self.staff
+        
+    def is_cathedra(self):
+        return False
+
+    def is_office(self):
+        return False
 
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)

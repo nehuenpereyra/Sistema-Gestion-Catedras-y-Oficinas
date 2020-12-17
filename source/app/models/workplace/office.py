@@ -12,3 +12,6 @@ class Office( Workplace):
     __mapper_args__ = {
         'polymorphic_identity': 2
     }
+
+    def is_office(self):
+        return True

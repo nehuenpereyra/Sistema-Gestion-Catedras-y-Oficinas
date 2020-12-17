@@ -6,6 +6,7 @@ from .permission import Permission
 from .career import Career
 from .workplace.cathedra import Cathedra
 from .workplace.office import Office
+from .workplace.workplace import Workplace
 from .charge import Charge
 from .employee.employee import Employee
 from .employee.docent import Docent

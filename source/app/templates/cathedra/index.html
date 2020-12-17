@@ -38,6 +38,11 @@
                         </div>
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('job_position_index') %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_index', workplace_id = cathedra.id) }}">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </a>
+                            {% endif %}
                             {% if verify_permission('cathedra_show') %}
                             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('cathedra_show', id=cathedra.id) }}">
                                 <i class="fas fa-eye"></i>
