@@ -7,6 +7,7 @@ class Career(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(64), nullable=False, unique=True)
+    users = db.relationship("CareerUser", back_populates="career")
     cathedras = db.relationship("Cathedra", back_populates="career")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 

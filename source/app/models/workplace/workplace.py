@@ -16,6 +16,12 @@ class Workplace(db.Model):
         'polymorphic_on':type
     }
 
+    def all_employees(self):
+        return self.staff.collect(lambda each: each.employee)
+
+    def all_staff(self):
+        return self.staff
+
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)
 

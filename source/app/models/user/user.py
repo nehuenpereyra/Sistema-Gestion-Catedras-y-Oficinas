@@ -206,19 +206,19 @@ class User(UserMixin, db.Model):
         if not self.user_state:
             return []
         
-        return user_state.allowed_career_id_list()
+        return self.user_state.allowed_career_id_list()
 
     def allowed_cathedra_id_list(self):
         if not self.user_state:
             return []
         
-        return user_state.allowed_cathedra_id_list()
+        return self.user_state.allowed_cathedra_id_list()
 
     def allowed_office_id_list(self):
         if not self.user_state:
             return []
         
-        return user_state.allowed_office_id_list()
+        return self.user_state.allowed_office_id_list()
 
     def allowed_charge_id_list(self):
         return []
@@ -227,12 +227,12 @@ class User(UserMixin, db.Model):
         if not self.user_state:
             return []
         
-        return user_state.allowed_employee_id_list()
+        return self.user_state.allowed_employee_id_list()
 
     def allowed_job_position_id_list(self):
         if not self.user_state:
             return []
         
-        return user_state.allowed_job_position_id_list()
+        return self.user_state.allowed_job_position_id_list()
 
  
