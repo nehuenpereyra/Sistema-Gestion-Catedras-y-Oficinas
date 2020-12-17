@@ -1,20 +1,20 @@
+
 from app.db import db
  
-class Workplace(db.Model):
+
+
+class Cathedra(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(64), nullable=False, unique=False)
     email = db.Column("email", db.String(64), nullable=False, unique=True)
     phone = db.Column("phone", db.String(32), nullable=False, unique=False)
     location = db.Column("location", db.String(64), nullable=False, unique=False)
-    staff = db.relationship("JobPosition", back_populates="workplace")
+    attention_time = db.Column("attention_time", db.String(64), nullable=False, unique=False)
+    career = db.relationship("Career", back_populates="cathedras", uselist=False)
+    career_id = db.Column("career_id", db.Integer, db.ForeignKey("career.id"), nullable=False, unique=False)
+    staff = db.relationship("JobPosition", back_populates="cathedra")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
-    type = db.Column(db.Integer, nullable=False)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 0,
-        'polymorphic_on':type
-    }
 
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)
@@ -28,11 +28,13 @@ class Workplace(db.Model):
             db.session.add(self)
         db.session.commit()
 
-    def update(self, name, email, phone, location):
+    def update(self, name, email, phone, location, attention_time, career):
         self.name = name
         self.email = email
         self.phone = phone
         self.location = location
+        self.attention_time = attention_time
+        self.career = career
         self.save()
 
     def remove(self):
@@ -42,10 +44,10 @@ class Workplace(db.Model):
 
     @classmethod
     def delete(self, id):
-        workplace = self.query.get(id)
-        if workplace:
-            workplace.remove()
-            return workplace
+        cathedra = self.query.get(id)
+        if cathedra:
+            cathedra.remove()
+            return cathedra
         return None
 
     @classmethod
@@ -62,12 +64,13 @@ class Workplace(db.Model):
         query = query.order_by(self.name.asc())
         if ids is not None:
             query = query.filter(self.id.in_(ids))
+            print(f"ids: {ids}, elements: {query.all()}")
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
     @classmethod
     def get(self, id):
-        workplace = self.query.get(id)
-        return workplace if workplace and workplace.is_deleted==False else None
+        cathedra = self.query.get(id)
+        return cathedra if cathedra and cathedra.is_deleted==False else None
         
 
     @classmethod

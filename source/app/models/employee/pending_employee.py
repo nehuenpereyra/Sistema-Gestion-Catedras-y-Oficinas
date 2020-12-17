@@ -53,7 +53,7 @@ class PendingEmployee(db.Model):
     @classmethod
     def all_paginated(self, page, per_page, ids=None):
         query = self.query.order_by(cast(self.timestamp, DateTime).asc())
-        if ids:
+        if ids is not None:
             query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 

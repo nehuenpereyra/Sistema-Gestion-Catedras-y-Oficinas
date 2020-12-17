@@ -107,7 +107,7 @@ class User(UserMixin, db.Model):
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
-        if ids:
+        if ids is not None:
             query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
@@ -188,38 +188,51 @@ class User(UserMixin, db.Model):
         return allowed_id_list.includes(id)
 
     def allowed_user_id_list(self):
-        return [self.id]
+        return [ self.id ]
 
     def allowed_role_id_list(self):
-        return self.roles.collect(lambda each: each.id)
+        return []
 
     def allowed_permission_id_list(self):
-        return self.roles.flat_collect(lambda each: each.permissions). \
-            remove_duplicated(). \
-            collect(lambda each: each.id)
+        return []
 
     def allowed_request_id_list(self):
         return self.requests.collect(lambda each: each.id)
     
     def allowed_request_type_id_list(self):
-        return None
+        return []
 
     def allowed_career_id_list(self):
-        return None
+        if not self.user_state:
+            return []
+        
+        return user_state.allowed_career_id_list()
 
     def allowed_cathedra_id_list(self):
-        return None
+        if not self.user_state:
+            return []
+        
+        return user_state.allowed_cathedra_id_list()
 
     def allowed_office_id_list(self):
-        return None
+        if not self.user_state:
+            return []
+        
+        return user_state.allowed_office_id_list()
 
     def allowed_charge_id_list(self):
-        return None
+        return []
 
     def allowed_employee_id_list(self):
-        return None
+        if not self.user_state:
+            return []
+        
+        return user_state.allowed_employee_id_list()
 
     def allowed_job_position_id_list(self):
-        return None
+        if not self.user_state:
+            return []
+        
+        return user_state.allowed_job_position_id_list()
 
  

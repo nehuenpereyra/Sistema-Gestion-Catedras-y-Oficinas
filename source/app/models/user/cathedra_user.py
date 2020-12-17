@@ -8,3 +8,6 @@ class CathedraUser(UserState):
     __mapper_args__ = {
         'polymorphic_identity': 2
     }
+
+    def allowed_cathedra_id_list(self):
+        return [ 1 ]

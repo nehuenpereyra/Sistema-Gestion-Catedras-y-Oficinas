@@ -73,7 +73,7 @@ class Employee(db.Model):
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
-        if ids:
+        if ids is not None:
             query = query.filter(self.id.in_(ids))
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
