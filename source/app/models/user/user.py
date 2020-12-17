@@ -2,12 +2,12 @@
 from app.db import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
- 
+
 from app.models.database_links import link_user_role
-from .user_state import UserState
 from .career_user import CareerUser
 from .cathedra_user import CathedraUser
 from .office_user import OfficeUser
+
 
 def get_permission_method(user, permission):
 
@@ -27,19 +27,28 @@ def get_permission_method(user, permission):
 
     return permission_mapper[permission]
 
+
 class User(UserMixin, db.Model):
+
+    __tablename__ = "user"
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(32), nullable=False, unique=False)
     surname = db.Column("surname", db.String(32), nullable=False, unique=False)
-    username = db.Column("username", db.String(32), nullable=False, unique=False)
-    password = db.Column("password", db.String(128), nullable=False, unique=False)
-    institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=False)
-    secondary_email = db.Column("secondary_email", db.String(64), nullable=False, unique=False)
-    roles = db.relationship("Role", back_populates="users", secondary=link_user_role)
+    username = db.Column("username", db.String(32),
+                         nullable=False, unique=False)
+    password = db.Column("password", db.String(128),
+                         nullable=False, unique=False)
+    institutional_email = db.Column(
+        "institutional_email", db.String(64), nullable=False, unique=False)
+    secondary_email = db.Column(
+        "secondary_email", db.String(64), nullable=False, unique=False)
+    roles = db.relationship(
+        "Role", back_populates="users", secondary=link_user_role)
     requests = db.relationship("Request", back_populates="user")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
-    user_state = db.relationship("UserState", back_populates="user", uselist=False)
+    state = db.relationship(
+        "UserState", back_populates="user", uselist=False)
 
     def is_career_manager(self):
         return self.roles.any_satisfy(lambda each: each.name == "Responsable de Carrera")
@@ -51,32 +60,38 @@ class User(UserMixin, db.Model):
         return self.roles.any_satisfy(lambda each: each.name == "Responsable de Oficina")
 
     def get_career(self):
-        return self.user_state.career
+        return self.state.career
 
     def get_cathedras(self):
-        return self.user_state.cathedras
+        return self.state.cathedras
 
     def get_offices(self):
-        return self.user_state.offices
+        return self.state.offices
+
+    def is_responsible(self):
+        return self.state is not None
+
+    def add_responsible_element(self, element):
+        self.state.add_responsible_element(element)
 
     def get_roles(self):
         return self.roles.select(lambda each: not each.is_deleted)
 
     def set_roles(self, roles):
-        self.roles = self.roles.select(
-            lambda each: each.is_deleted) + roles
-        rol = roles.detect(lambda each: each.name == "Responsable de Catedra" or each.name == "Responsable de Oficina" or each.name == "Responsable de Carrera")
+        self.roles = self.roles.select(lambda each: each.is_deleted) + roles
+        rol = roles.detect(lambda each: each.name == "Responsable de Catedra" or each.name ==
+                           "Responsable de Oficina" or each.name == "Responsable de Carrera")
         if rol:
-            if self.user_state:
-                self.user_state.remove()
+            self.state.remove()
+
             if rol.name == "Responsable de Carrera":
-                self.user_state = CareerUser()
+                self.state = CareerUser()
             if rol.name == "Responsable de Catedra":
-                self.user_state = CathedraUser()
+                self.state = CathedraUser()
             if rol.name == "Responsable de Oficina":
-                self.user_state = OfficeUser()
+                self.state = OfficeUser()
         else:
-            self.user_state = None
+            self.state = None
 
     def get_requests(self):
         return self.requests.select(lambda each: not each.is_deleted)
@@ -132,8 +147,7 @@ class User(UserMixin, db.Model):
     @classmethod
     def get(self, id):
         user = self.query.get(id)
-        return user if user and user.is_deleted==False else None
-        
+        return user if user and user.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -182,7 +196,7 @@ class User(UserMixin, db.Model):
         if user and (check_password_hash(user.password, password)):
             return user
         return None
-    
+
     def is_admin(self):
         return self.roles.any_satisfy(lambda each: each.name == "Administrador")
 
@@ -206,7 +220,7 @@ class User(UserMixin, db.Model):
         return allowed_id_list.includes(id)
 
     def allowed_user_id_list(self):
-        return [ self.id ]
+        return [self.id]
 
     def allowed_role_id_list(self):
         return []
@@ -216,41 +230,39 @@ class User(UserMixin, db.Model):
 
     def allowed_request_id_list(self):
         return self.requests.collect(lambda each: each.id)
-    
+
     def allowed_request_type_id_list(self):
         return []
 
     def allowed_career_id_list(self):
-        if not self.user_state:
+        if not self.state:
             return []
-        
-        return self.user_state.allowed_career_id_list()
+
+        return self.state.allowed_career_id_list()
 
     def allowed_cathedra_id_list(self):
-        if not self.user_state:
+        if not self.state:
             return []
-        
-        return self.user_state.allowed_cathedra_id_list()
+
+        return self.state.allowed_cathedra_id_list()
 
     def allowed_office_id_list(self):
-        if not self.user_state:
+        if not self.state:
             return []
-        
-        return self.user_state.allowed_office_id_list()
+
+        return self.state.allowed_office_id_list()
 
     def allowed_charge_id_list(self):
         return []
 
     def allowed_employee_id_list(self):
-        if not self.user_state:
+        if not self.state:
             return []
-        
-        return self.user_state.allowed_employee_id_list()
+
+        return self.state.allowed_employee_id_list()
 
     def allowed_job_position_id_list(self):
-        if not self.user_state:
+        if not self.state:
             return []
-        
-        return self.user_state.allowed_job_position_id_list()
 
- 
+        return self.state.allowed_job_position_id_list()
