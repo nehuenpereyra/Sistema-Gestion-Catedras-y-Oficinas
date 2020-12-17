@@ -21,3 +21,6 @@ class Cathedra(Workplace):
         self.attention_time = attention_time
         self.career = career
         self.save()
+
+    def is_cathedra(self):
+        return True

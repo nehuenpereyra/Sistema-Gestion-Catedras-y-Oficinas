@@ -11,7 +11,7 @@ class ChargeForm(TranslateForm):
 
     id = IntegerField()
     name = StringField("Nombre", validators=[ DataRequired(), Unique(Charge, "name"), Length(min=3, max=64)], render_kw={'autofocus': True})
-    is_docent = BooleanField("Es cargo docente", validators=[ Optional()], filters=[lambda value: value or None], default=False)
+    is_docent = BooleanField("Es cargo docente", validators=[ Optional()], filters=[lambda value: value or False], default=False)
     order = IntegerField("Orden", validators=[ DataRequired()])
     submit = SubmitField('Enviar')
 

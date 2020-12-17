@@ -11,17 +11,17 @@
 
     <div class="d-flex justify-content-end mt-3">
         {% if verify_permission('job_position_index') %}
-            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_index') }}">
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_index', workplace_id=workplace_id) }}">
                 <i class="fas fa-arrow-left"></i>
             </a>
         {% endif %}
         {% if verify_permission('job_position_update') %}
-            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_edit', id=job_position.id) }}">
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_edit', workplace_id=workplace_id, id=job_position.id) }}">
                 <i class="fas fa-cog"></i>
             </a>
         {% endif %}
         {% if verify_permission('job_position_delete') %}
-            <a onclick='return confirm(`¿Seguro que deseas eliminar el puesto de trabajo "{{job_position.start_date}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', id=job_position.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar el puesto de trabajo "{{job_position.start_date}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', workplace_id=workplace_id, id=job_position.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}
@@ -38,7 +38,7 @@
             <h6 class="mb-0">Cargo</h6>{{ show_field(job_position.charge, attribute="name", link="charge_show", required=True)|safe }}
         </li>
         <li class="list-group-item">
-            <h6 class="mb-0">Catedra</h6>{{ show_field(job_position.cathedra, attribute="name", link="cathedra_show", required=True)|safe }}
+            <h6 class="mb-0">Catedra</h6>{{ show_field(job_position.workplace, attribute="name", link="cathedra_show", required=True)|safe }}
         </li>
         <li class="list-group-item">
             <h6 class="mb-0">Empleado</h6>{{ show_field(job_position.employee, attribute="name", link="employee_show", required=True)|safe }}

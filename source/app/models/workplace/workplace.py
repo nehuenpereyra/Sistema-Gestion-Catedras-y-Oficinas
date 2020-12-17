@@ -16,6 +16,12 @@ class Workplace(db.Model):
         'polymorphic_on':type
     }
 
+    def is_cathedra(self):
+        return False
+
+    def is_office(self):
+        return False
+
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)
 

@@ -34,6 +34,9 @@ class JobPosition(db.Model):
         if self.id:
             self.is_deleted = True
             self.save()
+    
+    def isActive(self):
+        return True if self.end_date is None else False
 
     @classmethod
     def delete(self, id):

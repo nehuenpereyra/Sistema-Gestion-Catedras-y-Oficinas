@@ -17,12 +17,168 @@
 
     {% if verify_permission('job_position_create') %}
         <div class="d-flex justify-content-end mt-3">
-            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('job_position_new') }}">
+            <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('job_position_new', workplace_id=workplace_id) }}">
                 <i class="fas fa-plus"></i>
-                <span class="ml-2">Nuevo Puesto de Trabajo</span>
+                <span class="ml-2">Agregar al plantel</span>
             </a>
         </div>
     {% endif %}
+
+    <div class="container" style="overflow: auto;padding-top: 20px;padding-bottom: 150px;">
+            <div class="card mt-3">
+                <div class="card-header"><span>Docentes</span></div>
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted mb-2">Profesor Titular - Coordinador<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Marcos Escobar</span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="text-muted mb-2">Profesores Adjuntos<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Mariano Passini<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Jorge Mizzi</span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Julia Massi</span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header"><span>No Docentes</span></div>
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted mb-2">Cargo No docente 1<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Marcos Escobar<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="text-muted mb-2">Cargo No docente 2<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Mariano Passini<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Jorge Mizzi<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Julia Massi</span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header"><span>Empleados administrativos</span></div>
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted mb-2">Cargo Administrativo 1<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Marcos Escobar<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="text-muted mb-2">Cargo Administrativo 2<br></h6>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Mariano Passini<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Jorge Mizzi<br></span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row d-flex">
+                                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                        <div class="text-center text-sm-left"><span class="d-block">Julia Massi</span><small>institucional@email.com<br></small></div>
+                                    </div>
+                                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center"><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-eye"></i></a><a class="btn btn-primary btn-sm mr-1" role="button" href="#"><i class="fas fa-cog"></i></a><a class="btn btn-danger btn-sm"
+                                            role="button" href="#"><i class="far fa-trash-alt"></i></a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     
     {% if job_positions.items %}
         <ul class="list-group border rounded shadow-sm mt-3">
@@ -39,17 +195,17 @@
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
                             {% if verify_permission('job_position_show') %}
-                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_show', id=job_position.id) }}">
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_show', workplace_id=workplace_id, id=job_position.id) }}">
                                 <i class="fas fa-eye"></i>
                             </a>
                             {% endif %}
                             {% if verify_permission('job_position_update') %}
-                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_edit', id=job_position.id) }}">
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('job_position_edit', workplace_id=workplace_id, id=job_position.id) }}">
                                 <i class="fas fa-cog"></i>
                             </a>
                             {% endif %}
                             {% if verify_permission('job_position_delete') %}
-                                <a onclick='return confirm(`¿Seguro que deseas eliminar el puesto de trabajo "{{job_position.start_date}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', id=job_position.id) }}">
+                                <a onclick='return confirm(`¿Seguro que deseas eliminar el puesto de trabajo "{{job_position.start_date}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('job_position_delete', workplace_id=workplace_id,id=job_position.id) }}">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                             {% endif %}
