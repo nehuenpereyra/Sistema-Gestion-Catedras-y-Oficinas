@@ -62,8 +62,9 @@ class Cathedra(db.Model):
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
-        if ids:
+        if ids is not None:
             query = query.filter(self.id.in_(ids))
+            print(f"ids: {ids}, elements: {query.all()}")
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
     @classmethod

@@ -16,3 +16,18 @@ class UserState(db.Model):
         if self.id:
             self.is_deleted = True
             self.save()
+    
+    def allowed_career_id_list(self):
+        return []
+
+    def allowed_cathedra_id_list(self):
+        return []
+
+    def allowed_office_id_list(self):
+        return []
+
+    def allowed_employee_id_list(self):
+        return []
+
+    def allowed_job_position_id_list(self):
+        return []
