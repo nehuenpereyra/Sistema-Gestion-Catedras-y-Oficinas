@@ -38,7 +38,7 @@ def index(workplace_id):
 
     job_positions = JobPosition.all_paginated(page=int(request.args.get('page', 1)),
                                               per_page=Configuration.get().items_per_page, ids=allowed_job_position_ids)
-    return render_template("job_position/index.html", staff=staff, job_positions=job_positions, workplace_id=workplace_id, is_cathedra=workplace.is_cathedra(), alert=get_alert())
+    return render_template("job_position/index.html", staff=staff, job_positions=job_positions, workplace_id=workplace_id, is_cathedra=workplace.is_cathedra(), workplace_name=workplace.name, alert=get_alert())
 
 
 @ permission('job_position_show')

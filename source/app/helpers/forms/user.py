@@ -12,12 +12,13 @@ def role_without_elements():
 
     def _role_without_elements(form, field):
 
-        user = User.get(form.id.data)
-        roles = Role.get_all(form.roles.data)
-        if user.responsible_role_changed(roles) and user.is_responsible_of_elements():
-            raise ValidationError(
-                'El rol no puede ser modificado mientras contenga dependencias.'
-            )
+        if form.id.data:
+            user = User.get(form.id.data)
+            roles = Role.get_all(form.roles.data)
+            if user.responsible_role_changed(roles) and user.is_responsible_of_elements():
+                raise ValidationError(
+                    'El rol no puede ser modificado mientras contenga dependencias.'
+                )
 
     return _role_without_elements
 

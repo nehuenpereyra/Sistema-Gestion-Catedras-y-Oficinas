@@ -5,12 +5,13 @@ from flask_login import current_user
 from app.models import User
 from app.helpers.forms.login_form import LoginForm
 from app.helpers.login import authenticated
+from app.helpers.alert import get_alert
 
 
 def login():
     if authenticated() == True:
         return redirect(url_for("index"))
-    return render_template("auth/login.html", form=LoginForm())
+    return render_template("auth/login.html", alert=get_alert(), form=LoginForm())
 
 
 def authenticate():
@@ -19,6 +20,7 @@ def authenticate():
         user = User.login(form.username.data, form.password.data)
         if user:
             login_user(user, remember=form.remember_me.data)
+            user.remove_recovery_link()
             return redirect(url_for("index"))
     return render_template("auth/login.html", form=form, authError=True)
 

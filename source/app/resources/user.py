@@ -1,4 +1,4 @@
-
+import re
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user
 
@@ -6,8 +6,8 @@ from app.models.configuration import Configuration
 from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
-from app.models import User, Role
-from app.helpers.forms import UserForm
+from app.models import User, Role, MailSender
+from app.helpers.forms import UserForm, PasswordRecoveryForm, PasswordChangeForm
 
 
 @permission('user_index')
@@ -48,6 +48,12 @@ def create():
         user.save()
         add_alert(
             Alert("success", f'El usuario "{user.name}" se ha creado correctamente.'))
+        recovery_link = user.set_recovery_link()
+        string_link = "{}/user/password_change/{}".format(re.match("^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)", request.base_url).group(),
+                                                          recovery_link)
+        # MailSender.send_to_user("Contraseña para acceder al sistema de cátedras y oficinas de la facultad de ciencias médicas",
+        #                        f"Acceda al siguiente enlace para establecer la contraseña: {string_link}",
+        #                        user.institutional_email)
         return redirect(url_for("user_index"))
     return render_template("user/new.html", form=form)
 
@@ -92,3 +98,44 @@ def delete(id):
         add_alert(
             Alert("success", f'El usuario "{user.name}" se ha borrado correctamente.'))
     return redirect(url_for("user_index"))
+
+
+def password_recovery():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        form = PasswordRecoveryForm(id=None)
+        if form.validate_on_submit():
+            user = User.find_by_institutional_email(
+                form.user_email.data)
+            if not user.is_empty():
+                user = user.first()
+                recovery_link = user.set_recovery_link()
+                string_link = "{}/user/password_change/{}".format(re.match("^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)", request.base_url).group(),
+                                                                  recovery_link)
+                MailSender.send_to_user("Correo de recuperación de contraseña",
+                                        f"Acceda al siguiente enlace para cambiar su contraseña: {string_link}",
+                                        user.institutional_email)
+                add_alert(
+                    Alert("success", f'Se envio un correo al email institucional.'))
+            else:
+                add_alert(
+                    Alert("danger", "No existe usuario con ese email institucional."))
+        return redirect(url_for('user_password_recovery'))
+    return render_template("user/password_recovery.html", alert=get_alert(), form=PasswordRecoveryForm())
+
+
+def password_change(url_recovery):
+    user = User.find_by_recovery_link(url_recovery)
+    if not user or current_user.is_authenticated:
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        form = PasswordChangeForm(id=None)
+        if form.validate_on_submit():
+            print(form.user_password.data)
+            user.set_password(form.user_password.data)
+            user.remove_recovery_link()
+            add_alert(
+                Alert("success", 'Se cambió la contraseña correctamente.'))
+            return redirect(url_for('auth_login'))
+    return render_template("user/password_change.html", url_recovery=url_recovery, form=PasswordChangeForm())

@@ -12,3 +12,5 @@ from .employee import EmployeeForm
 from .job_position import JobPositionForm
 from .request import RequestForm
 from .request_type import RequestTypeForm
+from .password_recovery import PasswordRecoveryForm
+from .password_change import PasswordChangeForm

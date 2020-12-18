@@ -1,3 +1,5 @@
+{% from 'macros/alert.html' import  show_alert %}
+
 {% extends "layout.html" %}
 
 {% macro input(field, type, placeholder) %}
@@ -20,6 +22,9 @@
 {% block content %}
 
 <div class="container" style="padding-top: 80px;padding-bottom: 600px;max-width: 320px;">
+  {% if alert %}
+      {{ show_alert(alert) }}
+  {% endif %}
   {% if authError == True %}
     <div class="alert alert-danger" role="alert" style="margin-top: 25px;">
       Usuario o clave incorrecto.
@@ -27,6 +32,7 @@
   {% endif %}
   <form action="{{ url_for('auth_authenticate') }}" method="post" class="text-center border rounded shadow-sm p-4 bg-white">
       {{ form.hidden_tag() }}
+      
       <div class="mb-2" style="font-size: 100px;color: #395e85;"><i class="fas fa-user-circle"></i></div>
       <div class="form-group">{{input(form.username, "username", "Nombre de usuario")}}</div>
       <div class="form-group">{{input(form.password, "password", "Contraseña")}}</div>
@@ -35,7 +41,7 @@
         {{ form.remember_me() }} {{ form.remember_me.label }}
       </div>
       <button class="btn btn-primary btn-block" type="submit">Inicar Sesión</button>
-      </div><a href="#" style="display: block;text-align: center;font-size: 12px;color: #6f7a85;opacity: 0.9;text-decoration: none;">¿Olvido su contraseña?</a>
+      </div><a href="{{ url_for('user_password_recovery') }}" style="display: block;text-align: center;font-size: 12px;color: #6f7a85;opacity: 0.9;text-decoration: none;">¿Olvido su contraseña?</a>
       
     </form>
   
