@@ -68,6 +68,9 @@ class User(UserMixin, db.Model):
     def get_offices(self):
         return self.state.offices
 
+    def get_responsible_content_label(self):
+        return self.state.get_responsible_content_label()
+
     def is_responsible(self):
         return self.state is not None
 
@@ -116,6 +119,9 @@ class User(UserMixin, db.Model):
     def set_requests(self, requests):
         self.requests = self.requests.select(
             lambda each: each.is_deleted) + requests
+
+    def get_full_name(self):
+        return f"{self.name} {self.surname}"
 
     def save(self):
         if not self.id:

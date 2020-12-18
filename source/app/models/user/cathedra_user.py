@@ -16,6 +16,10 @@ class CathedraUser(UserState):
         'polymorphic_identity': 2
     }
 
+    @staticmethod
+    def get_responsible_content_label():
+        return "Cátedra"
+
     def is_responsible_of_elements(self):
         return not self.cathedras.is_empty()
 

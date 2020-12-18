@@ -1,0 +1,82 @@
+
+{% from 'macros/alert.html' import  show_alert %}
+{% from 'macros/pagination.html' import  pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}{{ user.get_full_name() }} - Asignación{% endblock %}
+
+{% block sub_content %}
+
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+
+    <h5 class="mt-3">Asignación de Contenido</h5>
+
+    <div class="d-flex justify-content-end mt-3">
+        {% if verify_permission('user_index') %}
+            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_index') }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    
+    <h6 class="mt-3">{{ messages["assigned"] }}</h6>
+
+    <ul class="list-group shadow-sm my-4 mx-2">
+        {% for element in assigned_elements %}
+            <li class="list-group-item">
+                <div class="row d-flex">
+                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                        <div class="text-center text-sm-left">
+                            <span class="d-block">{{ element.name }}</span>
+                            {% if element.email %}
+                                <small>{{ element.email }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                        {% if verify_permission('user_content_unassign') %}
+                            <a class="btn btn-danger btn-sm" role="button" href="{{ url_for('user_content_unassign', user_id=user.id, element_id=element.id) }}">
+                                <i class="fas fa-unlink"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h6 class="mt-3">{{ messages["to_assign"] }}</h6>
+
+    <ul class="list-group shadow-sm my-4 mx-2">
+        {% for element in elements_to_assign.items %}
+            <li class="list-group-item">
+                <div class="row d-flex">
+                    <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                        <div class="text-center text-sm-left">
+                            <span class="d-block">{{ element.name }}</span>
+                            {% if element.email %}
+                                <small>{{ element.email }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                        {% if verify_permission('user_content_assign') %}
+                            <a class="btn btn-primary btn-sm" role="button" href="{{ url_for('user_content_assign', user_id=user.id, element_id=element.id) }}">
+                                <i class="fas fa-link"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {{ pagination(elements_to_assign, 'user_content_index', user_id=user.id)}}
+    
+{% endblock %}

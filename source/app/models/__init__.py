@@ -1,5 +1,6 @@
 
 from .configuration import Configuration
+from .alert import Alert
 from .user.user import User
 from .role import Role
 from .permission import Permission

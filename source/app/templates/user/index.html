@@ -38,6 +38,11 @@
                         </div>
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('user_content_index') and user.is_responsible() %}
+                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_content_index', user_id=user.id) }}">
+                                <i class="fas fa-link"></i>
+                            </a>
+                            {% endif %}
                             {% if verify_permission('user_show') %}
                             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_show', id=user.id) }}">
                                 <i class="fas fa-eye"></i>
