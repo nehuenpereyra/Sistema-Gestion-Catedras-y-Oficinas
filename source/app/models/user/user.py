@@ -1,4 +1,5 @@
-
+import random
+import string
 from app.db import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -49,6 +50,7 @@ class User(UserMixin, db.Model):
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
     state = db.relationship(
         "UserState", back_populates="user", uselist=False)
+    recovery_link = db.Column(db.String(32), nullable=True, unique=False)
 
     def is_career_manager(self):
         return self.roles.any_satisfy(lambda each: each.name == "Responsable de Carrera")
@@ -92,6 +94,16 @@ class User(UserMixin, db.Model):
 
     def responsible_role_changed(self, roles):
         return self.get_responsible_role(self.roles) is not self.get_responsible_role(roles)
+
+    def set_recovery_link(self):
+        self.recovery_link = ''.join(
+            (random.choice((string.ascii_letters + string.digits)) for i in range(32)))
+        self.save()
+        return self.recovery_link
+
+    def remove_recovery_link(self):
+        self.recovery_link = None
+        self.save()
 
     def set_roles(self, roles):
 
@@ -189,6 +201,10 @@ class User(UserMixin, db.Model):
     def find_by_surname(self, surname):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(surname=surname, is_deleted=False).all()
+
+    @classmethod
+    def find_by_recovery_link(self, recovery_link):
+        return self.query.filter_by(recovery_link=recovery_link, is_deleted=False).first()
 
     @classmethod
     def find_by_username(self, username):

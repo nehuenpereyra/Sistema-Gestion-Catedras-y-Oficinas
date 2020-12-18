@@ -79,7 +79,9 @@ def create():
 
     previous_path = get_previous_path()
     if previous_path:
-        return redirect(url_for(previous_path["url"], **previous_path["args"]))
+        if "args" in previous_path:
+            return redirect(url_for(previous_path["url"], **previous_path["args"]))
+        return redirect(url_for(previous_path["url"]))
     if not current_user.is_admin():
         redirect(url_for("cathedra_index"))
     return redirect(url_for("employee_index"))
