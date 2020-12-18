@@ -43,9 +43,6 @@
         <li class="list-group-item">
             <h6 class="mb-0">Correo Electrónico Secundario</h6>{{ show_field(employee.secondary_email, required=False)|safe }}
         </li>
-        <li class="list-group-item">
-            <h6>Puestos Asignados</h6>{{ show_field(employee.get_job_positions(), list=True, attribute="start_date", link="job_position_show", required=False)|safe }}
-        </li>
     </ul>
     
 {% endblock %}

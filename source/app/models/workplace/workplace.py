@@ -24,6 +24,15 @@ class Workplace(db.Model):
     def all_employees(self):
         return self.all_staff().collect(lambda each: each.employee)
 
+    def all_docent(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Docente").collect(lambda each: each.employee)
+
+    def all_not_docent(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "No Docente").collect(lambda each: each.employee)
+
+    def all_administrative(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Administrativo").collect(lambda each: each.employee)
+
     def is_cathedra(self):
         return False
 

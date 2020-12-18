@@ -1,21 +1,26 @@
-
+from datetime import datetime
 from app.db import db
- 
 
 
 class JobPosition(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
-    start_date = db.Column("start_date", db.DateTime, nullable=False, unique=False)
+    start_date = db.Column("start_date", db.DateTime,
+                           nullable=False, unique=False)
     end_date = db.Column("end_date", db.DateTime, nullable=True, unique=False)
-    charge = db.relationship("Charge", back_populates="job_positions", uselist=False)
-    charge_id = db.Column("charge_id", db.Integer, db.ForeignKey("charge.id"), nullable=False, unique=False)
-    workplace = db.relationship("Workplace", back_populates="staff", uselist=False)
-    workplace_id = db.Column("workplace_id", db.Integer, db.ForeignKey("workplace.id"), nullable=False, unique=False)
-    employee = db.relationship("Employee", back_populates="job_positions", uselist=False)
-    employee_id = db.Column("employee_id", db.Integer, db.ForeignKey("employee.id"), nullable=False, unique=False)
+    charge = db.relationship(
+        "Charge", back_populates="job_positions", uselist=False)
+    charge_id = db.Column("charge_id", db.Integer, db.ForeignKey(
+        "charge.id"), nullable=False, unique=False)
+    workplace = db.relationship(
+        "Workplace", back_populates="staff", uselist=False)
+    workplace_id = db.Column("workplace_id", db.Integer, db.ForeignKey(
+        "workplace.id"), nullable=False, unique=False)
+    employee = db.relationship(
+        "Employee", back_populates="job_positions", uselist=False)
+    employee_id = db.Column("employee_id", db.Integer, db.ForeignKey(
+        "employee.id"), nullable=False, unique=False)
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
-
 
     def save(self):
         if not self.id:
@@ -30,13 +35,12 @@ class JobPosition(db.Model):
         self.employee = employee
         self.save()
 
-    def remove(self):
-        if self.id:
-            self.is_deleted = True
-            self.save()
-    
     def isActive(self):
         return True if self.end_date is None else False
+
+    def finish(self):
+        self.end_date = datetime.today()
+        self.save()
 
     @classmethod
     def delete(self, id):
@@ -65,8 +69,7 @@ class JobPosition(db.Model):
     @classmethod
     def get(self, id):
         job_position = self.query.get(id)
-        return job_position if job_position and job_position.is_deleted==False else None
-        
+        return job_position if job_position and job_position.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -86,4 +89,5 @@ class JobPosition(db.Model):
         query = self.query.order_by(self.start_date.asc())
         return query.filter_by(end_date=end_date, is_deleted=False).all()
 
- 
+    def __lt__(self, other):
+        return self.charge.order < other.charge.order
