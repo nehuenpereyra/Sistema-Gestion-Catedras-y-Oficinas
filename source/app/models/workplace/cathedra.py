@@ -7,15 +7,31 @@ from .workplace import Workplace
 
 class Cathedra(Workplace):
 
-    id = db.Column("id", db.Integer, db.ForeignKey('workplace.id'), primary_key=True)
-    attention_time = db.Column("attention_time", db.String(64), nullable=False, unique=False)
-    users = db.relationship("CathedraUser", back_populates="cathedras", secondary=link_user_cathedra)
-    career = db.relationship("Career", back_populates="cathedras", uselist=False)
-    career_id = db.Column("career_id", db.Integer, db.ForeignKey("career.id"), nullable=False, unique=False)
+    id = db.Column("id", db.Integer, db.ForeignKey(
+        'workplace.id'), primary_key=True)
+    attention_time = db.Column("attention_time", db.String(
+        64), nullable=False, unique=False)
+    users = db.relationship(
+        "CathedraUser", back_populates="cathedras", secondary=link_user_cathedra)
+    career = db.relationship(
+        "Career", back_populates="cathedras", uselist=False)
+    career_id = db.Column("career_id", db.Integer, db.ForeignKey(
+        "career.id"), nullable=False, unique=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 1
     }
+
+    def is_cathedra(self):
+        return True
+
+    @staticmethod
+    def get_id_string():
+        return "cathedra"
+
+    @staticmethod
+    def get_label():
+        return "Cátedra"
 
     def update(self, name, email, phone, location, attention_time, career):
         self.name = name
@@ -25,6 +41,3 @@ class Cathedra(Workplace):
         self.attention_time = attention_time
         self.career = career
         self.save()
-
-    def is_cathedra(self):
-        return True

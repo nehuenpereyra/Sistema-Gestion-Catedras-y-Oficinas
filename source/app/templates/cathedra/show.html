@@ -44,9 +44,6 @@
         <li class="list-group-item">
             <h6 class="mb-0">Carrera</h6>{{ show_field(cathedra.career, attribute="name", link="career_show", required=True)|safe }}
         </li>
-        <li class="list-group-item">
-            <h6>Plantel</h6>{{ show_field(cathedra.get_staff(), list=True, attribute="start_date", link="job_position_show", required=False)|safe }}
-        </li>
     </ul>
     
 {% endblock %}

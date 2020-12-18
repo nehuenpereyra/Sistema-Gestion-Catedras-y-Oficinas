@@ -1,6 +1,4 @@
 
-
-
 {% extends "authorized_layout.html" %}
 
 {% block title %}Cargo - {{ charge.name }}{% endblock %}
@@ -36,9 +34,6 @@
         </li>
         <li class="list-group-item">
             <h6 class="mb-0">Orden</h6>{{ show_field(charge.order, required=True)|safe }}
-        </li>
-        <li class="list-group-item">
-            <h6>Puestos Asignados</h6>{{ show_field(charge.get_job_positions(), list=True, attribute="start_date", link="job_position_show", required=False)|safe }}
         </li>
     </ul>
     

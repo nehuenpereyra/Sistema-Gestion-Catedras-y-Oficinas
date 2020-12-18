@@ -1,0 +1,62 @@
+
+{% from 'macros/pagination.html' import pagination %}
+
+{% extends "authorized_layout.html" %}
+
+{% block title %}Revisión de Empleados{% endblock %}
+
+{% block sub_content %}
+    
+    <h5 class="mt-3">Revisión de Empleados</h5>
+    
+    {% if reviews.items %}
+        <ul class="list-group border rounded shadow-sm mt-3">
+            {% for review in reviews.items %}
+                <li class="list-group-item">
+                    <div class="row d-flex">
+                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                            <div class="text-center text-sm-left">
+                                <span class="d-block">
+                                    {% if review.is_creation_type() %}
+                                        {{ "{} fue asignado a la {} {} con el cargo de {}".format(
+                                            link(review.get_employee(), "get_full_name", "employee_show"),
+                                            review.get_workplace().get_label().lower(),
+                                            link(review.get_workplace(), "name", review.get_workplace().get_id_string() + "_show"),
+                                            link(review.get_current_charge(), "name", "charge_show")
+                                        )|safe }}
+                                    {% elif review.is_upgrade_type() %}
+                                        {{ "{} fue reasignado del cargo {} al cargo {} en la {} {}".format(
+                                            link(review.get_employee(), "get_full_name", "employee_show"),
+                                            link(review.get_old_charge(), "name", "charge_show"),
+                                            link(review.get_current_charge(), "name", "charge_show"),
+                                            review.get_workplace().get_label().lower(),
+                                            link(review.get_workplace(), "name", review.get_workplace().get_id_string() + "_show")
+                                        )|safe }}
+                                    {% else %}
+                                        {{ "{} fue desasignado de la {} {}".format(
+                                            link(review.get_employee(), "get_full_name", "employee_show"),
+                                            review.get_workplace().get_label().lower(),
+                                            link(review.get_workplace(), "name", review.get_workplace().get_id_string() + "_show")
+                                        )|safe }}
+                                    {% endif %}
+                                </span>
+                                <small>{{ review.timestamp.strftime("%d/%m/%Y %H:%M") }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                            {% if verify_permission('employee_review_see') %}
+                                <a class="btn btn-primary btn-sm" role="button" href="{{ url_for('employee_review_see', review_id=review.id) }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ pagination(reviews, 'employee_review_index' )}}
+    
+{% endblock %}

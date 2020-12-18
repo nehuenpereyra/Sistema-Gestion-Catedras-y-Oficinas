@@ -119,8 +119,16 @@ def update(workplace_id, id):
     form.employee.data = job_position.employee.id
     if not form.validate_on_submit():
         return render_template("job_position/edit.html", workplace_id=workplace_id, job_position=job_position, form=form)
-    job_position.update(start_date=datetime.today(), end_date=None, charge=Charge.get(
-        form.charge.data), workplace=Workplace.get(workplace_id), employee=Employee.get(form.employee.data))
+
+    # job_position.update(start_date=datetime.today(), end_date=None, charge=Charge.get(
+    #    form.charge.data), workplace=Workplace.get(workplace_id), employee=Employee.get(form.employee.data))
+
+    new_charge = Charge.get(form.charge.data)
+
+    if new_charge is not job_position.charge:
+        job_position.reassign(new_charge)
+        job_position.save()
+
     add_alert(
         Alert("success", f'Se modificó el cargo de "{job_position.employee.get_full_name()}" correctamente.'))
     return redirect(url_for("job_position_index", workplace_id=workplace_id))
