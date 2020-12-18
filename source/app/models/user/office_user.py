@@ -16,8 +16,14 @@ class OfficeUser(UserState):
         'polymorphic_identity': 3
     }
 
+    def is_responsible_of_elements(self):
+        return not self.offices.is_empty()
+
     def add_responsible_element(self, element):
         self.offices.add(element)
+
+    def remove_responsible_element(self, element):
+        self.offices.remove(element)
 
     def allowed_office_id_list(self):
         return self.offices.collect(lambda each: each.id)

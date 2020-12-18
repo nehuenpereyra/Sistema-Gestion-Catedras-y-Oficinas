@@ -21,6 +21,24 @@ class RoleSeeder(Seeder):
         admin_role.save()
         print(f" - {admin_role.name} Role OK")
 
+        career_manager_role = Role(
+            name="Responsable de Carrera", permissions=[
+                permissions["user_show"],
+                permissions["career_index"],
+                permissions["career_show"],
+                permissions["cathedra_index"],
+                permissions["cathedra_show"],
+                permissions["request_index"],
+                permissions["request_show"],
+                permissions["request_create"],
+                permissions["employee_index"],
+                permissions["employee_show"],
+                permissions["employee_create"],
+                permissions["employee_update"]
+            ])
+        career_manager_role.save()
+        print(f" - {career_manager_role.name} Role OK")
+
         cathedra_manager_role = Role(
             name="Responsable de Catedra", permissions=[
                 permissions["user_show"],
@@ -53,20 +71,12 @@ class RoleSeeder(Seeder):
         office_manager_role.save()
         print(f" - {office_manager_role.name} Role OK")
 
-        career_manager_role = Role(
-            name="Responsable de Carrera", permissions=[
+        visitor_role = Role(
+            name="Visitante", permissions=[
                 permissions["user_show"],
-                permissions["career_index"],
-                permissions["career_show"],
-                permissions["cathedra_index"],
-                permissions["cathedra_show"],
                 permissions["request_index"],
                 permissions["request_show"],
                 permissions["request_create"],
-                permissions["employee_index"],
-                permissions["employee_show"],
-                permissions["employee_create"],
-                permissions["employee_update"]
             ])
-        career_manager_role.save()
-        print(f" - {career_manager_role.name} Role OK")
+        visitor_role.save()
+        print(f" - {visitor_role.name} Role OK")

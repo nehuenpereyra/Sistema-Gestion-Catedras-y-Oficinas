@@ -15,7 +15,13 @@ class UserState(db.Model):
         'polymorphic_on': type
     }
 
+    def is_responsible_of_elements(self):
+        pass
+
     def add_responsible_element(self, element):
+        pass
+
+    def remove_responsible_element(self, element):
         pass
 
     def allowed_career_id_list(self):
@@ -35,9 +41,5 @@ class UserState(db.Model):
 
     def remove(self):
         if self.id:
-            self.is_deleted = True
-            self.save()
-
-    # @property
-    # def name(self):
-    #     return self.user.name
+            db.session.delete(self)
+            db.session.commit()

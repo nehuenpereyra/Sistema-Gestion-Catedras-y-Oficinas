@@ -7,7 +7,8 @@ from .user_state import UserState
 
 class CathedraUser(UserState):
 
-    id = db.Column("id", db.Integer, db.ForeignKey('user_state.id'), primary_key=True)
+    id = db.Column("id", db.Integer, db.ForeignKey(
+        'user_state.id'), primary_key=True)
     cathedras = db.relationship(
         "Cathedra", back_populates="users", secondary=link_user_cathedra)
 
@@ -15,8 +16,14 @@ class CathedraUser(UserState):
         'polymorphic_identity': 2
     }
 
+    def is_responsible_of_elements(self):
+        return not self.cathedras.is_empty()
+
     def add_responsible_element(self, element):
         self.cathedras.add(element)
+
+    def remove_responsible_element(self, element):
+        self.cathedras.remove(element)
 
     def allowed_cathedra_id_list(self):
         return self.cathedras.collect(lambda each: each.id)

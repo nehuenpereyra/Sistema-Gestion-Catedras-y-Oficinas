@@ -71,27 +71,44 @@ class User(UserMixin, db.Model):
     def is_responsible(self):
         return self.state is not None
 
+    def is_responsible_of_elements(self):
+        return self.is_responsible() and self.state.is_responsible_of_elements()
+
     def add_responsible_element(self, element):
         self.state.add_responsible_element(element)
+
+    def remove_responsible_element(self, element):
+        self.state.remove_responsible_element(element)
 
     def get_roles(self):
         return self.roles.select(lambda each: not each.is_deleted)
 
-    def set_roles(self, roles):
-        self.roles = self.roles.select(lambda each: each.is_deleted) + roles
-        rol = roles.detect(lambda each: each.name == "Responsable de Catedra" or each.name ==
-                           "Responsable de Oficina" or each.name == "Responsable de Carrera")
-        if rol:
-            self.state.remove()
+    def get_responsible_role(self, roles):
+        return roles.detect(lambda each: each.name == "Responsable de Catedra" or each.name ==
+                            "Responsable de Oficina" or each.name == "Responsable de Carrera")
 
-            if rol.name == "Responsable de Carrera":
-                self.state = CareerUser()
-            if rol.name == "Responsable de Catedra":
-                self.state = CathedraUser()
-            if rol.name == "Responsable de Oficina":
-                self.state = OfficeUser()
-        else:
-            self.state = None
+    def responsible_role_changed(self, roles):
+        return self.get_responsible_role(self.roles) is not self.get_responsible_role(roles)
+
+    def set_roles(self, roles):
+
+        if self.responsible_role_changed(roles):
+            if self.is_responsible():
+                self.state.remove()
+
+            responsible_role = self.get_responsible_role(roles)
+
+            if responsible_role:
+                if responsible_role.name == "Responsable de Carrera":
+                    self.state = CareerUser()
+                elif responsible_role.name == "Responsable de Catedra":
+                    self.state = CathedraUser()
+                elif responsible_role.name == "Responsable de Oficina":
+                    self.state = OfficeUser()
+            # else:
+            #     self.state = None
+
+        self.roles = roles
 
     def get_requests(self):
         return self.requests.select(lambda each: not each.is_deleted)
