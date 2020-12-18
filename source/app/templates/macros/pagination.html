@@ -5,7 +5,7 @@
             {% if page %}
                 {% if page != items.page %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for_page(url, page) }}">{{ page }}</a>
+                        <a class="page-link" href="{{ url_for_page(url, page, **kwargs) }}">{{ page }}</a>
                     </li>
                 {% else %}
                     <li class="page-item active">

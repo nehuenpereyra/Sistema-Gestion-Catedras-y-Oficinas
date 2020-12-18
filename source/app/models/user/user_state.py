@@ -15,6 +15,10 @@ class UserState(db.Model):
         'polymorphic_on': type
     }
 
+    @staticmethod
+    def get_responsible_content_label():
+        pass
+
     def is_responsible_of_elements(self):
         pass
 

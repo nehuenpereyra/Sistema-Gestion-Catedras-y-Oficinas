@@ -1,6 +1,5 @@
 
 from app.db import db
- 
 
 
 class Career(db.Model):
@@ -48,19 +47,24 @@ class Career(db.Model):
         return query.all()
 
     @classmethod
-    def all_paginated(self, page, per_page, ids=None):
+    def all_paginated(self, page, per_page, ids=None, only_ids=True):
+
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
+
         if ids is not None:
-            query = query.filter(self.id.in_(ids))
+            if only_ids:
+                query = query.filter(self.id.in_(ids))
+            else:
+                query = query.filter(~self.id.in_(ids))
+
         return query.paginate(page=page, per_page=per_page, error_out=False)
 
     @classmethod
     def get(self, id):
         career = self.query.get(id)
-        return career if career and career.is_deleted==False else None
-        
+        return career if career and career.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -74,5 +78,3 @@ class Career(db.Model):
     def find_by_name(self, name):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(name=name, is_deleted=False).all()
-
- 

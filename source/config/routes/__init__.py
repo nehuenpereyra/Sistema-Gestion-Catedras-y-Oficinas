@@ -4,6 +4,7 @@ from . import auth
 from . import configuration
 from . import handler
 from . import user
+from . import user_content
 from . import role
 from . import permission
 from . import career
@@ -18,12 +19,13 @@ from . import request_type
 
 
 def set_routes(app):
-    
+
     main.set_routes(app)
     auth.set_routes(app)
     configuration.set_routes(app)
     handler.set_routes(app)
     user.set_routes(app)
+    user_content.set_routes(app)
     role.set_routes(app)
     permission.set_routes(app)
     career.set_routes(app)

@@ -14,6 +14,10 @@ class CareerUser(UserState):
         'polymorphic_identity': 1
     }
 
+    @staticmethod
+    def get_responsible_content_label():
+        return "Carrera"
+
     def is_responsible_of_elements(self):
         return self.career is not None
 

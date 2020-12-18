@@ -98,3 +98,8 @@ class PermissionSeeder(Seeder):
         Permission(name="pending_employee_accept").save()
         Permission(name="pending_employee_reject").save()
         print(f" - Pending Employee Permissions OK")
+
+        Permission(name="user_content_index").save()
+        Permission(name="user_content_assign").save()
+        Permission(name="user_content_unassign").save()
+        print(f" - User Content Permissions OK")

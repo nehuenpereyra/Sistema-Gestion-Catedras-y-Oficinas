@@ -16,6 +16,10 @@ class OfficeUser(UserState):
         'polymorphic_identity': 3
     }
 
+    @staticmethod
+    def get_responsible_content_label():
+        return "Oficina"
+
     def is_responsible_of_elements(self):
         return not self.offices.is_empty()
 
