@@ -1,19 +1,21 @@
 from app.db import db
- 
+
+
 class Workplace(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(64), nullable=False, unique=False)
     email = db.Column("email", db.String(64), nullable=False, unique=True)
     phone = db.Column("phone", db.String(32), nullable=False, unique=False)
-    location = db.Column("location", db.String(64), nullable=False, unique=False)
+    location = db.Column("location", db.String(64),
+                         nullable=False, unique=False)
     staff = db.relationship("JobPosition", back_populates="workplace")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
     type = db.Column(db.Integer, nullable=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 0,
-        'polymorphic_on':type
+        'polymorphic_on': type
     }
 
     def all_employees(self):
@@ -21,7 +23,16 @@ class Workplace(db.Model):
 
     def all_staff(self):
         return self.staff
-        
+
+    def all_docent(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Docente").collect(lambda each: each.employee)
+
+    def all_not_docent(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "No Docente").collect(lambda each: each.employee)
+
+    def all_administrative(self):
+        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Administrativo").collect(lambda each: each.employee)
+
     def is_cathedra(self):
         return False
 
@@ -79,8 +90,7 @@ class Workplace(db.Model):
     @classmethod
     def get(self, id):
         workplace = self.query.get(id)
-        return workplace if workplace and workplace.is_deleted==False else None
-        
+        return workplace if workplace and workplace.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -104,5 +114,3 @@ class Workplace(db.Model):
     def find_by_phone(self, phone):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(phone=phone, is_deleted=False).all()
-
- 
