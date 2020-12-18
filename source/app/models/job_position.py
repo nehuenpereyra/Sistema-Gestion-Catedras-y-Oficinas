@@ -1,26 +1,49 @@
+
 from datetime import datetime
+
 from app.db import db
+from app.models import EmployeeReview
 
 
 class JobPosition(db.Model):
 
-    id = db.Column("id", db.Integer, primary_key=True)
-    start_date = db.Column("start_date", db.DateTime,
+    id = db.Column(db.Integer, primary_key=True)
+    start_date = db.Column(db.DateTime, default=datetime.now,
                            nullable=False, unique=False)
-    end_date = db.Column("end_date", db.DateTime, nullable=True, unique=False)
+    end_date = db.Column(db.DateTime,
+                         nullable=True, unique=False)
     charge = db.relationship(
         "Charge", back_populates="job_positions", uselist=False)
-    charge_id = db.Column("charge_id", db.Integer, db.ForeignKey(
+    charge_id = db.Column(db.Integer, db.ForeignKey(
         "charge.id"), nullable=False, unique=False)
     workplace = db.relationship(
         "Workplace", back_populates="staff", uselist=False)
-    workplace_id = db.Column("workplace_id", db.Integer, db.ForeignKey(
+    workplace_id = db.Column(db.Integer, db.ForeignKey(
         "workplace.id"), nullable=False, unique=False)
     employee = db.relationship(
         "Employee", back_populates="job_positions", uselist=False)
-    employee_id = db.Column("employee_id", db.Integer, db.ForeignKey(
+    employee_id = db.Column(db.Integer, db.ForeignKey(
         "employee.id"), nullable=False, unique=False)
+
+    current_review = db.relationship(
+        "EmployeeReview", back_populates="current_position", foreign_keys="EmployeeReview.current_position_id", uselist=False)
+    old_review = db.relationship(
+        "EmployeeReview", back_populates="old_position", foreign_keys="EmployeeReview.old_position_id", uselist=False)
+
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __init__(self, review=True, **kwargs):
+        super(JobPosition, self).__init__(**kwargs)
+
+        if review:
+            EmployeeReview.creation_type(self)
+
+    def reassign(self, charge):
+        self.finish(review=False)
+
+        new_job_position = JobPosition(charge=charge, workplace=self.workplace,
+                                       employee=self.employee, review=False)
+        EmployeeReview.upgrade_type(new_job_position, self)
 
     def save(self):
         if not self.id:
@@ -38,8 +61,12 @@ class JobPosition(db.Model):
     def isActive(self):
         return True if self.end_date is None else False
 
-    def finish(self):
+    def finish(self, review=True):
         self.end_date = datetime.today()
+
+        if review:
+            EmployeeReview.elimination_type(self)
+
         self.save()
 
     @classmethod

@@ -24,6 +24,15 @@
                 {% if verify_permission('employee_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('employee_index') }}"><i class="fas fa-users" style="color: white;"></i><span style="/*color: white;*/">Empleados</span></a></li>
                 {% endif %}
+
+                {% if verify_permission('employee_index') %}
+                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('pending_employee_index') }}"><i class="fas fa-user-clock" style="color: white;"></i><span style="/*color: white;*/">Aprobación de Empleados</span></a></li>
+                {% endif %}
+                {% if verify_permission('employee_index') %}
+                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('employee_review_index') }}"><i class="fas fa-user-friends" style="color: white;"></i><span style="/*color: white;*/">Revisión de Empleados</span></a></li>
+                {% endif %}
+
+
                 {% if verify_permission('user_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="../reportes/catedras.html"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reportes</span></a></li>
                 {% endif %}

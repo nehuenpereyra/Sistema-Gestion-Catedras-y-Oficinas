@@ -13,6 +13,7 @@ from . import office
 from . import charge
 from . import employee
 from . import pending_employee
+from . import employee_review
 from . import job_position
 from . import request
 from . import request_type
@@ -34,6 +35,7 @@ def set_routes(app):
     charge.set_routes(app)
     employee.set_routes(app)
     pending_employee.set_routes(app)
+    employee_review.set_routes(app)
     job_position.set_routes(app)
     request.set_routes(app)
     request_type.set_routes(app)

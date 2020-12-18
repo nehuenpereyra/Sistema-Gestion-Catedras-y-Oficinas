@@ -11,7 +11,7 @@ from config.config import config
 from config.routes import set_routes
 from app.helpers.login import set_login, authenticated
 from app.helpers.permission import verify_permission
-from app.helpers.view.field import show_field
+from app.helpers.view import show_field, link
 from app.helpers.pagination import url_for_page
 
 
@@ -38,6 +38,7 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(is_authenticated=authenticated)
     app.jinja_env.globals.update(verify_permission=verify_permission)
     app.jinja_env.globals.update(show_field=show_field)
+    app.jinja_env.globals.update(link=link)
     app.jinja_env.globals.update(url_for_page=url_for_page)
 
     sm_list()

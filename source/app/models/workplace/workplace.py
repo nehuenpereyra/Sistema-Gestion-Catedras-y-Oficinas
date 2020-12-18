@@ -39,6 +39,14 @@ class Workplace(db.Model):
     def is_office(self):
         return False
 
+    @staticmethod
+    def get_id_string():
+        return "workplace"
+
+    @staticmethod
+    def get_label():
+        pass
+
     def get_staff(self):
         return self.staff.select(lambda each: not each.is_deleted)
 
