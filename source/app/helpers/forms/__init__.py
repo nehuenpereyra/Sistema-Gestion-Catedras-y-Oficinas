@@ -14,3 +14,4 @@ from .request import RequestForm
 from .request_type import RequestTypeForm
 from .password_recovery import PasswordRecoveryForm
 from .password_change import PasswordChangeForm
+from .cathedra_report import CathedraReport

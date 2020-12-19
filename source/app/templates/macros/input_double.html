@@ -1,0 +1,62 @@
+
+{% macro input_double(fields, class_="form-control", style=False) %}
+{% if (fields[0].type != "BooleanField") %}
+        <div class="form-row">
+            <div class="col-12 col-sm-6"> 
+                {{ fields[0].label }}{% if (fields[0].flags.required) %}<span class="text-danger">*</span>{% endif %}
+                {% if ( fields[0].errors|length == 0) %}
+                    <div class="form-group">{{ fields[0](class_=class_, style=style) }}</div>
+                {% else %}
+                    <div class="form-group">{{ fields[0](class_=class_+ " is-invalid", style=style) }}</div>
+                    {% for error in fields[0].errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                {% endif%}
+            </div>
+            <div class="col-12 col-sm-6">
+                {{ fields[1].label }}{% if (fields[1].flags.required) %}<span class="text-danger">*</span>{% endif %}
+                {% if ( fields[1].errors|length == 0) %}
+                    <div class="form-group">{{ fields[1](class_=class_, style=style) }}</div>
+                {% else %}
+                    <div class="form-group">{{ fields[1](class_=class_+ " is-invalid", style=style) }}</div>
+                    {% for error in fields[1].errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                {% endif%}
+            </div>
+        </div>
+{% else %}
+
+    <div class="form-row">
+        <div class="col-12 col-sm-6"> 
+            <div  class="form-check">
+            {% if ( fields[0].errors|length == 0) %}
+                <div class="form-group">{{ fields[0](class_=class_+"form-check-input", style=style) }}
+            {% else %}
+                <div class="form-group">{{ fields[0](class_=class_+"form-check-input"+ " is-invalid", style=style) }}</div>
+                {% for error in fields[0].errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif%}
+                {{ fields[0].label }}{% if (fields[0].flags.required) %}<span class="text-danger">*</span>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div  class="form-check">
+            {% if ( fields[1].errors|length == 0) %}
+                <div class="form-group">{{ fields[1](class_=class_+"form-check-input", style=style) }}
+            {% else %}
+                <div class="form-group">{{ fields[1](class_=class_+ " is-invalid"+" form-check-input", style=style) }}</div>
+                {% for error in fields[1].errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif%}
+            {{ fields[1].label }}{% if (fields[1].flags.required) %}<span class="text-danger">*</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>    
+
+{% endif %}    
+{% endmacro %}
