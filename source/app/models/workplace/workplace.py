@@ -1,3 +1,4 @@
+import bisect
 from app.db import db
 
 
@@ -128,3 +129,23 @@ class Workplace(db.Model):
     def find_by_phone(self, phone):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(phone=phone, is_deleted=False).all()
+
+    def sttaf_json(self):
+        charge_employees = []
+        staff = {}
+        charges = {}
+        for data in self.staff:
+            if data.isActive():
+                bisect.insort(charge_employees, data)
+        for charge_employee in charge_employees:
+            if not charge_employee.charge.name in charges:
+                charges[charge_employee.charge.name] = []
+            charges[charge_employee.charge.name].add(charge_employee)
+        for key, values in charges.items():
+            if not values.first().employee.get_label() in staff:
+                staff[values.first().employee.get_label()] = {
+                    key: charges[key]}
+            else:
+                staff[values.first().employee.get_label()].update(
+                    {key: charges[key]})
+        return staff

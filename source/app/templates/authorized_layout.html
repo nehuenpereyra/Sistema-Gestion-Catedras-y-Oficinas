@@ -34,7 +34,7 @@
 
 
                 {% if verify_permission('user_index') %}
-                <li class="nav-item" role="presentation"><a class="nav-link" href="../reportes/catedras.html"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reportes</span></a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('cathedra_report') }}"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reporte de Cátedras</span></a></li>
                 {% endif %}
                 {% if verify_permission('request_type_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('request_type_index') }}"><i class="fas fa-angle-right" style="color: white;"></i><span style="/*color: white;*/">Tipos de solicitudes</span></a></li>

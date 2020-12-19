@@ -1,4 +1,3 @@
-import bisect
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user
 from datetime import datetime
@@ -16,29 +15,13 @@ from app.helpers.forms import JobPositionForm
 def index(workplace_id):
     allowed_job_position_ids = None
     workplace = Workplace.get(workplace_id)
-    charge_employees = []
-    staff = {}
-    charges = {}
-    for data in workplace.staff:
-        if data.isActive():
-            bisect.insort(charge_employees, data)
-    for charge_employee in charge_employees:
-        if not charge_employee.charge.name in charges:
-            charges[charge_employee.charge.name] = []
-        charges[charge_employee.charge.name].add(charge_employee)
-    for key, values in charges.items():
-        if not values.first().employee.get_label() in staff:
-            staff[values.first().employee.get_label()] = {key: charges[key]}
-        else:
-            staff[values.first().employee.get_label()].update(
-                {key: charges[key]})
 
     if not current_user.is_admin():
         allowed_job_position_ids = current_user.allowed_job_position_id_list()
 
     job_positions = JobPosition.all_paginated(page=int(request.args.get('page', 1)),
                                               per_page=Configuration.get().items_per_page, ids=allowed_job_position_ids)
-    return render_template("job_position/index.html", staff=staff, job_positions=job_positions, workplace_id=workplace_id, is_cathedra=workplace.is_cathedra(), workplace_name=workplace.name, alert=get_alert())
+    return render_template("job_position/index.html", staff=workplace.sttaf_json(), job_positions=job_positions, workplace_id=workplace_id, is_cathedra=workplace.is_cathedra(), workplace_name=workplace.name, alert=get_alert())
 
 
 @ permission('job_position_show')
