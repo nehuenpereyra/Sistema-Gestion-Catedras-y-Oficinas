@@ -10,7 +10,8 @@ class CathedraReport(TranslateForm):
 
     cathedras = SelectMultipleField("Catedras", validators=[
         DataRequired()], coerce=int, filters=[lambda value: value or None])
-    employee = SelectField("Empleado", validators=[DataRequired()], coerce=int)
+    employee_type = SelectField("Empleado", validators=[
+                                DataRequired()], coerce=int)
     charges = SelectMultipleField("Cargos", validators=[
         DataRequired()], coerce=int, filters=[lambda value: value or None])
     institutional_email = EmailField("Correo Electrónico Institucional", validators=[
@@ -20,7 +21,7 @@ class CathedraReport(TranslateForm):
     surname = StringField("Apellido", validators=[Optional(), Length(max=32)])
     secondary_email = EmailField("Correo Electrónico Secundario", validators=[
         Optional(), Email(), Length(max=32)], filters=[lambda value: value if value else None])
-    dni = IntegerField("DNI", validators=[Optional()])
+    dni = StringField("DNI", validators=[Optional(), Length(max=16)])
 
     show_dni = BooleanField("DNI", default=False)
     show_secondary_email = BooleanField(
@@ -31,7 +32,7 @@ class CathedraReport(TranslateForm):
         super(CathedraReport, self).__init__(*args, **kwargs)
         self.cathedras.choices = Cathedra.all() \
             .collect(lambda each: (each.id, each.name))
-        self.employee.choices = [
+        self.employee_type.choices = [
             (0, "Todos"), (1, "Docente"), (2, "No Docente")]
         self.charges.choices = Charge.all() \
             .collect(lambda each: (each.id, each.name))

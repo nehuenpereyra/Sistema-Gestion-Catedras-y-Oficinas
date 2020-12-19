@@ -1,5 +1,5 @@
-
-from flask import redirect, render_template, request, url_for
+import json
+from flask import redirect, render_template, request, url_for, make_response
 from flask_login import current_user
 
 from app.models.configuration import Configuration
@@ -92,7 +92,33 @@ def delete(id):
 
 
 def report():
-    cathedras = Cathedra.all().collect(
-        lambda each: {"cathedra": each, "sttaf": each.sttaf_json()})
-    # print(cathedras)
-    return render_template("cathedra/report.html", cathedras=cathedras, dni_field=True, secondary_email_field=True, form=CathedraReport())
+
+    form = CathedraReport(request.args)
+    args = {
+        "cathedras": form.cathedras.data,
+        "employee_type": form.employee_type.data,
+        "charges_ids": form.charges.data,
+        "institutional_email": form.institutional_email.data if form.institutional_email.data != "" else None,
+        "name": form.name.data if form.name.data != "" else None,
+        "surname": form.surname.data if form.surname.data != "" else None,
+        "secondary_email": form.secondary_email.data if form.secondary_email.data != "" else None,
+        "dni": form.dni.data if form.dni.data != "" else None
+    }
+
+    cathedras = []
+    if current_user.is_admin() or current_user.is_visitante():
+        cathedras = Cathedra.all()
+    else:
+        cathedras = current_user.get_cathedras()
+    form.cathedras.choices = cathedras.collect(
+        lambda each: (each.id, each.name))
+
+    cathedras_staff = []
+    json_export = {}
+    if request.args:
+        data = Cathedra.search(
+            form.show_dni.data, form.show_secondary_email.data, **args)
+        cathedras_staff = data["cathedra_list"]
+        json_export = data["staff_json"]
+
+    return render_template("cathedra/report.html", json_export=json_export, cathedras=cathedras_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)

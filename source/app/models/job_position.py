@@ -58,7 +58,7 @@ class JobPosition(db.Model):
         self.employee = employee
         self.save()
 
-    def isActive(self):
+    def is_active(self):
         return True if self.end_date is None else False
 
     def finish(self, review=True):

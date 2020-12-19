@@ -61,6 +61,9 @@ class User(UserMixin, db.Model):
     def is_office_manager(self):
         return self.roles.any_satisfy(lambda each: each.name == "Responsable de Oficina")
 
+    def is_visitante(self):
+        return self.roles.any_satisfy(lambda each: each.name == "Visitante")
+
     def get_career(self):
         return self.state.career
 

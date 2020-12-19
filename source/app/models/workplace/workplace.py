@@ -20,19 +20,26 @@ class Workplace(db.Model):
     }
 
     def all_staff(self):
-        return self.staff.select(lambda each: each.isActive())
+        return self.staff.select(lambda each: each.is_active())
+
+    def all_staff_ordered_by_charge(self):
+        charge_employees = []
+        for job_position in self.staff:
+            if job_position.is_active():
+                bisect.insort(charge_employees, job_position)
+        return charge_employees
 
     def all_employees(self):
         return self.all_staff().collect(lambda each: each.employee)
 
     def all_docent(self):
-        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Docente").collect(lambda each: each.employee)
+        return self.staff.select(lambda each: each.is_active() and each.employee.get_label() == "Docente").collect(lambda each: each.employee)
 
     def all_not_docent(self):
-        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "No Docente").collect(lambda each: each.employee)
+        return self.staff.select(lambda each: each.is_active() and each.employee.get_label() == "No Docente").collect(lambda each: each.employee)
 
     def all_administrative(self):
-        return self.staff.select(lambda each: each.isActive() and each.employee.get_label() == "Administrativo").collect(lambda each: each.employee)
+        return self.staff.select(lambda each: each.is_active() and each.employee.get_label() == "Administrativo").collect(lambda each: each.employee)
 
     def is_cathedra(self):
         return False
@@ -135,7 +142,7 @@ class Workplace(db.Model):
         staff = {}
         charges = {}
         for data in self.staff:
-            if data.isActive():
+            if data.is_active():
                 bisect.insort(charge_employees, data)
         for charge_employee in charge_employees:
             if not charge_employee.charge.name in charges:

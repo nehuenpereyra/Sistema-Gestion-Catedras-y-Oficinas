@@ -1,6 +1,5 @@
-
+import re
 from app.db import db
- 
 
 
 class Employee(db.Model):
@@ -9,10 +8,13 @@ class Employee(db.Model):
     name = db.Column("name", db.String(32), nullable=False, unique=False)
     surname = db.Column("surname", db.String(32), nullable=False, unique=False)
     dni = db.Column("dni", db.String(16), nullable=True, unique=True)
-    institutional_email = db.Column("institutional_email", db.String(64), nullable=False, unique=True)
-    secondary_email = db.Column("secondary_email", db.String(64), nullable=True, unique=True)
+    institutional_email = db.Column(
+        "institutional_email", db.String(64), nullable=False, unique=True)
+    secondary_email = db.Column(
+        "secondary_email", db.String(64), nullable=True, unique=True)
     job_positions = db.relationship("JobPosition", back_populates="employee")
-    pending_changes = db.relationship("PendingEmployee", back_populates="linked_employee")
+    pending_changes = db.relationship(
+        "PendingEmployee", back_populates="linked_employee")
     type = db.Column(db.Integer, nullable=False)
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -24,6 +26,50 @@ class Employee(db.Model):
     @staticmethod
     def get_label():
         return "Empleado"
+
+    def is_docent(self):
+        return False
+
+    def is_not_docent(self):
+        return False
+
+    def is_administrative(self):
+        return False
+
+    def has_charge(self, charges_ids, workplace):
+        for job_position in workplace.all_staff():
+            if job_position.employee == self:
+                return charges_ids.any_satisfy(lambda each: each == job_position.charge.id)
+        return False
+
+    def check_fields(self, institutional_email, name, surname, secondary_email, dni):
+        valid_institutional_email = True
+        valid_name = True
+        valid_surname = True
+        valid_secondary_email = True
+        valid_dni = True
+
+        if not institutional_email is None:
+            if self.institutional_email != institutional_email:
+                valid_institutional_email = False
+
+        if not name is None:
+            if not bool(re.search(name.lower(), self.name.lower())):
+                valid_name = False
+
+        if not surname is None:
+            if not bool(re.search(surname.lower(), self.surname.lower())):
+                valid_surname = False
+
+        if not secondary_email is None:
+            if self.secondary_email != secondary_email:
+                valid_secondary_email = False
+
+        if not dni is None:
+            if self.dni != dni:
+                valid_dni = False
+
+        return valid_institutional_email and valid_name and valid_surname and valid_secondary_email and valid_dni
 
     def get_job_positions(self):
         return self.job_positions.select(lambda each: not each.is_deleted)
@@ -80,8 +126,7 @@ class Employee(db.Model):
     @classmethod
     def get(self, id):
         employee = self.query.get(id)
-        return employee if employee and employee.is_deleted==False else None
-        
+        return employee if employee and employee.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -115,5 +160,3 @@ class Employee(db.Model):
     def find_by_secondary_email(self, secondary_email):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
-
- 
