@@ -1,0 +1,48 @@
+
+{% macro input_seeker(field, type, submit, search_text, class_="form-control") %}
+
+{% if type=="select" %}
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            {{ field.label(class_="input-group-text") }}
+        </div>
+        {{ field(class_=class_,) }}
+    </div>
+{% endif %}
+{% if type=="submit" %}  
+    <div class="input-group">
+        <div class="input-group-prepend">
+            {{ field(class_=class_, style="border-top-right-radius: 0;border-bottom-right-radius: 0;") }}
+        </div>
+        {% if ( search_text.errors|length == 0) %}
+                {{ search_text(class_=class_, style=style, type="search") }}
+            {% else %}
+                {{ search_text(class_=class_ + " is-invalid", style=style, type="search") }}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+        {% endif %}
+        <div class="input-group-append">
+            {{ submit(class_="btn btn-primary", style=style) }}
+        </div>
+    </div>
+{% endif %}
+{% if type=="submit_without_select" %}  
+    <div class="input-group">
+        <div class="input-group-prepend">
+            {{ field.label(class_="input-group-text") }}
+        </div>
+        {% if ( field.errors|length == 0) %}
+                {{ field(class_=class_, style=style, type="search") }}
+            {% else %}
+                {{ field(class_=class_ + " is-invalid", style=style, type="search") }}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+        {% endif %}
+        <div class="input-group-append">
+            {{ submit(class_="btn btn-primary", style=style) }}
+        </div>
+    </div>
+{% endif %}
+{% endmacro %}

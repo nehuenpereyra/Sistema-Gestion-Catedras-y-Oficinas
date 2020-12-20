@@ -17,3 +17,8 @@ from .password_change import PasswordChangeForm
 from .cathedra_report import CathedraReport
 from .office_report import OfficeReport
 from .career_report import CareerReport
+from .user_seeker import UserSeeker
+from .employee_seeker import EmployeeSeeker
+from .cathedra_seeker import CathedraSeeker
+from .office_seeker import OfficeSeeker
+from .charge_seeker import ChargeSeeker

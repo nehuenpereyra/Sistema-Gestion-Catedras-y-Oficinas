@@ -8,7 +8,7 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import Employee, Docent, NotDocent, Administrative, PendingEmployee
-from app.helpers.forms import EmployeeForm
+from app.helpers.forms import EmployeeForm, EmployeeSeeker
 from app.helpers.previous_path import add_previous_path
 
 
@@ -19,11 +19,12 @@ def index():
     if not current_user.is_admin():
         allowed_employee_ids = current_user.allowed_employee_id_list()
 
+    form = EmployeeSeeker()
     employees = Employee.all_paginated(page=int(request.args.get('page', 1)),
                                        per_page=Configuration.get().items_per_page, ids=allowed_employee_ids)
 
     add_previous_path({"url": 'employee_index'})
-    return render_template("employee/index.html", employees=employees, alert=get_alert())
+    return render_template("employee/index.html", employees=employees, alert=get_alert(),  form=form)
 
 
 @permission('employee_show')

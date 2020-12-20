@@ -7,7 +7,7 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import Cathedra, Career
-from app.helpers.forms import CathedraForm, CathedraReport
+from app.helpers.forms import CathedraForm, CathedraReport, CathedraSeeker
 
 
 @permission('cathedra_index')
@@ -16,10 +16,10 @@ def index():
 
     if not current_user.is_admin():
         allowed_cathedra_ids = current_user.allowed_cathedra_id_list()
-
+    form = CathedraSeeker()
     cathedras = Cathedra.all_paginated(page=int(request.args.get('page', 1)),
                                        per_page=Configuration.get().items_per_page, ids=allowed_cathedra_ids)
-    return render_template("cathedra/index.html", cathedras=cathedras, alert=get_alert())
+    return render_template("cathedra/index.html", cathedras=cathedras, alert=get_alert(), form=form)
 
 
 @permission('cathedra_show')

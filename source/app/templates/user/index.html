@@ -1,6 +1,7 @@
 
 {% from 'macros/alert.html' import  show_alert %}
 {% from 'macros/pagination.html' import  pagination %}
+{% from 'macros/input_seeker.html' import  input_seeker %}
 
 {% extends "authorized_layout.html" %}
 
@@ -23,6 +24,11 @@
             </a>
         </div>
     {% endif %}
+
+    <form class="border rounded shadow-sm mt-3 p-2" style="background: white;" method="get">
+        {{input_seeker(form.user_attributes, "submit", form.submit, form.search_text)}}
+        {{input_seeker(form.user_rol, "select")}}
+    </form>
     
     {% if users.items %}
         <ul class="list-group border rounded shadow-sm mt-3">

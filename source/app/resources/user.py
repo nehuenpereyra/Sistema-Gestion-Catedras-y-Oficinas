@@ -7,7 +7,7 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import User, Role, MailSender
-from app.helpers.forms import UserForm, PasswordRecoveryForm, PasswordChangeForm
+from app.helpers.forms import UserForm, PasswordRecoveryForm, PasswordChangeForm, UserSeeker
 
 
 @permission('user_index')
@@ -17,9 +17,10 @@ def index():
     if not current_user.is_admin():
         allowed_user_ids = current_user.allowed_user_id_list()
 
+    form = UserSeeker()
     users = User.all_paginated(page=int(request.args.get('page', 1)),
                                per_page=Configuration.get().items_per_page, ids=allowed_user_ids)
-    return render_template("user/index.html", users=users, alert=get_alert())
+    return render_template("user/index.html", users=users, alert=get_alert(), form=form)
 
 
 @permission('user_show')

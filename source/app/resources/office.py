@@ -7,7 +7,7 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import Office, Charge
-from app.helpers.forms import OfficeForm, OfficeReport
+from app.helpers.forms import OfficeForm, OfficeReport, OfficeSeeker
 
 
 @permission('office_index')
@@ -17,9 +17,10 @@ def index():
     if not current_user.is_admin():
         allowed_office_ids = current_user.allowed_office_id_list()
 
+    form = OfficeSeeker()
     offices = Office.all_paginated(page=int(request.args.get('page', 1)),
                                    per_page=Configuration.get().items_per_page, ids=allowed_office_ids)
-    return render_template("office/index.html", offices=offices, alert=get_alert())
+    return render_template("office/index.html", offices=offices, alert=get_alert(), form=form)
 
 
 @permission('office_show')

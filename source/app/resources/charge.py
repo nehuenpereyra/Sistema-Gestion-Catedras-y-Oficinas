@@ -7,7 +7,8 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import Charge
-from app.helpers.forms import ChargeForm
+from app.helpers.forms import ChargeForm, ChargeSeeker
+
 
 @permission('charge_index')
 def index():
@@ -15,10 +16,10 @@ def index():
 
     if not current_user.is_admin():
         allowed_charge_ids = current_user.allowed_charge_id_list()
-
+    form = ChargeSeeker()
     charges = Charge.all_paginated(page=int(request.args.get('page', 1)),
-                        per_page=Configuration.get().items_per_page, ids=allowed_charge_ids)
-    return render_template("charge/index.html", charges=charges, alert=get_alert())
+                                   per_page=Configuration.get().items_per_page, ids=allowed_charge_ids)
+    return render_template("charge/index.html", charges=charges, alert=get_alert(), form=form)
 
 
 @permission('charge_show')
@@ -30,20 +31,24 @@ def show(id):
 
     return render_template("charge/show.html", charge=charge)
 
+
 @permission('charge_create')
 def new():
     return render_template("charge/new.html", form=ChargeForm())
+
 
 @permission('charge_create')
 def create():
     form = ChargeForm(id=None)
     if form.validate_on_submit():
-        charge = Charge(name = form.name.data, is_docent = form.is_docent.data, order = form.order.data)
+        charge = Charge(name=form.name.data,
+                        is_docent=form.is_docent.data, order=form.order.data)
         charge.save()
         add_alert(
             Alert("success", f'El cargo "{charge.name}" se ha creado correctamente.'))
         return redirect(url_for("charge_index"))
     return render_template("charge/new.html", form=form)
+
 
 @permission('charge_update')
 def edit(id):
@@ -56,6 +61,7 @@ def edit(id):
 
     return render_template("charge/edit.html", charge=charge, form=form)
 
+
 @permission('charge_update')
 def update(id):
     charge = Charge.get(id)
@@ -65,10 +71,12 @@ def update(id):
     form = ChargeForm(id=id)
     if not form.validate_on_submit():
         return render_template("charge/edit.html", charge=charge, form=form)
-    charge.update(name = form.name.data, is_docent = form.is_docent.data, order = form.order.data)
+    charge.update(name=form.name.data,
+                  is_docent=form.is_docent.data, order=form.order.data)
     add_alert(
         Alert("success", f'El cargo "{charge.name}" se ha modificado correctamente.'))
     return redirect(url_for("charge_index"))
+
 
 @permission('charge_delete')
 def delete(id):
@@ -78,5 +86,5 @@ def delete(id):
     else:
         charge.remove()
         add_alert(
-                Alert("success", f'El cargo "{charge.name}" se ha borrado correctamente.'))
+            Alert("success", f'El cargo "{charge.name}" se ha borrado correctamente.'))
     return redirect(url_for("charge_index"))
