@@ -1,6 +1,5 @@
 
 from app.db import db
- 
 
 
 class Charge(db.Model):
@@ -62,8 +61,7 @@ class Charge(db.Model):
     @classmethod
     def get(self, id):
         charge = self.query.get(id)
-        return charge if charge and charge.is_deleted==False else None
-        
+        return charge if charge and charge.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -88,4 +86,16 @@ class Charge(db.Model):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(order=order, is_deleted=False).all()
 
- 
+    @classmethod
+    def search(self, name, charge_type, page, per_page):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(self.name.asc())
+        if not name is None and name != "":
+            query = query.filter(self.name.like(f"%{name}%"))
+
+        if not charge_type is None and charge_type != 0:
+            query = query.filter_by(
+                is_docent=True if charge_type == 1 else False)
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)

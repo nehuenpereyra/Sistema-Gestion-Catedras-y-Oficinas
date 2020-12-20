@@ -160,3 +160,28 @@ class Employee(db.Model):
     def find_by_secondary_email(self, secondary_email):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
+
+    @classmethod
+    def search(self, employee_attributes, employee_charge_id, employee_type_ids, search_text, page, per_page):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(self.name.asc())
+        if not search_text is None and search_text != "" and not employee_attributes is None:
+            if employee_attributes == 0:
+                query = query.filter(self.name.like(f"%{search_text}%"))
+            if employee_attributes == 1:
+                query = query.filter(self.surname.like(f"%{search_text}%"))
+
+        if not employee_type_ids is None and employee_type_ids != 0:
+            if employee_type_ids == 1:
+                query = query.filter(self.type == 1)
+            if employee_type_ids == 2:
+                query = query.filter(self.type == 2)
+            if employee_type_ids == 3:
+                query = query.filter(self.type == 3)
+
+        if not employee_charge_id is None and employee_charge_id != 0:
+            query = query.filter(self.job_positions.any(
+                charge_id=employee_charge_id))
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)

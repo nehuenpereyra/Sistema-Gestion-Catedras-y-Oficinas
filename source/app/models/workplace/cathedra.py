@@ -33,6 +33,23 @@ class Cathedra(Workplace):
     def get_label():
         return "Cátedra"
 
+    @classmethod
+    def search_form(self, career_list_id, name, ids, page, per_page):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(self.name.asc())
+        if not name is None and name != "":
+            query = query.filter(self.name.like(f"%{name}%"))
+
+        if not career_list_id is None and career_list_id != 0:
+            query = query.filter(self.career.has(
+                id=career_list_id))
+
+        if ids is not None:
+            query = query.filter(self.id.in_(ids))
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)
+
     def update(self, name, email, phone, location, attention_time, career):
         self.name = name
         self.email = email

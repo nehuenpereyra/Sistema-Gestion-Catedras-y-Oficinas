@@ -229,6 +229,24 @@ class User(UserMixin, db.Model):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
 
+    @classmethod
+    def search(self, user_attributes, user_rol_ids, search_text, page, per_page):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(self.name.asc())
+        if not search_text is None and search_text != "" and not user_attributes is None:
+            if user_attributes == 0:
+                query = query.filter(self.name.like(f"%{search_text}%"))
+            if user_attributes == 1:
+                query = query.filter(self.surname.like(f"%{search_text}%"))
+            if user_attributes == 2:
+                query = query.filter(self.username.like(f"%{search_text}%"))
+
+        if not user_rol_ids is None and user_rol_ids != 0:
+            query = query.filter(self.roles.any(id=user_rol_ids))
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)
+
     def set_password(self, password):
         self.password = generate_password_hash(password)
 

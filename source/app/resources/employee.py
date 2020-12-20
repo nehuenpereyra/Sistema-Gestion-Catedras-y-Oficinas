@@ -19,9 +19,16 @@ def index():
     if not current_user.is_admin():
         allowed_employee_ids = current_user.allowed_employee_id_list()
 
-    form = EmployeeSeeker()
-    employees = Employee.all_paginated(page=int(request.args.get('page', 1)),
-                                       per_page=Configuration.get().items_per_page, ids=allowed_employee_ids)
+    form = EmployeeSeeker(request.args)
+    args = {
+        "employee_attributes": form.employee_attributes.data,
+        "employee_charge_id": form.employee_charge.data,
+        "employee_type_ids": form.employee_type.data,
+        "search_text": form.search_text.data if form.search_text.data != "" else None,
+        "page": int(request.args.get('page', 1)),
+        "per_page": Configuration.query.first().items_per_page
+    }
+    employees = Employee.search(**args)
 
     add_previous_path({"url": 'employee_index'})
     return render_template("employee/index.html", employees=employees, alert=get_alert(),  form=form)

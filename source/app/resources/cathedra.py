@@ -16,9 +16,17 @@ def index():
 
     if not current_user.is_admin():
         allowed_cathedra_ids = current_user.allowed_cathedra_id_list()
-    form = CathedraSeeker()
-    cathedras = Cathedra.all_paginated(page=int(request.args.get('page', 1)),
-                                       per_page=Configuration.get().items_per_page, ids=allowed_cathedra_ids)
+
+    form = CathedraSeeker(request.args)
+    args = {
+        "career_list_id": form.career_list.data,
+        "name": form.name.data if form.name.data != "" else None,
+        "ids": current_user.allowed_cathedra_id_list() if not current_user.is_admin() else None,
+        "page": int(request.args.get('page', 1)),
+        "per_page": Configuration.query.first().items_per_page
+    }
+    cathedras = Cathedra.search_form(**args)
+
     return render_template("cathedra/index.html", cathedras=cathedras, alert=get_alert(), form=form)
 
 

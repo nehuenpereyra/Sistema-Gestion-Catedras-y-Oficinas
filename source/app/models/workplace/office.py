@@ -28,6 +28,19 @@ class Office(Workplace):
         return "Oficina"
 
     @classmethod
+    def search_form(self, name, ids, page, per_page):
+        query = self.query
+        query = query.filter_by(is_deleted=False)
+        query = query.order_by(self.name.asc())
+        if not name is None and name != "":
+            query = query.filter(self.name.like(f"%{name}%"))
+
+        if ids is not None:
+            query = query.filter(self.id.in_(ids))
+
+        return query.paginate(page=page, per_page=per_page, error_out=False)
+
+    @classmethod
     def search(self, show_dni, show_secondary_email, offices, charges_ids, institutional_email, name, surname, secondary_email, dni):
 
         job_positions = []

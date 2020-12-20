@@ -17,9 +17,15 @@ def index():
     if not current_user.is_admin():
         allowed_office_ids = current_user.allowed_office_id_list()
 
-    form = OfficeSeeker()
-    offices = Office.all_paginated(page=int(request.args.get('page', 1)),
-                                   per_page=Configuration.get().items_per_page, ids=allowed_office_ids)
+    form = OfficeSeeker(request.args)
+    args = {
+        "name": form.name.data if form.name.data != "" else None,
+        "ids": current_user.allowed_office_id_list() if not current_user.is_admin() else None,
+        "page": int(request.args.get('page', 1)),
+        "per_page": Configuration.query.first().items_per_page
+    }
+    offices = Office.search_form(**args)
+
     return render_template("office/index.html", offices=offices, alert=get_alert(), form=form)
 
 

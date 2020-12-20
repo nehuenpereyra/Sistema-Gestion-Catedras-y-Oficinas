@@ -12,5 +12,6 @@ class ConfigurationSeeder(Seeder):
 
     def run(self):
         print("[ConfigurationSeeder]")
-        Configuration(mail_contact="admin@admin.com", items_per_page=10, mail_server="admin@admin.com", mail_port=666, mail_password="admin123").save()
+        Configuration(mail_contact="admin@admin.com", items_per_page=10,
+                      mail_server="smtp.gmail.com", mail_port=465, mail_password="password").save()
         print(f" - Configuration OK")

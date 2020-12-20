@@ -17,13 +17,20 @@ def index():
     if not current_user.is_admin():
         allowed_user_ids = current_user.allowed_user_id_list()
 
-    form = UserSeeker()
-    users = User.all_paginated(page=int(request.args.get('page', 1)),
-                               per_page=Configuration.get().items_per_page, ids=allowed_user_ids)
+    form = UserSeeker(request.args)
+    args = {
+        "user_attributes": form.user_attributes.data,
+        "user_rol_ids": form.user_rol.data,
+        "search_text": form.search_text.data if form.search_text.data != "" else None,
+        "page": int(request.args.get('page', 1)),
+        "per_page": Configuration.query.first().items_per_page
+    }
+    users = User.search(**args)
+
     return render_template("user/index.html", users=users, alert=get_alert(), form=form)
 
 
-@permission('user_show')
+@ permission('user_show')
 def show(id):
     user = User.get(id)
     if not user:
@@ -33,12 +40,12 @@ def show(id):
     return render_template("user/show.html", user=user)
 
 
-@permission('user_create')
+@ permission('user_create')
 def new():
     return render_template("user/new.html", form=UserForm())
 
 
-@permission('user_create')
+@ permission('user_create')
 def create():
     form = UserForm(id=None)
     if form.validate_on_submit():

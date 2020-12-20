@@ -16,9 +16,16 @@ def index():
 
     if not current_user.is_admin():
         allowed_charge_ids = current_user.allowed_charge_id_list()
-    form = ChargeSeeker()
-    charges = Charge.all_paginated(page=int(request.args.get('page', 1)),
-                                   per_page=Configuration.get().items_per_page, ids=allowed_charge_ids)
+
+    form = ChargeSeeker(request.args)
+    args = {
+        "name": form.name.data if form.name.data != "" else None,
+        "charge_type": form.charge_type.data,
+        "page": int(request.args.get('page', 1)),
+        "per_page": Configuration.query.first().items_per_page
+    }
+    charges = Charge.search(**args)
+
     return render_template("charge/index.html", charges=charges, alert=get_alert(), form=form)
 
 
