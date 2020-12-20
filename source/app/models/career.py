@@ -78,3 +78,90 @@ class Career(db.Model):
     def find_by_name(self, name):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(name=name, is_deleted=False).all()
+
+    @classmethod
+    def search(self, show_dni, show_secondary_email, careers, employee_type, charges_ids, institutional_email, name, surname, secondary_email, dni):
+
+        job_positions = []
+        cathedra_list = []
+        career_list = []
+        charges = {}
+        charges_json = {}
+        staff = {}
+        staff_json = {}
+        staff_json_list = []
+        staff_json_career = []
+
+        careers_obj = []
+        for career in careers:
+            careers_obj.add(self.get(career))
+
+        for career in careers_obj:
+            for cathedra in career.get_cathedras():
+                if not cathedra.all_staff_ordered_by_charge().is_empty():
+                    for job_position in cathedra.all_staff_ordered_by_charge():
+                        if job_position.employee.has_charge(charges_ids, cathedra) and job_position.employee.check_fields(institutional_email, name, surname, secondary_email, dni):
+                            # Todos
+                            if employee_type == 0:
+                                job_positions.add(job_position)
+                            # Tipo Docente
+                            if employee_type == 1 and job_position.employee.is_docent():
+                                job_positions.add(job_position)
+                            # Tipo No Docente
+                            if employee_type == 2 and job_position.employee.is_not_docent():
+                                job_positions.add(job_position)
+
+                    for charge_employee in job_positions:
+                        if not charge_employee.charge.name in charges:
+                            charges[charge_employee.charge.name] = []
+                        charges[charge_employee.charge.name].add(
+                            charge_employee)
+                        charges_json[charge_employee.charge.name] = {
+                            "Nombre": charge_employee.employee.name,
+                            "Apellido": charge_employee.employee.surname,
+                            "Cargo": charge_employee.charge.name,
+                            "Email Institucional": charge_employee.employee.institutional_email}
+                        if show_dni:
+                            charges_json[charge_employee.charge.name].update({
+                                "DNI": charge_employee.employee.dni if not charge_employee.employee.dni is None else ""
+                            })
+                        if show_secondary_email:
+                            charges_json[charge_employee.charge.name].update({
+                                "Email Secundario": charge_employee.employee.secondary_email if not charge_employee.employee.secondary_email is None else ""
+                            })
+
+                    for key, values in charges.items():
+                        if not values.first().employee.get_label() in staff:
+                            staff[values.first().employee.get_label()] = {
+                                key: charges[key]}
+                            staff_json[values.first().employee.get_label()] = {
+                                key: charges_json[key]
+                            }
+                        else:
+                            staff[values.first().employee.get_label()].update(
+                                {key: charges[key]})
+                            staff_json[values.first().employee.get_label()].update(
+                                {key: charges_json[key]})
+
+                    if not list(staff.keys()).is_empty():
+                        cathedra_list.add(
+                            {"cathedra": cathedra, "sttaf": staff})
+                        staff_json_list.add({"Cátedra": {
+                            "Nombre": cathedra.name,
+                            "Horario de apertura": cathedra.attention_time,
+                            "Lugar": cathedra.location,
+                            "Email Institucional": cathedra.email,
+                            "Telefono": cathedra.phone,
+                        }, "Plantel": staff_json})
+
+                    staff = {}
+                    charges = {}
+                    charges_json = {}
+                    job_positions = []
+
+            if not cathedra_list.is_empty():
+                career_list.add({"Carrera": career, "Catedras": cathedra_list})
+                staff_json_career.add(
+                    {"Carrera": career.name, "Cátedras": staff_json_list})
+            cathedra_list = []
+        return {"career_list": career_list, "staff_json": staff_json_career}

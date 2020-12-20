@@ -26,3 +26,71 @@ class Office(Workplace):
     @staticmethod
     def get_label():
         return "Oficina"
+
+    @classmethod
+    def search(self, show_dni, show_secondary_email, offices, charges_ids, institutional_email, name, surname, secondary_email, dni):
+
+        job_positions = []
+        office_list = []
+        charges = {}
+        charges_json = {}
+        staff = {}
+        staff_json = {}
+        staff_json_list = []
+
+        offices_obj = []
+        for office in offices:
+            offices_obj.add(self.get(office))
+
+        for office in offices_obj:
+            if not office.all_staff_ordered_by_charge().is_empty():
+                for job_position in office.all_staff_ordered_by_charge():
+                    if job_position.employee.has_charge(charges_ids, office) and job_position.employee.check_fields(institutional_email, name, surname, secondary_email, dni):
+                        job_positions.add(job_position)
+
+                for charge_employee in job_positions:
+                    if not charge_employee.charge.name in charges:
+                        charges[charge_employee.charge.name] = []
+                    charges[charge_employee.charge.name].add(charge_employee)
+                    charges_json[charge_employee.charge.name] = {
+                        "Nombre": charge_employee.employee.name,
+                        "Apellido": charge_employee.employee.surname,
+                        "Cargo": charge_employee.charge.name,
+                        "Email Institucional": charge_employee.employee.institutional_email}
+                    if show_dni:
+                        charges_json[charge_employee.charge.name].update({
+                            "DNI": charge_employee.employee.dni if not charge_employee.employee.dni is None else ""
+                        })
+                    if show_secondary_email:
+                        charges_json[charge_employee.charge.name].update({
+                            "Email Secundario": charge_employee.employee.secondary_email if not charge_employee.employee.secondary_email is None else ""
+                        })
+
+                for key, values in charges.items():
+                    if not values.first().employee.get_label() in staff:
+                        staff[values.first().employee.get_label()] = {
+                            key: charges[key]}
+                        staff_json[values.first().employee.get_label()] = {
+                            key: charges_json[key]
+                        }
+                    else:
+                        staff[values.first().employee.get_label()].update(
+                            {key: charges[key]})
+                        staff_json[values.first().employee.get_label()].update(
+                            {key: charges_json[key]})
+
+                if not list(staff.keys()).is_empty():
+                    office_list.add({"office": office, "sttaf": staff})
+                    staff_json_list.add({"Oficina": {
+                        "Nombre": office.name,
+                        "Lugar": office.location,
+                        "Email Institucional": office.email,
+                        "Telefono": office.phone,
+                    }, "Plantel": staff_json})
+
+                staff = {}
+                charges = {}
+                charges_json = {}
+                job_positions = []
+
+        return {"office_list": office_list, "staff_json": staff_json_list}

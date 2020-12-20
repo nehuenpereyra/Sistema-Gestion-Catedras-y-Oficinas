@@ -106,3 +106,8 @@ class PermissionSeeder(Seeder):
         Permission(name="user_content_assign").save()
         Permission(name="user_content_unassign").save()
         print(f" - User Content Permissions OK")
+
+        Permission(name="cathedra_report").save()
+        Permission(name="office_report").save()
+        Permission(name="career_report").save()
+        print(f" - Reports Permissions OK")

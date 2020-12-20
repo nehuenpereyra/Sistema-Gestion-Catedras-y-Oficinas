@@ -91,6 +91,7 @@ def delete(id):
     return redirect(url_for("cathedra_index"))
 
 
+@permission('cathedra_report')
 def report():
 
     form = CathedraReport(request.args)

@@ -25,17 +25,24 @@
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('employee_index') }}"><i class="fas fa-users" style="color: white;"></i><span style="/*color: white;*/">Empleados</span></a></li>
                 {% endif %}
 
-                {% if verify_permission('employee_index') %}
+                {% if verify_permission('pending_employee_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('pending_employee_index') }}"><i class="fas fa-user-clock" style="color: white;"></i><span style="/*color: white;*/">Aprobación de Empleados</span></a></li>
                 {% endif %}
-                {% if verify_permission('employee_index') %}
+                {% if verify_permission('employee_review_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('employee_review_index') }}"><i class="fas fa-user-friends" style="color: white;"></i><span style="/*color: white;*/">Revisión de Empleados</span></a></li>
                 {% endif %}
 
-
-                {% if verify_permission('user_index') %}
-                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('cathedra_report') }}"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reporte de Cátedras</span></a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="cathedra_report office_report career_report" data-target=".multi-collapse"><i class="fas fa-file-alt" style="color: white;"></i>Reportes</a></li>
+                {% if verify_permission('cathedra_report') %}
+                <li class="nav-item collapse multi-collapse" role="presentation" id="cathedra_report"><a class="nav-link" href="{{ url_for('cathedra_report') }}"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reporte de Cátedras</span></a></li>
                 {% endif %}
+                {% if verify_permission('office_report') %}
+                <li class="nav-item collapse multi-collapse" role="presentation" id="office_report"><a class="nav-link" href="{{ url_for('office_report') }}"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reporte de Oficinas</span></a></li>
+                {% endif %}
+                {% if verify_permission('career_report') %}
+                <li class="nav-item collapse multi-collapse" role="presentation" id="career_report"><a class="nav-link" href="{{ url_for('career_report') }}"><i class="fas fa-file-alt" style="color: white;"></i><span style="/*color: white;*/">Reporte de Carreras</span></a></li>
+                {% endif %}
+                
                 {% if verify_permission('request_type_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('request_type_index') }}"><i class="fas fa-angle-right" style="color: white;"></i><span style="/*color: white;*/">Tipos de solicitudes</span></a></li>
                 {% endif %}

@@ -25,3 +25,13 @@ body {
   background-color: #224a74;
   border-color: #224a74;
 }
+
+.sidebar .nav-item .nav-link[data-toggle="collapse"].collapsed:after {
+  font-family: "Font Awesome\ 5 Free"; /* cjr */
+  content: "\f078";
+}
+
+.sidebar-dark .nav-item .nav-link[data-toggle="collapse"]:after {
+  font-family: "Font Awesome\ 5 Free"; /* cjr */
+  content: "\f077";
+}
