@@ -14,7 +14,7 @@
         {{ show_alert(alert) }}
     {% endif %}
     
-    <h5 class="mt-3">Cátedra</h5>
+    <h5 class="mt-3">Cátedras</h5>
 
     {% if verify_permission('cathedra_create') %}
         <div class="d-flex justify-content-end mt-3">
@@ -37,10 +37,9 @@
                     <div class="row d-flex">
                         <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
                             <div class="text-center text-sm-left">
-                                <span class="d-block">
-                                    {{ cathedra.name }}
-                                </span>
-                             </div>
+                                <span class="d-block"> {{ cathedra.name }} <br></span>
+                                <small>{{ cathedra.email }}<br></small>
+                            </div>
                         </div>
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
@@ -60,7 +59,7 @@
                             </a>
                             {% endif %}
                             {% if verify_permission('cathedra_delete') %}
-                                <a onclick='return confirm(`¿Seguro que deseas eliminar el cátedra "{{cathedra.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
+                                <a onclick='return confirm(`¿Seguro que deseas eliminar La cátedra "{{cathedra.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                             {% endif %}

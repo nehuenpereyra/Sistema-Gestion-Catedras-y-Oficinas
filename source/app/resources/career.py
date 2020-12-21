@@ -107,7 +107,8 @@ def report():
     if current_user.is_admin() or current_user.is_visitante():
         careers = Career.all()
     else:
-        careers = current_user.get_career()
+        careers = [current_user.get_career()]
+
     form.careers.choices = careers.collect(
         lambda each: (each.id, each.name))
 

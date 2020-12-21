@@ -21,6 +21,8 @@ def index(workplace_id):
 
     job_positions = JobPosition.all_paginated(page=int(request.args.get('page', 1)),
                                               per_page=Configuration.get().items_per_page, ids=allowed_job_position_ids)
+    add_previous_path({"url": 'job_position_index', "args": {
+                      "workplace_id": workplace_id}})
     return render_template("job_position/index.html", staff=workplace.sttaf_json(), job_positions=job_positions, workplace_id=workplace_id, is_cathedra=workplace.is_cathedra(), workplace_name=workplace.name, alert=get_alert())
 
 
@@ -54,8 +56,7 @@ def new(workplace_id, type):
             False).collect(lambda each: (each.id, each.name))
         form.employee.choices = list(set(workplace.all_administrative()) ^ set(Administrative.all())).collect(
             lambda each: (each.id, each.get_full_name()))
-    add_previous_path({"url": 'job_position_index', "args": {
-                      "workplace_id": workplace_id}})
+
     return render_template("job_position/new.html", workplace_id=workplace_id, type=type, form=form)
 
 

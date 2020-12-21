@@ -36,10 +36,9 @@
                     <div class="row d-flex">
                         <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
                             <div class="text-center text-sm-left">
-                                <span class="d-block">
-                                    {{ office.name }}
-                                </span>
-                             </div>
+                                <span class="d-block"> {{ office.name }} <br></span>
+                                <small>{{ office.email }}<br></small>
+                            </div>
                         </div>
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
@@ -59,7 +58,7 @@
                             </a>
                             {% endif %}
                             {% if verify_permission('office_delete') %}
-                                <a onclick='return confirm(`¿Seguro que deseas eliminar el oficina "{{office.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('office_delete', id=office.id) }}">
+                                <a onclick='return confirm(`¿Seguro que deseas eliminar La oficina "{{office.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('office_delete', id=office.id) }}">
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                             {% endif %}

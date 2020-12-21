@@ -91,7 +91,7 @@ def create():
             return redirect(url_for(previous_path["url"], **previous_path["args"]))
         return redirect(url_for(previous_path["url"]))
     if not current_user.is_admin():
-        redirect(url_for("cathedra_index"))
+        redirect(url_for("index"))
     return redirect(url_for("employee_index"))
 
 
@@ -140,6 +140,14 @@ def update(id):
         )
         add_alert(Alert(
             "success", f'El empleado "{employee.name} {employee.surname}" se ha modificado correctamente.'))
+
+    previous_path = get_previous_path()
+    if previous_path:
+        if "args" in previous_path:
+            return redirect(url_for(previous_path["url"], **previous_path["args"]))
+        return redirect(url_for(previous_path["url"]))
+    if not current_user.is_admin():
+        redirect(url_for("index"))
     return redirect(url_for("employee_index"))
 
 

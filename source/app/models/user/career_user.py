@@ -14,6 +14,10 @@ class CareerUser(UserState):
         'polymorphic_identity': 1
     }
 
+    @property
+    def cathedras(self):
+        return self.career.cathedras
+
     @staticmethod
     def get_responsible_content_label():
         return "Carrera"
@@ -44,10 +48,15 @@ class CareerUser(UserState):
         if not self.career:
             return []
 
-        return self.career.all_employees().collect(lambda each: each.id)
+        # return self.career.all_employees().collect(lambda each: each.id)
+        return self.career.cathedras.flat_collect(lambda each: each.all_employees()) \
+            .remove_duplicated() \
+            .collect(lambda each: each.id)
 
     def allowed_job_position_id_list(self):
         if not self.career:
             return []
 
-        return self.career.all_staff().collect(lambda each: each.id)
+        # return self.career.all_staff().collect(lambda each: each.id)
+        return self.career.cathedras.flat_collect(lambda each: each.all_staff()) \
+            .collect(lambda each: each.id)

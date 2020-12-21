@@ -36,6 +36,11 @@ class RoleSeeder(Seeder):
                 permissions["employee_update"],
                 permissions["cathedra_report"],
                 permissions["career_report"],
+                permissions["job_position_index"],
+                permissions["job_position_show"],
+                permissions["job_position_create"],
+                permissions["job_position_update"],
+                permissions["job_position_delete"]
             ])
         career_manager_role.save()
         print(f" - {career_manager_role.name} Role OK")
@@ -51,7 +56,12 @@ class RoleSeeder(Seeder):
                 permissions["employee_show"],
                 permissions["employee_create"],
                 permissions["employee_update"],
-                permissions["cathedra_report"]
+                permissions["cathedra_report"],
+                permissions["job_position_index"],
+                permissions["job_position_show"],
+                permissions["job_position_create"],
+                permissions["job_position_update"],
+                permissions["job_position_delete"]
             ])
         cathedra_manager_role.save()
         print(f" - {cathedra_manager_role.name} Role OK")
@@ -68,6 +78,11 @@ class RoleSeeder(Seeder):
                 permissions["employee_create"],
                 permissions["employee_update"],
                 permissions["office_report"],
+                permissions["job_position_index"],
+                permissions["job_position_show"],
+                permissions["job_position_create"],
+                permissions["job_position_update"],
+                permissions["job_position_delete"]
             ])
         office_manager_role.save()
         print(f" - {office_manager_role.name} Role OK")

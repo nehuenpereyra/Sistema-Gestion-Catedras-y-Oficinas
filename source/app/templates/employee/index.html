@@ -34,18 +34,23 @@
     {% if employees.items %}
         <ul class="list-group border rounded shadow-sm mt-3">
             {% for employee in employees.items %}
-                <li class="list-group-item">
-                    <div class="row d-flex">
-                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
-                            <div class="text-center text-sm-left">
-                                <span class="d-block">
-                                    {{ employee.name }}
-                                </span>
-                             </div>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        <div class="row d-flex">
+                            <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                <div class="text-center text-sm-left">
+                                    <span class="d-block">{{ employee.get_full_name() }}</span>
+                                    <small>{{ employee.institutional_email }}</small><br>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center mb-2 mb-sm-0">
+                                <small>{{ employee.get_label() }}</small>
+                            </div>
                         </div>
-                        
-                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
-                            {% if verify_permission('employee_show') %}
+                    </div>
+                    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center justify-content-sm-end">
+                        {% if verify_permission('employee_show') %}
                             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('employee_show', id=employee.id) }}">
                                 <i class="fas fa-eye"></i>
                             </a>
@@ -60,9 +65,9 @@
                                     <i class="far fa-trash-alt"></i>
                                 </a>
                             {% endif %}
-                        </div>
                     </div>
-                </li>
+                </div>
+            </li>    
             {% endfor %}
         </ul>
     {% endif %}

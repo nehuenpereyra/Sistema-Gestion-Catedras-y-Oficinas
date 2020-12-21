@@ -11,7 +11,7 @@ from .office_user import OfficeUser
 
 
 def get_permission_method(user, permission):
-
+    print(permission)
     permission_mapper = {
         "user": user.allowed_user_id_list,
         "role": user.allowed_role_id_list,
@@ -37,11 +37,11 @@ class User(UserMixin, db.Model):
     name = db.Column("name", db.String(32), nullable=False, unique=False)
     surname = db.Column("surname", db.String(32), nullable=False, unique=False)
     username = db.Column("username", db.String(32),
-                         nullable=False, unique=False)
+                         nullable=False, unique=True)
     password = db.Column("password", db.String(128),
                          nullable=False, unique=False)
     institutional_email = db.Column(
-        "institutional_email", db.String(64), nullable=False, unique=False)
+        "institutional_email", db.String(64), nullable=False, unique=True)
     secondary_email = db.Column(
         "secondary_email", db.String(64), nullable=False, unique=False)
     roles = db.relationship(
@@ -270,7 +270,7 @@ class User(UserMixin, db.Model):
             return True
 
         allowed_id_list_method = get_permission_method(
-            self, permission.split("_").first())
+            self, "_".join(permission.split("_")[0:-1]))
 
         allowed_id_list = allowed_id_list_method()
 

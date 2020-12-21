@@ -10,25 +10,25 @@ from app.models import Request, User, RequestType, MailSender
 from app.helpers.forms import RequestForm
 from datetime import datetime
 
+
 @permission('request_index')
 def index():
     allowed_request_ids = None
 
     if not current_user.is_admin():
         allowed_request_ids = current_user.allowed_request_id_list()
-
-    requests = Request.all_paginated(page=int(request.args.get('page', 1)),
-                        per_page=Configuration.get().items_per_page, ids=allowed_request_ids)
-
-    if not current_user.is_admin():
         request_types = RequestType.find_by_state(True)
-        query_tecnical = RequestType.all().detect(lambda each: each.name == "Consulta Técnica")
+        query_tecnical = RequestType.all().detect(
+            lambda each: each.name == "Consulta Técnica")
         request_types.remove(query_tecnical)
         requests = {}
         for request_type in request_types:
-            requests[str(request_type.id)] = Request.reverse_all().select(lambda each: each.request_type_id == request_type.id)
+            requests[str(request_type.id)] = Request.reverse_all(allowed_request_ids).select(
+                lambda each: each.request_type_id == request_type.id)
         return render_template("request/index.html", requests=requests, request_types=request_types, form=RequestForm(), alert=get_alert())
-    
+    else:
+        requests = Request.all_paginated(page=int(request.args.get('page', 1)),
+                                         per_page=Configuration.get().items_per_page, ids=allowed_request_ids)
     return render_template("request/authorized_index.html", requests=requests, alert=get_alert())
 
 
@@ -41,9 +41,11 @@ def show(id):
 
     return render_template("request/show.html", request=request)
 
+
 @permission('request_create')
 def support():
     return render_template("request/new.html", alert=get_alert(), form=RequestForm())
+
 
 @permission('request_create')
 def create():
@@ -53,16 +55,19 @@ def create():
         request_type_id = request.args.get("request_type")
         if not request_type_id:
             is_technical = True
-            request_type_id = RequestType.all().detect(lambda each: each.name == "Consulta Técnica").id
+            request_type_id = RequestType.all().detect(
+                lambda each: each.name == "Consulta Técnica").id
         try:
-            MailSender.send(f"Nueva solicitud de: {RequestType.get(request_type_id).name}", form.content.data)
+            MailSender.send(
+                f"[{RequestType.get(request_type_id).name}] Nueva solicitud de: {current_user.institutional_email}", form.content.data)
         except:
             add_alert(
-                    Alert("danger", f'Ha fallado al intentar enviar el correo.'))
+                Alert("danger", f'Ha fallado al intentar enviar el correo.'))
             if is_technical:
                 return redirect(url_for("request_support"))
             return redirect(url_for("request_index"))
-        new_request = Request(content = form.content.data, is_resolved = False, receive_email = form.receive_email.data, timestamp = datetime.today(), user = User.get(current_user.id), request_type = RequestType.get(request_type_id))
+        new_request = Request(content=form.content.data, is_resolved=False, receive_email=form.receive_email.data,
+                              timestamp=datetime.today(), user=User.get(current_user.id), request_type=RequestType.get(request_type_id))
         new_request.save()
         if is_technical:
             add_alert(
@@ -72,6 +77,7 @@ def create():
             Alert("success", f'La solicitud se ha creado correctamente.'))
         return redirect(url_for("request_index"))
     return render_template("request/new.html", form=form)
+
 
 @permission('request_update')
 def edit(id):
@@ -83,6 +89,7 @@ def edit(id):
     form = RequestForm(obj=request)
     return render_template("request/edit.html", request=request, form=form)
 
+
 @permission('request_update')
 def update(id):
     request = Request.get(id)
@@ -92,10 +99,12 @@ def update(id):
     form = RequestForm(id=id)
     if not form.validate_on_submit():
         return render_template("request/edit.html", request=request, form=form)
-    request.update(content = form.content.data, is_resolved = form.is_resolved.data, receive_email = form.receive_email.data, timestamp = form.timestamp.data, user = User.get(form.user.data), request_type = RequestType.get(form.request_type.data))
+    request.update(content=form.content.data, is_resolved=form.is_resolved.data, receive_email=form.receive_email.data,
+                   timestamp=form.timestamp.data, user=User.get(form.user.data), request_type=RequestType.get(form.request_type.data))
     add_alert(
         Alert("success", f'El solicitud "{request.content}" se ha modificado correctamente.'))
     return redirect(url_for("request_index"))
+
 
 @permission('request_delete')
 def solved(id):
@@ -105,13 +114,14 @@ def solved(id):
     else:
         if request_.receive_email == True:
             try:
-                MailSender.send_to_user(f"Se resolvio tu solicitud de {request_.request_type.name}", "Se te escribira a la brevedad...", request_.user.institutional_email)
+                MailSender.send_to_user(
+                    f"Se resolvio tu solicitud de {request_.request_type.name}", "Se te escribira a la brevedad...", request_.user.institutional_email)
             except:
                 add_alert(
-                        Alert("danger", f'Ha fallado el envio de correo.'))
+                    Alert("danger", f'Ha fallado el envio de correo.'))
                 return redirect(url_for("request_index"))
         request_.is_resolved = True
         request_.save()
         add_alert(
-                Alert("success", f'La solicitud de "{request_.user.name}" se ha resuelto correctamente.'))
+            Alert("success", f'La solicitud de "{request_.user.name}" se ha resuelto correctamente.'))
     return redirect(url_for("request_index"))

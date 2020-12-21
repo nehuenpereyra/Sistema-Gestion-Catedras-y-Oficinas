@@ -6,6 +6,7 @@ from wtforms import IntegerField, StringField, SelectMultipleField, PasswordFiel
 from wtforms.fields.html5 import EmailField
 
 from wtforms.validators import DataRequired, Length, Email, Optional, ValidationError
+from app.helpers.forms.validations.unique import Unique
 
 
 def role_without_elements():
@@ -31,11 +32,11 @@ class UserForm(TranslateForm):
     surname = StringField("Apellido", validators=[
                           DataRequired(), Length(min=3, max=32)])
     username = StringField("Usuario", validators=[
-                           DataRequired(), Length(min=3, max=32)])
+                           DataRequired(), Length(min=3, max=32), Unique(User, "username")])
     password = PasswordField("Contraseña", validators=[
                              DataRequired(), Length(min=8, max=128)])
     institutional_email = EmailField("Correo Electrónico Institucional", validators=[
-                                     DataRequired(), Email(), Length(min=3, max=64)])
+                                     DataRequired(), Email(), Length(min=3, max=64), Unique(User, "institutional_email")])
     secondary_email = EmailField("Correo Electrónico Secundario", validators=[
                                  DataRequired(), Email(), Length(min=3, max=64)])
     roles = SelectMultipleField(

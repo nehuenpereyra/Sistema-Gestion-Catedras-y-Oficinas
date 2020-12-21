@@ -38,10 +38,9 @@
                     <div class="row d-flex">
                         <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
                             <div class="text-center text-sm-left">
-                                <span class="d-block">
-                                    {{ charge.name }}
-                                </span>
-                             </div>
+                                <span class="d-block"> {{ charge.name }} <br></span>
+                                <small>{{ "Docente" if charge.is_docent else "No Docente" }}<br></small>
+                            </div>
                         </div>
                         
                         <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">

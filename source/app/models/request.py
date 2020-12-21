@@ -6,16 +6,22 @@ from sqlalchemy import DateTime, cast
 class Request(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
-    content = db.Column("content", db.String(200), nullable=False, unique=False)
-    is_resolved = db.Column("is_resolved", db.Boolean, nullable=True, unique=False)
-    receive_email = db.Column("receive_email", db.Boolean, nullable=True, unique=False)
-    timestamp = db.Column("timestamp", db.DateTime, nullable=False, unique=False)
+    content = db.Column("content", db.String(
+        200), nullable=False, unique=False)
+    is_resolved = db.Column("is_resolved", db.Boolean,
+                            nullable=True, unique=False)
+    receive_email = db.Column(
+        "receive_email", db.Boolean, nullable=True, unique=False)
+    timestamp = db.Column("timestamp", db.DateTime,
+                          nullable=False, unique=False)
     user = db.relationship("User", back_populates="requests", uselist=False)
-    user_id = db.Column("user_id", db.Integer, db.ForeignKey("user.id"), nullable=False, unique=False)
-    request_type = db.relationship("RequestType", back_populates="requests", uselist=False)
-    request_type_id = db.Column("request_type_id", db.Integer, db.ForeignKey("request_type.id"), nullable=False, unique=False)
+    user_id = db.Column("user_id", db.Integer, db.ForeignKey(
+        "user.id"), nullable=False, unique=False)
+    request_type = db.relationship(
+        "RequestType", back_populates="requests", uselist=False)
+    request_type_id = db.Column("request_type_id", db.Integer, db.ForeignKey(
+        "request_type.id"), nullable=False, unique=False)
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
-
 
     def save(self):
         if not self.id:
@@ -50,11 +56,13 @@ class Request(db.Model):
         query = query.filter_by(is_deleted=False)
         query = query.order_by(cast(Request.timestamp, DateTime).asc())
         return query.all()
-    
+
     @classmethod
-    def reverse_all(self):
+    def reverse_all(self, ids=None):
         query = self.query
         query = query.filter_by(is_deleted=False)
+        if ids is not None:
+            query = query.filter(self.id.in_(ids))
         query = query.order_by(cast(Request.timestamp, DateTime).desc())
         return query.all()
 
@@ -70,8 +78,7 @@ class Request(db.Model):
     @classmethod
     def get(self, id):
         request = self.query.get(id)
-        return request if request and request.is_deleted==False else None
-        
+        return request if request and request.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -90,5 +97,3 @@ class Request(db.Model):
     def find_by_timestamp(self, timestamp):
         query = self.query.order_by(self.content.asc())
         return query.filter_by(timestamp=timestamp, is_deleted=False).all()
-
- 

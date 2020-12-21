@@ -5,7 +5,8 @@ from flask_login import current_user
 from app.models import User
 from app.helpers.forms.login_form import LoginForm
 from app.helpers.login import authenticated
-from app.helpers.alert import get_alert
+from app.models.alert import Alert
+from app.helpers.alert import get_alert, add_alert
 
 
 def login():
@@ -19,10 +20,16 @@ def authenticate():
     if form.validate_on_submit():
         user = User.login(form.username.data, form.password.data)
         if user:
-            login_user(user, remember=form.remember_me.data)
-            user.remove_recovery_link()
-            return redirect(url_for("index"))
-    return render_template("auth/login.html", form=form, authError=True)
+            if not user.is_responsible() or user.is_responsible_of_elements():
+                login_user(user, remember=form.remember_me.data)
+                user.remove_recovery_link()
+                return redirect(url_for("index"))
+            add_alert(Alert(
+                "danger", f'Aun no tienes elementos asignados.'))
+        else:
+            add_alert(Alert(
+                "danger", f'Usuario o clave incorrecto.'))
+    return render_template("auth/login.html", form=form, alert=get_alert(), authError=True)
 
 
 def logout():

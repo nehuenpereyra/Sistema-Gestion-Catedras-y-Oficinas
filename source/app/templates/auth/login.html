@@ -25,11 +25,7 @@
   {% if alert %}
       {{ show_alert(alert) }}
   {% endif %}
-  {% if authError == True %}
-    <div class="alert alert-danger" role="alert" style="margin-top: 25px;">
-      Usuario o clave incorrecto.
-    </div> 
-  {% endif %}
+
   <form action="{{ url_for('auth_authenticate') }}" method="post" class="text-center border rounded shadow-sm p-4 bg-white">
       {{ form.hidden_tag() }}
       
