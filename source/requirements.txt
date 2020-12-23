@@ -16,3 +16,4 @@ phonenumbers==8.12.12
 Flask-CKEditor==0.4.4.1
 Flask-Mail==0.9.1
 gunicorn==20.0.4
+mysqlclient==2.0.2
