@@ -2,7 +2,6 @@
 from app.db import db
 from app.models.database_links import link_user_cathedra
 from .workplace import Workplace
-import pdfkit
 
 
 class Cathedra(Workplace):
