@@ -9,7 +9,9 @@ class NotDocent(Employee):
 
     @staticmethod
     def get_label():
+        """Return employee tag """
         return "No Docente"
 
     def is_not_docent(self):
+        """Return if the employee is not docent """
         return True

@@ -9,7 +9,9 @@ class Administrative(Employee):
 
     @staticmethod
     def get_label():
+        """Return employee tag """
         return "Administrativo"
 
     def is_administrative(self):
+        """Return if the employee is administrative """
         return True
