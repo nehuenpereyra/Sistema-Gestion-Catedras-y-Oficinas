@@ -138,6 +138,9 @@ class User(UserMixin, db.Model):
     def get_full_name(self):
         return f"{self.name} {self.surname}"
 
+    def roles_as_string(self):
+        return self.roles.as_string(lambda each: each.name, separated_by=", ")
+
     def save(self):
         if not self.id:
             db.session.add(self)
