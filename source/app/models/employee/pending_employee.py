@@ -28,6 +28,7 @@ class PendingEmployee(db.Model):
         return self.get_employee_class().get_label()
 
     def get_full_name(self):
+        """Returns the full name of the employee"""
         return f"{self.name} {self.surname}"
 
     def get_current_full_name(self):
@@ -69,9 +70,11 @@ class PendingEmployee(db.Model):
         return query.filter(self.id.in_(ids)).all()
 
     def is_new(self):
+        """Returns true if the pending employee is a new employee"""
         return self.linked_employee is None
 
     def is_change(self):
+        """Returns true if the pending employee modifies an existing employee"""
         return self.linked_employee is not None
 
     def get_employee_class(self):
@@ -84,6 +87,7 @@ class PendingEmployee(db.Model):
         return employee_class[self.type]
 
     def accept(self):
+        """Accept a pending employee"""
         if self.is_new():
             self.get_employee_class()(
                 name = self.name,
@@ -104,7 +108,9 @@ class PendingEmployee(db.Model):
         self.remove()
     
     def reject(self):
+        """Reject a pending employee"""
         self.remove()
     
     def modify_to(self, employee):
+        """Returns true if the pending employee modify to the employee received as argument"""
         return self.is_change() and self.linked_employee is employee

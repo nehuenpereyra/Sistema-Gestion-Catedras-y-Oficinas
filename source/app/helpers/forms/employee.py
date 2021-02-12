@@ -10,6 +10,15 @@ from app.helpers.forms.validations.unique import Unique
 from app.models import Employee, PendingEmployee
 
 def UniqueEmployee(query_filter):
+    """Returns if the employee to create is unique
+
+    Parameters:
+    query_filter(string): attribute by which it must be unique
+
+    Raises:
+    ValidationError: If the attribute value is already in use both as employee or pending employee
+
+    """
 
     def _unique(form, field):
 
@@ -18,7 +27,7 @@ def UniqueEmployee(query_filter):
         except ValidationError as message:
             raise ValidationError(str(message))
 
-        # El dato unico no se encuentra en la tabla empleado o pertence al objeto mismo
+        # El dato entrante no se encuentra en la tabla empleado o pertence al objeto mismo
 
         current_employee = Employee.get(form.id.data)
 
@@ -28,7 +37,7 @@ def UniqueEmployee(query_filter):
         if pending_employee and not pending_employee.modify_to(current_employee):
             raise ValidationError(f'El valor {field.data} se encuentra pendiente de aprobación.')
 
-        # El dato no se encuentra en la table empleado pendiente o pertenece a un empleado pendiente que modifica al objeto mismo
+        # El dato entrante no se encuentra en la table empleado pendiente o pertenece al empleado pendiente que modifica al objeto mismo
 
     return _unique
 
