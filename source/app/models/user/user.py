@@ -52,6 +52,11 @@ class User(UserMixin, db.Model):
         "UserState", back_populates="user", uselist=False)
     recovery_link = db.Column(db.String(32), nullable=True, unique=False)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
+        self.set_password(kwargs["password"])
+
     def is_career_manager(self):
         return self.roles.any_satisfy(lambda each: each.name == "Responsable de Carrera")
 
@@ -138,19 +143,25 @@ class User(UserMixin, db.Model):
     def get_full_name(self):
         return f"{self.name} {self.surname}"
 
+    def roles_as_string(self):
+        return self.roles.as_string(lambda each: each.name, separated_by=", ")
+
     def save(self):
         if not self.id:
             db.session.add(self)
         db.session.commit()
 
-    def update(self, name, surname, username, password, institutional_email, secondary_email, roles):
+    def update(self, name, surname, username, institutional_email, secondary_email, roles, password=None):
         self.name = name
         self.surname = surname
         self.username = username
-        self.password = password
         self.institutional_email = institutional_email
         self.secondary_email = secondary_email
         self.set_roles(roles)
+
+        if password:
+            self.set_password(password)
+
         self.save()
 
     def remove(self):

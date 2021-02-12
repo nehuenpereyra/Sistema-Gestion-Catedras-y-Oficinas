@@ -34,29 +34,35 @@
         <ul class="list-group border rounded shadow-sm mt-3">
             {% for user in users.items %}
                 <li class="list-group-item">
-                    <div class="row d-flex">
-                        <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
-                            <div class="text-center text-sm-left">
-                                <span class="d-block"> {{ user.username }} <br></span>
-                                <small>{{ user.institutional_email }}<br></small>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row d-flex">
+                                <div class="col-12 d-flex justify-content-center justify-content-sm-start col-sm mb-2 mb-sm-0">
+                                    <div class="text-center text-sm-left">
+                                        <span class="d-block">{{ user.name }} {{ user.surname }}</span>
+                                        <small>{{ user.institutional_email }}<br></small>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center mb-2 mb-sm-0">
+                                    <small>{{ user.roles_as_string() }}<br></small>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-sm-auto d-flex justify-content-center align-items-center justify-content-sm-end">
                             {% if verify_permission('user_content_index') and user.is_responsible() %}
-                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_content_index', user_id=user.id) }}">
-                                <i class="fas fa-link"></i>
-                            </a>
+                                <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_content_index', user_id=user.id) }}">
+                                    <i class="fas fa-link"></i>
+                                </a>
                             {% endif %}
                             {% if verify_permission('user_show') %}
-                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_show', id=user.id) }}">
-                                <i class="fas fa-eye"></i>
-                            </a>
+                                <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_show', id=user.id) }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                             {% endif %}
                             {% if verify_permission('user_update') %}
-                            <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_edit', id=user.id) }}">
-                                <i class="fas fa-cog"></i>
-                            </a>
+                                <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_edit', id=user.id) }}">
+                                    <i class="fas fa-cog"></i>
+                                </a>
                             {% endif %}
                             {% if verify_permission('user_delete') %}
                                 <a onclick='return confirm(`¿Seguro que deseas eliminar el usuario "{{user.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('user_delete', id=user.id) }}">

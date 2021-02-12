@@ -33,8 +33,6 @@ class UserForm(TranslateForm):
                           DataRequired(), Length(min=3, max=32)])
     username = StringField("Usuario", validators=[
                            DataRequired(), Length(min=3, max=32), Unique(User, "username")])
-    password = PasswordField("Contraseña", validators=[
-                             DataRequired(), Length(min=8, max=128)])
     institutional_email = EmailField("Correo Electrónico Institucional", validators=[
                                      DataRequired(), Email(), Length(min=3, max=64), Unique(User, "institutional_email")])
     secondary_email = EmailField("Correo Electrónico Secundario", validators=[

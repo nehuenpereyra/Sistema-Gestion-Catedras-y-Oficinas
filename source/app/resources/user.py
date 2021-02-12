@@ -7,7 +7,7 @@ from app.models.alert import Alert
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import User, Role, MailSender
-from app.helpers.forms import UserForm, PasswordRecoveryForm, PasswordChangeForm, UserSeeker
+from app.helpers.forms import UserCreateForm, UserUpdateForm, PasswordRecoveryForm, PasswordChangeForm, UserSeeker
 
 
 @permission('user_index')
@@ -42,20 +42,19 @@ def show(id):
 
 @ permission('user_create')
 def new():
-    return render_template("user/new.html", form=UserForm())
+    return render_template("user/new.html", form=UserCreateForm())
 
 
 @ permission('user_create')
 def create():
-    form = UserForm(id=None)
+    form = UserCreateForm(id=None)
     if form.validate_on_submit():
-        user = User(name=form.name.data, surname=form.surname.data, username=form.username.data,
+        user = User(name=form.name.data, surname=form.surname.data, username=form.username.data, password=form.password.data,
                     institutional_email=form.institutional_email.data, secondary_email=form.secondary_email.data)
-        user.set_password(form.password.data)
         user.set_roles(Role.get_all(form.roles.data))
         user.save()
         add_alert(
-            Alert("success", f'El usuario "{user.name}" se ha creado correctamente.'))
+            Alert("success", f'El usuario "{user.name} {user.surname}" se ha creado correctamente.'))
         recovery_link = user.set_recovery_link()
         string_link = "{}/user/password_change/{}".format(re.match("^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)", request.base_url).group(),
                                                           recovery_link)
@@ -73,7 +72,7 @@ def edit(id):
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
 
-    form = UserForm(obj=user)
+    form = UserUpdateForm(obj=user)
     form.roles.data = user.roles.collect(lambda each: each.id)
 
     return render_template("user/edit.html", user=user, form=form)
@@ -82,17 +81,21 @@ def edit(id):
 @permission('user_update')
 def update(id):
     user = User.get(id)
+    
     if not user:
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
-    form = UserForm(id=id)
+    
+    form = UserUpdateForm(id=id)
     if not form.validate_on_submit():
         return render_template("user/edit.html", user=user, form=form)
-    user.set_password(form.password.data)
+    
     user.update(name=form.name.data, surname=form.surname.data, username=form.username.data, password=form.password.data,
                 institutional_email=form.institutional_email.data, secondary_email=form.secondary_email.data, roles=Role.get_all(form.roles.data))
+    
     add_alert(
-        Alert("success", f'El usuario "{user.name}" se ha modificado correctamente.'))
+        Alert("success", f'El usuario "{user.name} {user.surname}" se ha modificado correctamente.'))
+    
     return redirect(url_for("user_index"))
 
 
@@ -104,7 +107,7 @@ def delete(id):
     else:
         user.remove()
         add_alert(
-            Alert("success", f'El usuario "{user.name}" se ha borrado correctamente.'))
+            Alert("success", f'El usuario "{user.name} {user.surname}" se ha borrado correctamente.'))
     return redirect(url_for("user_index"))
 
 

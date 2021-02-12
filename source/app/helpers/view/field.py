@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import url_for
+from flask import url_for, escape
 
 from app.helpers.permission import verify_permission
 
@@ -16,7 +16,7 @@ def __show_field_not_none(field, list, attribute, link):
 
     if not list:
         content = '<small class="ml-2">{}</small>'.format(
-            __get_string_field(field if attribute is None else getattr(field, attribute))
+            escape(__get_string_field(field if attribute is None else getattr(field, attribute)))
         )
 
         if link and verify_permission(link):
@@ -52,7 +52,7 @@ def __show_list_field_with_links(field, attribute, link):
         field.inject(lambda each, result: '{}<a class="list-group-item list-group-item-action" href="{}">{}</a>'.format(
             result,
             url_for(link, id=each.id),
-            getattr(each, attribute)
+            escape(getattr(each, attribute))
         ), "")
     )
 
@@ -61,6 +61,6 @@ def __show_list_field_without_links(field, attribute):
     return '<ul class="list-group">{}</ul>'.format(
         field.inject(lambda each, result: '{}<li class="list-group-item">{}</li>'.format(
             result,
-            getattr(each, attribute)
+            escape(getattr(each, attribute))
         ), "")
     )
