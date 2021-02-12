@@ -2,6 +2,8 @@
 from .translate_form import TranslateForm
 
 from .user import UserForm
+from .user_create import UserCreateForm
+from .user_update import UserUpdateForm
 from .role import RoleForm
 from .permission import PermissionForm
 from .career import CareerForm
