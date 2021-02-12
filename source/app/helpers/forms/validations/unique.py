@@ -3,7 +3,7 @@ from wtforms.validators import ValidationError
 
 
 def Unique(class_, query_filter):
-     """Returns if the object to create is unique
+    """Returns if the object to create is unique
 
     Parameters:
     class_ (class): key used to access the message
@@ -12,7 +12,7 @@ def Unique(class_, query_filter):
     Raises:
     ValidationError: If the attribute value is already in use
 
-   """
+    """
 
     def _unique(form, field):
 
