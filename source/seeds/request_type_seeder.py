@@ -13,9 +13,11 @@ class RequestTypeSeeder(Seeder):
         print("[RequestTypeSeeder]")
 
         [
-            RequestType(name="Consulta Técnica", message="Descripción", state= True),
-            RequestType(name="Cartelera Virtual", message="Descripción", state= True),
-            RequestType(name="Email institucional", message="Descripción", state= True)
+            RequestType(name="Consulta Técnica", message="", state=True),
+            RequestType(name="Cartelera Virtual",
+                        message="Descripción", state=True),
+            RequestType(name="Email institucional",
+                        message="Descripción", state=True)
 
         ].do(lambda each: self.save(each))
 

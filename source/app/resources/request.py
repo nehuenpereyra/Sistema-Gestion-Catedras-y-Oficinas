@@ -1,5 +1,5 @@
 from os import sys
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for, current_app
 from flask_login import current_user
 
 from app.models.configuration import Configuration
@@ -19,7 +19,7 @@ def index():
         allowed_request_ids = current_user.allowed_request_id_list()
         request_types = RequestType.find_by_state(True)
         query_tecnical = RequestType.all().detect(
-            lambda each: each.name == "Consulta Técnica")
+            lambda each: each.name == current_app.config['SUPPORT_REQUEST'])
         request_types.remove(query_tecnical)
         requests = {}
         for request_type in request_types:
@@ -56,7 +56,7 @@ def create():
         if not request_type_id:
             is_technical = True
             request_type_id = RequestType.all().detect(
-                lambda each: each.name == "Consulta Técnica").id
+                lambda each: each.name == current_app.config['SUPPORT_REQUEST']).id
         try:
             MailSender.send(
                 f"[{RequestType.get(request_type_id).name}] Nueva solicitud de: {current_user.institutional_email}", form.content.data)
@@ -115,7 +115,7 @@ def solved(id):
         if request_.receive_email == True:
             try:
                 MailSender.send_to_user(
-                    f"Se resolvio tu solicitud de {request_.request_type.name}", "Se te escribira a la brevedad...", request_.user.institutional_email)
+                    f"Se resolvio tu solicitud de {request_.request_type.name}", f"Le informamos que la solicitud de {request_.request_type.name} realizada con fecha {request_.timestamp.strftime('%d/%m/%Y')} fue resuelta.", request_.user.institutional_email)
             except:
                 add_alert(
                     Alert("danger", f'Ha fallado el envio de correo.'))

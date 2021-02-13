@@ -1,6 +1,6 @@
 from .translate_form import TranslateForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, PasswordField
-from wtforms.validators import DataRequired, Email, Length, NumberRange
+from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
 from wtforms.widgets import TextArea
 from wtforms.fields.html5 import EmailField
 
@@ -12,7 +12,8 @@ class ConfigurationForm(TranslateForm):
         DataRequired(), Length(max=160)])
     mail_port = IntegerField(
         'Puerto del servidor de correo', validators=[DataRequired(), NumberRange(min=1)])
-    mail_password = PasswordField("Contraseña del email de contacto", validators=[ DataRequired(), Length(min=8, max=128)])
+    mail_password = StringField("Contraseña del email de contacto", validators=[
+        Optional(), Length(min=8, max=128)])
     items_per_page = IntegerField(
         'Numero de elementos en la paginación', validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField('Actualizar')

@@ -14,7 +14,7 @@ class Configuration(db.Model):
     mail_server = db.Column(db.String(160), nullable=False, default="")
     mail_port = db.Column(db.Integer, nullable=False, default=465)
     mail_password = db.Column(db.String(128), nullable=False, unique=False)
-    
+
     def __repr__(self):
         return f'<Configuration {self.title}>'
 
@@ -32,7 +32,7 @@ class Configuration(db.Model):
         config = Configuration.get()
         config.mail_server = mail_server
         config.mail_port = mail_port
-        config.contact_email = contact_email
+        config.mail_contact = contact_email
         config.items_per_page = items_per_page
         config.mail_password = mail_password
         config.save()

@@ -1,13 +1,13 @@
 
 from app.db import db
- 
 
 
 class RequestType(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(32), nullable=False, unique=True)
-    message = db.Column("message", db.String(200), nullable=False, unique=False)
+    message = db.Column("message", db.String(
+        200), nullable=False, unique=False)
     state = db.Column("state", db.Boolean, nullable=True, unique=False)
     requests = db.relationship("Request", back_populates="request_type")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
@@ -54,6 +54,7 @@ class RequestType(db.Model):
     def all_paginated(self, page, per_page, ids=None):
         query = self.query
         query = query.filter_by(is_deleted=False)
+        query = query.filter(self.id.notin_([1]))
         query = query.order_by(self.name.asc())
         if ids is not None:
             query = query.filter(self.id.in_(ids))
@@ -62,8 +63,7 @@ class RequestType(db.Model):
     @classmethod
     def get(self, id):
         request_type = self.query.get(id)
-        return request_type if request_type and request_type.is_deleted==False else None
-        
+        return request_type if request_type and request_type.is_deleted == False else None
 
     @classmethod
     def get_all(self, ids):
@@ -82,5 +82,3 @@ class RequestType(db.Model):
     def find_by_state(self, state):
         query = self.query.order_by(self.name.asc())
         return query.filter_by(state=state, is_deleted=False).all()
-
- 

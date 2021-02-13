@@ -130,4 +130,4 @@ def report():
         cathedras_staff = data["cathedra_list"]
         json_export = data["staff_json"]
 
-    return render_template("cathedra/report.html", json_export=json_export, cathedras=cathedras_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)
+    return render_template("cathedra/report.html", json_export=json_export, cathedras=cathedras_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form, alert=get_alert())

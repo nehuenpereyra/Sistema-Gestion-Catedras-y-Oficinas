@@ -17,3 +17,5 @@ def set_routes(app):
                      user.password_recovery, methods=["GET", "POST"])
     app.add_url_rule("/user/password_change/<string:url_recovery>", "user_password_change",
                      user.password_change, methods=["GET", "POST"])
+    app.add_url_rule("/user/password_change_authenticated", "user_password_change_authenticated",
+                     user.password_change_authenticated, methods=["GET", "POST"])

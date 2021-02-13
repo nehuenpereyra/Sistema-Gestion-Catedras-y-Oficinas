@@ -82,7 +82,7 @@ def edit(workplace_id, id):
         return redirect(url_for("job_position_index", workplace_id=workplace_id))
 
     form = JobPositionForm(obj=job_position)
-    if workplace.is_cathedra():
+    if workplace.is_cathedra() and job_position.employee.is_docent():
         form.charge.choices = Charge.find_by_is_docent(
             True).collect(lambda each: (each.id, each.name))
     else:

@@ -1,3 +1,4 @@
+{% from 'macros/alert.html' import  show_alert %}
 
 {% extends "authorized_layout.html" %}
 
@@ -5,14 +6,24 @@
 
 {% block sub_content %}
 
+    {% if alert %}
+        {{ show_alert(alert) }}
+    {% endif %}
+
     <h5 class="mt-3">Informacion de Usuario</h5>
 
     <div class="d-flex justify-content-end mt-3">
+        
         {% if verify_permission('user_index') %}
             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_index') }}">
                 <i class="fas fa-arrow-left"></i>
             </a>
         {% endif %}
+
+        <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_password_change_authenticated') }}">
+            Cambiar Contraseña
+        </a>
+        
         {% if verify_permission('user_update') %}
             <a class="btn btn-primary btn-sm mr-1" role="button" href="{{ url_for('user_edit', id=user.id) }}">
                 <i class="fas fa-cog"></i>

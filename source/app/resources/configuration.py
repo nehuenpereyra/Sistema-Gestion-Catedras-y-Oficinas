@@ -20,10 +20,10 @@ def update():
     form = ConfigurationForm()
     if form.validate_on_submit():
         Configuration.update(mail_server=form.mail_server.data,
-                            mail_port=form.mail_port.data,
-                            contact_email=form.mail_contact.data,
-                            items_per_page=form.items_per_page.data,
-                            mail_password=form.mail_password.data)
+                             mail_port=form.mail_port.data,
+                             contact_email=form.mail_contact.data,
+                             items_per_page=form.items_per_page.data,
+                             mail_password=form.mail_password.data)
         add_alert(
             Alert("success", f"La configuración se actualizo correctamente."))
         return redirect(url_for("index"))

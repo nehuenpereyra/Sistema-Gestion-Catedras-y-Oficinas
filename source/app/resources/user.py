@@ -37,7 +37,7 @@ def show(id):
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
 
-    return render_template("user/show.html", user=user)
+    return render_template("user/show.html", user=user, alert=get_alert())
 
 
 @ permission('user_create')
@@ -81,21 +81,21 @@ def edit(id):
 @permission('user_update')
 def update(id):
     user = User.get(id)
-    
+
     if not user:
         add_alert(Alert("danger", "El usuario no existe."))
         return redirect(url_for("user_index"))
-    
+
     form = UserUpdateForm(id=id)
     if not form.validate_on_submit():
         return render_template("user/edit.html", user=user, form=form)
-    
+
     user.update(name=form.name.data, surname=form.surname.data, username=form.username.data, password=form.password.data,
                 institutional_email=form.institutional_email.data, secondary_email=form.secondary_email.data, roles=Role.get_all(form.roles.data))
-    
+
     add_alert(
         Alert("success", f'El usuario "{user.name} {user.surname}" se ha modificado correctamente.'))
-    
+
     return redirect(url_for("user_index"))
 
 
@@ -124,9 +124,14 @@ def password_recovery():
                 recovery_link = user.set_recovery_link()
                 string_link = "{}/user/password_change/{}".format(re.match("^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)", request.base_url).group(),
                                                                   recovery_link)
-                MailSender.send_to_user("Correo de recuperación de contraseña",
-                                        f"Acceda al siguiente enlace para cambiar su contraseña: {string_link}",
-                                        user.institutional_email)
+                try:
+                    MailSender.send_to_user("Correo de recuperación de contraseña",
+                                            f"Acceda al siguiente enlace para cambiar su contraseña: {string_link}",
+                                            user.institutional_email)
+                except Exception as e:
+                    add_alert(
+                        Alert("danger", "Ha ocurrido un error al enviar el correo."))
+                    return redirect(url_for('user_password_recovery'))
                 add_alert(
                     Alert("success", f'Se envio un correo al email institucional.'))
             else:
@@ -150,3 +155,18 @@ def password_change(url_recovery):
                 Alert("success", 'Se cambió la contraseña correctamente.'))
             return redirect(url_for('auth_login'))
     return render_template("user/password_change.html", url_recovery=url_recovery, form=PasswordChangeForm())
+
+
+@ permission('user_show')
+def password_change_authenticated():
+    form = PasswordChangeForm()
+    form.submit.label.text = "Guardar"
+    if request.method == 'POST':
+        form = PasswordChangeForm(id=None)
+        if form.validate_on_submit():
+            print(form.user_password.data)
+            current_user.set_password(form.user_password.data)
+            add_alert(
+                Alert("success", 'Se cambió la contraseña correctamente.'))
+            return redirect(url_for('user_show', id=current_user.id))
+    return render_template("user/password_change_authenticated.html", form=form)

@@ -155,4 +155,14 @@ class Workplace(db.Model):
             else:
                 staff[values.first().employee.get_label()].update(
                     {key: charges[key]})
+
+        # Si hay más de una clave se ordenan
+        staff_items = staff.items()
+        if (len(staff_items) > 1):
+            sorted_sttaf = {}
+            sorted_items = sorted(staff_items)
+            for key, value in sorted_items:
+                sorted_sttaf[key] = value
+            return sorted_sttaf
+
         return staff
