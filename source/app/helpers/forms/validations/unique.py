@@ -3,7 +3,7 @@ from wtforms.validators import ValidationError
 
 
 def Unique(class_, query_filter):
-     """Returns if the object to create is unique
+    """Returns if the object to create is unique
 
     Parameters:
     class_ (class): key used to access the message
@@ -21,6 +21,7 @@ def Unique(class_, query_filter):
             **{query_filter: field.data}).first()
 
         if object_db and object_db != object_form:
-            raise ValidationError(f'El valor {field.data} se encuentra en uso.')
+            raise ValidationError(
+                f'El valor {field.data} se encuentra en uso.')
 
     return _unique
