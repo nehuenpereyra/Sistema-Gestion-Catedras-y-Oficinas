@@ -11,6 +11,9 @@ class Charge(db.Model):
     job_positions = db.relationship("JobPosition", back_populates="charge")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
+    def has_job_positions(self):
+        return self.job_positions.any_satisfy(lambda each: each.is_active())
+
     def get_job_positions(self):
         return self.job_positions.select(lambda each: not each.is_deleted)
 

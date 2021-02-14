@@ -56,6 +56,9 @@ class Employee(db.Model):
                 return charges_ids.any_satisfy(lambda each: each == job_position.charge.id)
         return False
 
+    def has_active_charge(self):
+        return self.job_positions.any_satisfy(lambda each: each.is_active())
+
     def check_fields(self, institutional_email, name, surname, secondary_email, dni):
         """Validate the fields sent by parameter
 

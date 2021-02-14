@@ -24,6 +24,9 @@ class Cathedra(Workplace):
     def is_cathedra(self):
         return True
 
+    def has_users(self):
+        return self.users.any_satisfy(lambda each: not each.is_deleted)
+
     @staticmethod
     def get_id_string():
         return "cathedra"

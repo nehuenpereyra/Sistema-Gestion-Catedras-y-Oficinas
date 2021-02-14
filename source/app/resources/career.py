@@ -81,6 +81,10 @@ def delete(id):
     career = Career.get(id)
     if not career or career.is_deleted:
         add_alert(Alert("danger", "El carrera no existe."))
+    elif career.has_cathedras():
+        add_alert(Alert("danger", "La carrera no debe poseer catedras"))
+    elif career.has_users():
+        add_alert(Alert("danger", "La carrera no debe poseer responsables"))
     else:
         career.remove()
         add_alert(

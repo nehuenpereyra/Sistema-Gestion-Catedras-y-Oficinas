@@ -15,6 +15,10 @@ class UserState(db.Model):
         'polymorphic_on': type
     }
 
+    @property
+    def is_deleted(self):
+        return self.user.is_deleted
+
     @staticmethod
     def get_responsible_content_label():
         pass

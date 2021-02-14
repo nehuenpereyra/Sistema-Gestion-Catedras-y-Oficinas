@@ -19,6 +19,9 @@ class Office(Workplace):
     def is_office(self):
         return True
 
+    def has_users(self):
+        return self.users.any_satisfy(lambda each: not each.is_deleted)
+
     @staticmethod
     def get_id_string():
         return "office"
