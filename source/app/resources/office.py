@@ -127,10 +127,13 @@ def report():
 
     offices_staff = []
     json_export = {}
+    export = {}
     if request.args:
         data = Office.search(
             form.show_dni.data, form.show_secondary_email.data, **args)
         offices_staff = data["office_list"]
+        export = data["export"]
+        # Obsoleto
         json_export = data["staff_json"]
 
-    return render_template("office/report.html", json_export=json_export, offices=offices_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)
+    return render_template("office/report.html", export=export, offices=offices_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)

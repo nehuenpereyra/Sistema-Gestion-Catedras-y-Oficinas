@@ -128,10 +128,13 @@ def report():
 
     cathedras_staff = []
     json_export = {}
+    export = {}
     if request.args:
         data = Cathedra.search(
             form.show_dni.data, form.show_secondary_email.data, **args)
         cathedras_staff = data["cathedra_list"]
+        export = data["export"]
+        # Obsoleto
         json_export = data["staff_json"]
 
-    return render_template("cathedra/report.html", json_export=json_export, cathedras=cathedras_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form, alert=get_alert())
+    return render_template("cathedra/report.html", export=export, cathedras=cathedras_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form, alert=get_alert())

@@ -118,10 +118,13 @@ def report():
 
     careers_staff = []
     json_export = {}
+    export = {}
     if request.args:
         data = Career.search(
             form.show_dni.data, form.show_secondary_email.data, **args)
         careers_staff = data["career_list"]
+        export = data["export"]
+        # Obsoleto
         json_export = data["staff_json"]
 
-    return render_template("career/report.html", json_export=json_export, careers=careers_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)
+    return render_template("career/report.html", export=export, careers=careers_staff, dni_field=form.show_dni.data, secondary_email_field=form.show_secondary_email.data, form=form)
