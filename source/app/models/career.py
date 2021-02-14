@@ -10,6 +10,12 @@ class Career(db.Model):
     cathedras = db.relationship("Cathedra", back_populates="career")
     is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
+    def has_users(self):
+        return self.users.any_satisfy(lambda each: not each.is_deleted)
+
+    def has_cathedras(self):
+        return self.cathedras.any_satisfy(lambda each: not each.is_deleted)
+
     def get_cathedras(self):
         return self.cathedras.select(lambda each: not each.is_deleted)
 

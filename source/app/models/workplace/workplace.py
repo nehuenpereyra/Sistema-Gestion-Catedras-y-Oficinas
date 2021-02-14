@@ -19,6 +19,12 @@ class Workplace(db.Model):
         'polymorphic_on': type
     }
 
+    def has_users(self):
+        pass
+
+    def has_active_charge(self):
+        return self.staff.any_satisfy(lambda each: each.is_active())
+
     def all_staff(self):
         return self.staff.select(lambda each: each.is_active())
 

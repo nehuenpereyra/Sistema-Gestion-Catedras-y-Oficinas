@@ -90,6 +90,8 @@ def delete(id):
     charge = Charge.get(id)
     if not charge or charge.is_deleted:
         add_alert(Alert("danger", "El cargo no existe."))
+    elif charge.has_job_positions():
+        add_alert(Alert("danger", "El cargo no debe poseer empleados asignados"))
     else:
         charge.remove()
         add_alert(

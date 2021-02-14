@@ -156,6 +156,8 @@ def delete(id):
     employee = Employee.get(id)
     if not employee or employee.is_deleted:
         add_alert(Alert("danger", "El empleado no existe."))
+    elif employee.has_active_charge():
+        add_alert(Alert("danger", "El empleado no debe poseer cargos activos"))
     else:
         employee.remove()
         add_alert(

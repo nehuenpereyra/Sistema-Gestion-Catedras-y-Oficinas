@@ -34,7 +34,7 @@ def index():
 def show(id):
     cathedra = Cathedra.get(id)
     if not cathedra:
-        add_alert(Alert("danger", "El cátedra no existe."))
+        add_alert(Alert("danger", "La cátedra no existe."))
         return redirect(url_for("cathedra_index"))
 
     return render_template("cathedra/show.html", cathedra=cathedra)
@@ -53,7 +53,7 @@ def create():
                             location=form.location.data, attention_time=form.attention_time.data, career=Career.get(form.career.data))
         cathedra.save()
         add_alert(
-            Alert("success", f'El cátedra "{cathedra.name}" se ha creado correctamente.'))
+            Alert("success", f'La cátedra "{cathedra.name}" se ha creado correctamente.'))
         return redirect(url_for("cathedra_index"))
     return render_template("cathedra/new.html", form=form)
 
@@ -62,7 +62,7 @@ def create():
 def edit(id):
     cathedra = Cathedra.get(id)
     if not cathedra:
-        add_alert(Alert("danger", "El cátedra no existe."))
+        add_alert(Alert("danger", "La cátedra no existe."))
         return redirect(url_for("cathedra_index"))
 
     form = CathedraForm(obj=cathedra)
@@ -75,7 +75,7 @@ def edit(id):
 def update(id):
     cathedra = Cathedra.get(id)
     if not cathedra:
-        add_alert(Alert("danger", "El cátedra no existe."))
+        add_alert(Alert("danger", "La cátedra no existe."))
         return redirect(url_for("cathedra_index"))
     form = CathedraForm(id=id)
     if not form.validate_on_submit():
@@ -83,7 +83,7 @@ def update(id):
     cathedra.update(name=form.name.data, email=form.email.data, phone=form.phone.data, location=form.location.data,
                     attention_time=form.attention_time.data, career=Career.get(form.career.data))
     add_alert(
-        Alert("success", f'El cátedra "{cathedra.name}" se ha modificado correctamente.'))
+        Alert("success", f'La cátedra "{cathedra.name}" se ha modificado correctamente.'))
     return redirect(url_for("cathedra_index"))
 
 
@@ -91,11 +91,15 @@ def update(id):
 def delete(id):
     cathedra = Cathedra.get(id)
     if not cathedra or cathedra.is_deleted:
-        add_alert(Alert("danger", "El cátedra no existe."))
+        add_alert(Alert("danger", "La cátedra no existe."))
+    elif cathedra.has_active_charge():
+        add_alert(Alert("danger", "La cátedra no debe poseer cargos activos"))
+    elif cathedra.has_users():
+        add_alert(Alert("danger", "La cátedra no debe poseer responsables"))
     else:
         cathedra.remove()
         add_alert(
-            Alert("success", f'El cátedra "{cathedra.name}" se ha borrado correctamente.'))
+            Alert("success", f'La cátedra "{cathedra.name}" se ha borrado correctamente.'))
     return redirect(url_for("cathedra_index"))
 
 

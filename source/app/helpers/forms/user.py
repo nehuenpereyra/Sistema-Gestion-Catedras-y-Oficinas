@@ -10,6 +10,12 @@ from app.helpers.forms.validations.unique import Unique
 
 
 def role_without_elements():
+    """Returns if the user contains dependencies according to the assigned roles
+
+    Raises:
+    ValidationError: If the user contains dependencies according to the assigned roles
+
+    """
 
     def _role_without_elements(form, field):
 

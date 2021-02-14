@@ -33,7 +33,7 @@ def index():
 def show(id):
     office = Office.get(id)
     if not office:
-        add_alert(Alert("danger", "El oficina no existe."))
+        add_alert(Alert("danger", "La oficina no existe."))
         return redirect(url_for("office_index"))
 
     return render_template("office/show.html", office=office)
@@ -52,7 +52,7 @@ def create():
                         phone=form.phone.data, location=form.location.data)
         office.save()
         add_alert(
-            Alert("success", f'El oficina "{office.name}" se ha creado correctamente.'))
+            Alert("success", f'La oficina "{office.name}" se ha creado correctamente.'))
         return redirect(url_for("office_index"))
     return render_template("office/new.html", form=form)
 
@@ -61,7 +61,7 @@ def create():
 def edit(id):
     office = Office.get(id)
     if not office:
-        add_alert(Alert("danger", "El oficina no existe."))
+        add_alert(Alert("danger", "La oficina no existe."))
         return redirect(url_for("office_index"))
 
     form = OfficeForm(obj=office)
@@ -73,7 +73,7 @@ def edit(id):
 def update(id):
     office = Office.get(id)
     if not office:
-        add_alert(Alert("danger", "El oficina no existe."))
+        add_alert(Alert("danger", "La oficina no existe."))
         return redirect(url_for("office_index"))
     form = OfficeForm(id=id)
     if not form.validate_on_submit():
@@ -81,7 +81,7 @@ def update(id):
     office.update(name=form.name.data, email=form.email.data,
                   phone=form.phone.data, location=form.location.data)
     add_alert(
-        Alert("success", f'El oficina "{office.name}" se ha modificado correctamente.'))
+        Alert("success", f'La oficina "{office.name}" se ha modificado correctamente.'))
     return redirect(url_for("office_index"))
 
 
@@ -89,11 +89,15 @@ def update(id):
 def delete(id):
     office = Office.get(id)
     if not office or office.is_deleted:
-        add_alert(Alert("danger", "El oficina no existe."))
+        add_alert(Alert("danger", "La oficina no existe."))
+    elif office.has_active_charge():
+        add_alert(Alert("danger", "La oficina no debe poseer cargos activos"))
+    elif office.has_users():
+        add_alert(Alert("danger", "La oficina no debe poseer responsables"))
     else:
         office.remove()
         add_alert(
-            Alert("success", f'El oficina "{office.name}" se ha borrado correctamente.'))
+            Alert("success", f'La oficina "{office.name}" se ha borrado correctamente.'))
     return redirect(url_for("office_index"))
 
 
