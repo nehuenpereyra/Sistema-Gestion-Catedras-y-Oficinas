@@ -44,6 +44,7 @@ class Office(Workplace):
     def search(self, show_dni, show_secondary_email, offices, charges_ids, institutional_email, name, surname, secondary_email, dni):
 
         job_positions = []
+        all_job_positions = []
         office_list = []
         charges = {}
         charges_json = {}
@@ -60,6 +61,7 @@ class Office(Workplace):
                 for job_position in office.all_staff_ordered_by_charge():
                     if job_position.employee.has_charge(charges_ids, office) and job_position.employee.check_fields(institutional_email, name, surname, secondary_email, dni):
                         job_positions.add(job_position)
+                        all_job_positions.add(job_position)
 
                 for charge_employee in job_positions:
                     if not charge_employee.charge.name in charges:
@@ -106,4 +108,35 @@ class Office(Workplace):
                 charges_json = {}
                 job_positions = []
 
-        return {"office_list": office_list, "staff_json": staff_json_list}
+        to_export = self.export(all_job_positions,
+                                show_dni, show_secondary_email)
+
+        return {"office_list": office_list, "staff_json": staff_json_list, "export": to_export}
+
+    @classmethod
+    def export(self, job_positions, show_dni, show_secondary_email):
+
+        data = {}
+        contents = {}
+        employee = []
+
+        # Los campos en el orden en que se van a mostrar en el pdf y en el excel
+        fields = ["Cargo", "Nombre", "Apellido", "Email Institucional"]
+        if show_dni:
+            fields.add("DNI")
+        if show_secondary_email:
+            fields.add("Email Secundario")
+
+        index = 0
+        for charge_employee in job_positions:
+            if not charge_employee.workplace.name in contents:
+                contents[charge_employee.workplace.name] = []
+            employee = [charge_employee.charge.name, charge_employee.employee.name,
+                        charge_employee.employee.surname, charge_employee.employee.institutional_email]
+            if show_dni:
+                employee.add(charge_employee.employee.dni)
+            if show_secondary_email:
+                employee.add(charge_employee.employee.secondary_email)
+            contents[charge_employee.workplace.name].add(employee)
+
+        return {"fields": fields, "contents": contents}

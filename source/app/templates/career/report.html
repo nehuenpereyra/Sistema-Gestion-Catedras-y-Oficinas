@@ -9,10 +9,10 @@
 
     <h5 class="mt-3">Reporte de Carreras</h5>
     <div class="d-flex justify-content-end mt-3">
-        <button type="button" onclick='javascript:export_file({{json_export}})' class="btn btn-success mb-3 mr-2" title="Generar xls">
+        <button type="button" onclick='javascript:get_excel({{export}}, "Carreras")' class="btn btn-success mb-3 mr-2" title="Generar xls">
             <i class="far fa-file-excel"></i>
         </button>
-        <button type="button" onclick='' class="btn btn-danger mb-3" title="Generar pdf">
+        <button type="button" onclick='javascript:get_pdf({{export}}, "Carreras")' class="btn btn-danger mb-3" title="Generar pdf">
             <i class="far fa-file-pdf"></i>
         </button>
     </div>
@@ -129,6 +129,11 @@
 {% block scripts %}
   {{ super() }}
   <script src="{{ url_for('static', filename='js/clear_search_form.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/export_file.js') }}"></script>
-  <script src="https://unpkg.com/export-from-json/dist/umd/index.min.js"></script>
+  <!-- To export pdf and excel -->
+  <script src="{{ url_for('static', filename='js/export/jspdf.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export/jspdf.plugin.autotable.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export/generate_pdf.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export/xlsx.full.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export/FileSaver.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export/generate_excel.js') }}"></script>
 {% endblock %}

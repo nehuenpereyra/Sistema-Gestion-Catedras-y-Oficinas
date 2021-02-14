@@ -83,6 +83,7 @@ class Career(db.Model):
     def search(self, show_dni, show_secondary_email, careers, employee_type, charges_ids, institutional_email, name, surname, secondary_email, dni):
 
         job_positions = []
+        all_job_positions = []
         cathedra_list = []
         career_list = []
         charges = {}
@@ -104,12 +105,15 @@ class Career(db.Model):
                             # Todos
                             if employee_type == 0:
                                 job_positions.add(job_position)
+                                all_job_positions.add(job_position)
                             # Tipo Docente
                             if employee_type == 1 and job_position.employee.is_docent():
                                 job_positions.add(job_position)
+                                all_job_positions.add(job_position)
                             # Tipo No Docente
                             if employee_type == 2 and job_position.employee.is_not_docent():
                                 job_positions.add(job_position)
+                                all_job_positions.add(job_position)
 
                     for charge_employee in job_positions:
                         if not charge_employee.charge.name in charges:
@@ -164,4 +168,36 @@ class Career(db.Model):
                 staff_json_career.add(
                     {"Carrera": career.name, "Cátedras": staff_json_list})
             cathedra_list = []
-        return {"career_list": career_list, "staff_json": staff_json_career}
+
+        to_export = self.export(all_job_positions,
+                                show_dni, show_secondary_email)
+
+        return {"career_list": career_list, "staff_json": staff_json_career, "export": to_export}
+
+    @classmethod
+    def export(self, job_positions, show_dni, show_secondary_email):
+
+        data = {}
+        contents = {}
+        employee = []
+
+        # Los campos en el orden en que se van a mostrar en el pdf y en el excel
+        fields = ["Cargo", "Nombre", "Apellido", "Email Institucional"]
+        if show_dni:
+            fields.add("DNI")
+        if show_secondary_email:
+            fields.add("Email Secundario")
+
+        index = 0
+        for charge_employee in job_positions:
+            if not charge_employee.workplace.career.name in contents:
+                contents[charge_employee.workplace.career.name] = []
+            employee = [charge_employee.charge.name, charge_employee.employee.name,
+                        charge_employee.employee.surname, charge_employee.employee.institutional_email]
+            if show_dni:
+                employee.add(charge_employee.employee.dni)
+            if show_secondary_email:
+                employee.add(charge_employee.employee.secondary_email)
+            contents[charge_employee.workplace.career.name].add(employee)
+
+        return {"fields": fields, "contents": contents}
