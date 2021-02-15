@@ -164,8 +164,8 @@ def password_change_authenticated():
     if request.method == 'POST':
         form = PasswordChangeForm(id=None)
         if form.validate_on_submit():
-            print(form.user_password.data)
             current_user.set_password(form.user_password.data)
+            current_user.save()
             add_alert(
                 Alert("success", 'Se cambió la contraseña correctamente.'))
             return redirect(url_for('user_show', id=current_user.id))
