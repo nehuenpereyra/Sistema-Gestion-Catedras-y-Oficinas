@@ -53,7 +53,7 @@
             <h6 class="mb-0">Correo Electrónico Secundario</h6>{{ show_field(user.secondary_email, required=True)|safe }}
         </li>
         <li class="list-group-item">
-            <h6>Roles</h6>{{ show_field(user.get_roles(), list=True, attribute="name", link="role_show", required=True)|safe }}
+            <h6>Roles</h6>{{ show_field(user.get_roles(), list=True, attribute="name", required=True)|safe }}
         </li>
         {% if user.is_career_manager() %}
             <li class="list-group-item">

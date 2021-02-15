@@ -23,20 +23,6 @@ class PermissionSeeder(Seeder):
         Permission(name="user_delete").save()
         print(f" - User Permissions OK")
 
-        Permission(name="role_index").save()
-        Permission(name="role_show").save()
-        Permission(name="role_create").save()
-        Permission(name="role_update").save()
-        Permission(name="role_delete").save()
-        print(f" - Role Permissions OK")
-
-        Permission(name="permission_index").save()
-        Permission(name="permission_show").save()
-        Permission(name="permission_create").save()
-        Permission(name="permission_update").save()
-        Permission(name="permission_delete").save()
-        print(f" - Permission Permissions OK")
-
         Permission(name="career_index").save()
         Permission(name="career_show").save()
         Permission(name="career_create").save()
