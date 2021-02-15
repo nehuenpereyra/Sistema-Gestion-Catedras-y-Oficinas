@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if verify_permission('career_delete') %}
-            <a onclick='return confirm(`¿Seguro que deseas eliminar La carrera "{{career.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('career_delete', id=career.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar la carrera "{{career.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('career_delete', id=career.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}

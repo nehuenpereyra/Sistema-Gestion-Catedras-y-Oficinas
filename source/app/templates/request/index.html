@@ -5,7 +5,7 @@
 
 {% extends "authorized_layout.html" %}
 
-{% block title %}Solicitud{% endblock %}
+{% block title %}Solicitudes{% endblock %}
 
 {% block sub_content %}
 
@@ -66,7 +66,7 @@
                                             </a>
                                             {% endif %}
                                             {% if verify_permission('request_delete') %}
-                                                <a onclick='return confirm(`¿Seguro que deseas eliminar La solicitud "{{request.content}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_delete', id=request.id) }}">
+                                                <a onclick='return confirm(`¿Seguro que deseas eliminar la solicitud "{{request.content}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('request_delete', id=request.id) }}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
                                             {% endif %}

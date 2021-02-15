@@ -19,7 +19,7 @@
             </a>
         {% endif %}
         {% if verify_permission('cathedra_delete') %}
-            <a onclick='return confirm(`¿Seguro que deseas eliminar La cátedra "{{cathedra.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
+            <a onclick='return confirm(`¿Seguro que deseas eliminar la cátedra "{{cathedra.name}}" del sistema?`);' class="btn btn-danger btn-sm" role="button" href="{{ url_for('cathedra_delete', id=cathedra.id) }}">
                 <i class="far fa-trash-alt"></i>
             </a>
         {% endif %}

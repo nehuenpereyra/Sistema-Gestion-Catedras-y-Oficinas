@@ -36,7 +36,7 @@ def index():
 def show(id):
     request = Request.get(id)
     if not request:
-        add_alert(Alert("danger", "El solicitud no existe."))
+        add_alert(Alert("danger", "La solicitud no existe."))
         return redirect(url_for("request_index"))
 
     return render_template("request/show.html", request=request)
@@ -83,7 +83,7 @@ def create():
 def edit(id):
     request = Request.get(id)
     if not request:
-        add_alert(Alert("danger", "El solicitud no existe."))
+        add_alert(Alert("danger", "La solicitud no existe."))
         return redirect(url_for("request_index"))
 
     form = RequestForm(obj=request)
@@ -94,7 +94,7 @@ def edit(id):
 def update(id):
     request = Request.get(id)
     if not request:
-        add_alert(Alert("danger", "El solicitud no existe."))
+        add_alert(Alert("danger", "La solicitud no existe."))
         return redirect(url_for("request_index"))
     form = RequestForm(id=id)
     if not form.validate_on_submit():
@@ -102,7 +102,7 @@ def update(id):
     request.update(content=form.content.data, is_resolved=form.is_resolved.data, receive_email=form.receive_email.data,
                    timestamp=form.timestamp.data, user=User.get(form.user.data), request_type=RequestType.get(form.request_type.data))
     add_alert(
-        Alert("success", f'El solicitud "{request.content}" se ha modificado correctamente.'))
+        Alert("success", f'La solicitud "{request.content}" se ha modificado correctamente.'))
     return redirect(url_for("request_index"))
 
 
@@ -110,7 +110,7 @@ def update(id):
 def solved(id):
     request_ = Request.get(id)
     if not request_ or request_.is_deleted:
-        add_alert(Alert("danger", "El solicitud no existe."))
+        add_alert(Alert("danger", "La solicitud no existe."))
     else:
         if request_.receive_email == True:
             try:

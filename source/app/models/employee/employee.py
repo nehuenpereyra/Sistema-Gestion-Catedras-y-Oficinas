@@ -144,8 +144,10 @@ class Employee(db.Model):
         self.save()
 
     def remove(self):
-        """Logically delete the employee """
+        """Logically delete the employee"""
         if self.id:
+            self.pending_changes.do(lambda each: each.remove())
+
             self.is_deleted = True
             self.save()
 

@@ -1,9 +1,7 @@
 
-
-
 {% extends "authorized_layout.html" %}
 
-{% block title %}Puesto de Trabajo - {{ job_position.start_date }}{% endblock %}
+{% block title %}Puesto de Trabajo - {{ job_position.employee.get_full_name() }}{% endblock %}
 
 {% block sub_content %}
 

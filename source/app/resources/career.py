@@ -26,7 +26,7 @@ def index():
 def show(id):
     career = Career.get(id)
     if not career:
-        add_alert(Alert("danger", "El carrera no existe."))
+        add_alert(Alert("danger", "La carrera no existe."))
         return redirect(url_for("career_index"))
 
     return render_template("career/show.html", career=career)
@@ -44,7 +44,7 @@ def create():
         career = Career(name=form.name.data)
         career.save()
         add_alert(
-            Alert("success", f'El carrera "{career.name}" se ha creado correctamente.'))
+            Alert("success", f'La carrera "{career.name}" se ha creado correctamente.'))
         return redirect(url_for("career_index"))
     return render_template("career/new.html", form=form)
 
@@ -53,7 +53,7 @@ def create():
 def edit(id):
     career = Career.get(id)
     if not career:
-        add_alert(Alert("danger", "El carrera no existe."))
+        add_alert(Alert("danger", "La carrera no existe."))
         return redirect(url_for("career_index"))
 
     form = CareerForm(obj=career)
@@ -65,14 +65,14 @@ def edit(id):
 def update(id):
     career = Career.get(id)
     if not career:
-        add_alert(Alert("danger", "El carrera no existe."))
+        add_alert(Alert("danger", "La carrera no existe."))
         return redirect(url_for("career_index"))
     form = CareerForm(id=id)
     if not form.validate_on_submit():
         return render_template("career/edit.html", career=career, form=form)
     career.update(name=form.name.data)
     add_alert(
-        Alert("success", f'El carrera "{career.name}" se ha modificado correctamente.'))
+        Alert("success", f'La carrera "{career.name}" se ha modificado correctamente.'))
     return redirect(url_for("career_index"))
 
 
@@ -80,7 +80,7 @@ def update(id):
 def delete(id):
     career = Career.get(id)
     if not career or career.is_deleted:
-        add_alert(Alert("danger", "El carrera no existe."))
+        add_alert(Alert("danger", "La carrera no existe."))
     elif career.has_cathedras():
         add_alert(Alert("danger", "La carrera no debe poseer catedras"))
     elif career.has_users():
@@ -88,7 +88,7 @@ def delete(id):
     else:
         career.remove()
         add_alert(
-            Alert("success", f'El carrera "{career.name}" se ha borrado correctamente.'))
+            Alert("success", f'La carrera "{career.name}" se ha borrado correctamente.'))
     return redirect(url_for("career_index"))
 
 

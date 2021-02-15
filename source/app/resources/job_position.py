@@ -29,7 +29,7 @@ def index(workplace_id):
 @ permission('job_position_show')
 def show(workplace_id, id):
     job_position = JobPosition.get(id)
-    if not job_position:
+    if not job_position or not job_position.is_active():
         add_alert(Alert("danger", "El puesto de trabajo no existe."))
         return redirect(url_for("job_position_index", workplace_id=workplace_id))
 
@@ -64,8 +64,14 @@ def new(workplace_id, type):
 def create(workplace_id):
     form = JobPositionForm(id=None)
     if form.validate_on_submit():
-        job_position = JobPosition(start_date=datetime.today(), end_date=None, charge=Charge.get(
-            form.charge.data), workplace=Workplace.get(workplace_id), employee=Employee.get(form.employee.data))
+        job_position = JobPosition(
+            start_date=datetime.today(),
+            end_date=None,
+            charge=Charge.get(form.charge.data),
+            workplace=Workplace.get(workplace_id),
+            employee=Employee.get(form.employee.data),
+            review=not current_user.is_admin()
+        )
         job_position.save()
         add_alert(
             Alert("success", f'Se agregó a "{job_position.employee.get_full_name()}" al plantel correctamente.'))
@@ -77,7 +83,7 @@ def create(workplace_id):
 def edit(workplace_id, id):
     job_position = JobPosition.get(id)
     workplace = Workplace.get(workplace_id)
-    if not job_position:
+    if not job_position or not job_position.is_active():
         add_alert(Alert("danger", "El puesto de trabajo no existe."))
         return redirect(url_for("job_position_index", workplace_id=workplace_id))
 
@@ -96,7 +102,7 @@ def edit(workplace_id, id):
 @ permission('job_position_update')
 def update(workplace_id, id):
     job_position = JobPosition.get(id)
-    if not job_position:
+    if not job_position or not job_position.is_active():
         add_alert(Alert("danger", "El puesto de trabajo no existe."))
         return redirect(url_for("job_position_index", workplace_id=workplace_id))
     form = JobPositionForm(id=id)
@@ -110,7 +116,7 @@ def update(workplace_id, id):
     new_charge = Charge.get(form.charge.data)
 
     if new_charge is not job_position.charge:
-        job_position.reassign(new_charge)
+        job_position.reassign(new_charge, review=not current_user.is_admin())
         job_position.save()
 
     add_alert(
@@ -121,10 +127,10 @@ def update(workplace_id, id):
 @ permission('job_position_delete')
 def delete(workplace_id, id):
     job_position = JobPosition.get(id)
-    if not job_position or job_position.is_deleted:
+    if not job_position or not job_position.is_active():
         add_alert(Alert("danger", "El puesto de trabajo no existe."))
     else:
-        job_position.finish()
+        job_position.finish(review=not current_user.is_admin())
         add_alert(
             Alert("success", f'Se quito a "{job_position.employee.get_full_name()}" del plantel correctamente.'))
     return redirect(url_for("job_position_index", workplace_id=workplace_id))

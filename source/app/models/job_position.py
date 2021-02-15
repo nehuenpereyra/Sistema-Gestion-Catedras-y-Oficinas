@@ -38,12 +38,14 @@ class JobPosition(db.Model):
         if review:
             EmployeeReview.creation_type(self)
 
-    def reassign(self, charge):
+    def reassign(self, charge, review=True):
         self.finish(review=False)
 
         new_job_position = JobPosition(charge=charge, workplace=self.workplace,
                                        employee=self.employee, review=False)
-        EmployeeReview.upgrade_type(new_job_position, self)
+        
+        if review:
+            EmployeeReview.upgrade_type(new_job_position, self)
 
     def save(self):
         if not self.id:

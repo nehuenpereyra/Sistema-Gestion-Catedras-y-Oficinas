@@ -29,6 +29,24 @@ def role_without_elements():
 
     return _role_without_elements
 
+def role_selection():
+    """Throws an exception if more than 2 roles are selected or 2 are selected and one of them is not the Visitor role
+
+    Raises:
+    ValidationError: More than 2 roles are selected or 2 are selected and one of them is not the Visitor role
+
+    """
+
+    def _role_selection(form, field):
+        roles = Role.get_all(field.data)
+
+        if roles.size() > 1:
+            if roles.size() > 2:
+                raise ValidationError("A lo sumo se puede tener 2 roles, siendo uno de ellos el rol Visitante")
+            elif not roles.any_satisfy(lambda each: each.name == "Visitante"):
+                raise ValidationError("Solo el rol Visitante puede estar en conjunto con otro rol")
+
+    return _role_selection
 
 class UserForm(TranslateForm):
 
@@ -44,7 +62,7 @@ class UserForm(TranslateForm):
     secondary_email = EmailField("Correo Electrónico Secundario", validators=[
                                  DataRequired(), Email(), Length(min=3, max=64)])
     roles = SelectMultipleField(
-        "Roles", validators=[DataRequired(), role_without_elements()], coerce=int)
+        "Roles", validators=[DataRequired(), role_without_elements(), role_selection()], coerce=int)
     submit = SubmitField('Enviar')
 
     def __init__(self, *args, **kwargs):
