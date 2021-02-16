@@ -8,8 +8,17 @@
 {% block sub_content %}
     
     <h5 class="mt-3">Revisión de Empleados</h5>
-    
+
     {% if reviews.items %}
+    
+        {% if verify_permission('employee_review_see') %}
+            <div class="d-flex justify-content-end mt-3">
+                <a class="btn btn-primary btn-sm flex-grow-1 flex-sm-grow-0 h-100" role="button" href="{{ url_for('employee_review_see_page', page=reviews.page) }}">
+                    <span class="ml-2">Ver Página</span>
+                </a>
+            </div>
+        {% endif %}
+    
         <ul class="list-group border rounded shadow-sm mt-3">
             {% for review in reviews.items %}
                 <li class="list-group-item">

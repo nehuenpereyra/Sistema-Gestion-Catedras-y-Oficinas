@@ -28,3 +28,14 @@ def see(review_id):
     employee_review.see()
 
     return redirect(url_for("employee_review_index", **request.args))
+
+@permission('employee_review_see')
+def see_page(page):
+    per_page = Configuration.get().items_per_page
+    reviews_pagination = EmployeeReview.all_paginated(page, per_page)
+    reviews_pagination.items.do(lambda each: each.see())
+
+    if page == reviews_pagination.pages:
+        page -= 1
+
+    return redirect(url_for("employee_review_index", page=page))
