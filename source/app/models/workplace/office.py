@@ -31,7 +31,7 @@ class Office(Workplace):
         return "Oficina"
 
     @classmethod
-    def search_form(self, name, ids, page, per_page):
+    def search_form(self, name, ids, page, per_page, only_ids=True):
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
@@ -39,7 +39,10 @@ class Office(Workplace):
             query = query.filter(self.name.like(f"%{name}%"))
 
         if ids is not None:
-            query = query.filter(self.id.in_(ids))
+            if only_ids:
+                query = query.filter(self.id.in_(ids))
+            else:
+                query = query.filter(~self.id.in_(ids))
 
         return query.paginate(page=page, per_page=per_page, error_out=False)
 

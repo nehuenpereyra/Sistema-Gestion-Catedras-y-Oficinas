@@ -1,6 +1,7 @@
 
 {% from 'macros/alert.html' import  show_alert %}
 {% from 'macros/pagination.html' import  pagination %}
+{% from 'macros/input_seeker.html' import  input_seeker %}
 
 {% extends "authorized_layout.html" %}
 
@@ -51,6 +52,15 @@
     </ul>
 
     <h6 class="mt-3">{{ messages["to_assign"] }}</h6>
+
+    {% if workplace != "career" %}
+    <form class="border rounded shadow-sm mt-3 p-2" style="background: white;" method="get">
+        {{input_seeker(form.name, "submit_without_select", form.submit)}}
+        {% if workplace == "cathedra" %}
+            {{input_seeker(form.career_list, "select")}}
+        {% endif %}
+    </form>
+    {% endif %}
 
     <ul class="list-group shadow-sm my-4 mx-2">
         {% for element in elements_to_assign.items %}

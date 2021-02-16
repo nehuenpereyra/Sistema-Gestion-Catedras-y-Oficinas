@@ -3,6 +3,7 @@ import string
 from app.db import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import func
 
 from app.models.database_links import link_user_role
 from .career_user import CareerUser
@@ -247,11 +248,14 @@ class User(UserMixin, db.Model):
         query = query.order_by(self.name.asc())
         if not search_text is None and search_text != "" and not user_attributes is None:
             if user_attributes == 0:
-                query = query.filter(self.name.like(f"%{search_text}%"))
-            if user_attributes == 1:
-                query = query.filter(self.surname.like(f"%{search_text}%"))
-            if user_attributes == 2:
                 query = query.filter(self.username.like(f"%{search_text}%"))
+            if user_attributes == 1:
+                query = query.filter(func.concat(
+                    User.name, ' ', User.surname).like(f"%{search_text}%"))
+            if user_attributes == 2:
+                query = query.filter(self.name.like(f"%{search_text}%"))
+            if user_attributes == 3:
+                query = query.filter(self.surname.like(f"%{search_text}%"))
 
         if not user_rol_ids is None and user_rol_ids != 0:
             query = query.filter(self.roles.any(id=user_rol_ids))

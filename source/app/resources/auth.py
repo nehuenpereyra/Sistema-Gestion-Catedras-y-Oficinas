@@ -24,8 +24,15 @@ def authenticate():
                 login_user(user, remember=form.remember_me.data)
                 user.remove_recovery_link()
                 return redirect(url_for("index"))
-            add_alert(Alert(
-                "danger", f'Aun no tienes elementos asignados.'))
+            if user.is_career_manager():
+                add_alert(Alert(
+                    "danger", f'No posee carreras asignadas.'))
+            if user.is_cathedra_manager():
+                add_alert(Alert(
+                    "danger", f'No posee cátedras asignadas.'))
+            if user.is_office_manager():
+                add_alert(Alert(
+                    "danger", f'No posee oficinas asignadas.'))
         else:
             add_alert(Alert(
                 "danger", f'Usuario o clave incorrecto.'))

@@ -12,7 +12,7 @@
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('user_index') }}"><i class="fas fa-user" style="color: white;"></i><span style="/*color: white;*/">Usuarios</span></a></li>
                 {% endif %}
                 {% if verify_permission('cathedra_index') %}
-                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('cathedra_index') }}"><i class="fas fa-book" style="color: white;"></i><span style="/*color: white;*/">Catedras</span></a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('cathedra_index') }}"><i class="fas fa-book" style="color: white;"></i><span style="/*color: white;*/">Cátedras</span></a></li>
                 {% endif %}
                 {% if verify_permission('career_index') %}
                 <li class="nav-item" role="presentation"><a class="nav-link" href="{{ url_for('career_index') }}"><i class="fas fa-graduation-cap" style="color: white;"></i><span style="/*color: white;*/">Carreras</span></a></li>

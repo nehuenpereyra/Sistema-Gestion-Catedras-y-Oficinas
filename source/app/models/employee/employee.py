@@ -1,5 +1,6 @@
 import re
 from app.db import db
+from sqlalchemy import func
 
 
 class Employee(db.Model):
@@ -68,10 +69,10 @@ class Employee(db.Model):
         surname (string): surname of the employee
         secondary_email (string): secondary_email of the employee
         dni (string): dni of the employee
-        
+
         Returns:
         boolean:Returns true if the fields are valid
-        
+
         """
         valid_institutional_email = True
         valid_name = True
@@ -134,7 +135,7 @@ class Employee(db.Model):
         surname (string): surname of the employee
         secondary_email (string): secondary_email of the employee
         dni (string): dni of the employee
-        
+
         """
         self.name = name
         self.surname = surname
@@ -157,10 +158,10 @@ class Employee(db.Model):
 
         Parameters:
         id (int): employee id
-        
+
         Returns:
         employee:Returns the employee if it is eliminated but None
-        
+
         """
         employee = self.query.get(id)
         if employee:
@@ -184,10 +185,10 @@ class Employee(db.Model):
         page (int): actual page
         per_page (int): number of employees per page
         ids (list): list of employee ids to which you have access permission
-        
+
         Returns:
         object:Returns a object of paginated employees
-        
+
         """
         query = self.query
         query = query.filter_by(is_deleted=False)
@@ -208,10 +209,10 @@ class Employee(db.Model):
 
         Parameters:
         ids (list): list of employee ids to which you have access permission
-        
+
         Returns:
         list:Returns a list of employees
-        
+
         """
         if not ids:
             return []
@@ -225,10 +226,10 @@ class Employee(db.Model):
 
         Parameters:
         name (string): name of the employee
-        
+
         Returns:
         employee:Returns a employee or None
-        
+
         """
         query = self.query.order_by(self.name.asc())
         return query.filter_by(name=name, is_deleted=False).all()
@@ -239,10 +240,10 @@ class Employee(db.Model):
 
         Parameters:
         surname (string): surname of the employee
-        
+
         Returns:
         employee:Returns a employee or None
-        
+
         """
         query = self.query.order_by(self.name.asc())
         return query.filter_by(surname=surname, is_deleted=False).all()
@@ -253,10 +254,10 @@ class Employee(db.Model):
 
         Parameters:
         dni (string): dni of the employee
-        
+
         Returns:
         employee:Returns a employee or None
-        
+
         """
         query = self.query.order_by(self.name.asc())
         return query.filter_by(dni=dni, is_deleted=False).all()
@@ -267,10 +268,10 @@ class Employee(db.Model):
 
         Parameters:
         institutional email (string): institutional email of the employee
-        
+
         Returns:
         employee:Returns a employee or None
-        
+
         """
         query = self.query.order_by(self.name.asc())
         return query.filter_by(institutional_email=institutional_email, is_deleted=False).all()
@@ -281,10 +282,10 @@ class Employee(db.Model):
 
         Parameters:
         secondary email (string): secondary email of the employee
-        
+
         Returns:
         employee:Returns a employee or None
-        
+
         """
         query = self.query.order_by(self.name.asc())
         return query.filter_by(secondary_email=secondary_email, is_deleted=False).all()
@@ -299,18 +300,21 @@ class Employee(db.Model):
         employee_type_ids (int): id of the type of employee (docent, not docent or administrative)
         page (int): actual page
         per_page (int): number of employees per page
-        
+
         Returns:
         object:Returns a paginated object with the employees that meet the search criteria
-        
+
         """
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
         if not search_text is None and search_text != "" and not employee_attributes is None:
             if employee_attributes == 0:
-                query = query.filter(self.name.like(f"%{search_text}%"))
+                query = query.filter(func.concat(
+                    Employee.name, ' ', Employee.surname).like(f"%{search_text}%"))
             if employee_attributes == 1:
+                query = query.filter(self.name.like(f"%{search_text}%"))
+            if employee_attributes == 2:
                 query = query.filter(self.surname.like(f"%{search_text}%"))
 
         if not employee_type_ids is None and employee_type_ids != 0:
