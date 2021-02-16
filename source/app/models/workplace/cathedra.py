@@ -36,7 +36,7 @@ class Cathedra(Workplace):
         return "Cátedra"
 
     @classmethod
-    def search_form(self, career_list_id, name, ids, page, per_page):
+    def search_form(self, career_list_id, name, ids, page, per_page, only_ids=True):
         query = self.query
         query = query.filter_by(is_deleted=False)
         query = query.order_by(self.name.asc())
@@ -48,7 +48,10 @@ class Cathedra(Workplace):
                 id=career_list_id))
 
         if ids is not None:
-            query = query.filter(self.id.in_(ids))
+            if only_ids:
+                query = query.filter(self.id.in_(ids))
+            else:
+                query = query.filter(~self.id.in_(ids))
 
         return query.paginate(page=page, per_page=per_page, error_out=False)
 

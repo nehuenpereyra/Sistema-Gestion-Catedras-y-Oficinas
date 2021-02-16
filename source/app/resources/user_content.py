@@ -4,6 +4,7 @@ from flask import redirect, render_template, request, url_for
 from app.helpers.alert import add_alert, get_alert
 from app.helpers.permission import permission
 from app.models import User, Career, Cathedra, Office, Configuration, Alert
+from app.helpers.forms import CathedraSeeker, OfficeSeeker
 
 
 @permission('user_content_index')
@@ -21,10 +22,12 @@ def index(user_id):
 
     page = int(request.args.get('page', 1))
     per_page = Configuration.get().items_per_page
+    form = None
 
     kwargs = {
         "user": user,
-        "alert": get_alert()
+        "alert": get_alert(),
+        "workplace": ""
     }
 
     if user.is_career_manager():
@@ -37,6 +40,7 @@ def index(user_id):
         career = user.get_career()
         careers = [career] if career else []
 
+        kwargs["workplace"] = "career"
         kwargs["assigned_elements"] = careers
         kwargs["elements_to_assign"] = Career.all_paginated(
             page=page, per_page=per_page, ids=careers.collect(lambda each: each.id), only_ids=False)
@@ -48,9 +52,19 @@ def index(user_id):
             "to_assign": "Cátedras Disponibles"
         }
 
+        form = CathedraSeeker(request.args)
+
+        kwargs["workplace"] = "cathedra"
         kwargs["assigned_elements"] = user.get_cathedras()
-        kwargs["elements_to_assign"] = Cathedra.all_paginated(
-            page=page, per_page=per_page, ids=user.get_cathedras().collect(lambda each: each.id), only_ids=False)
+        args = {
+            "career_list_id": form.career_list.data,
+            "name": form.name.data if form.name.data != "" else None,
+            "page": page,
+            "per_page": per_page,
+            "ids": user.get_cathedras().collect(lambda each: each.id),
+            "only_ids": False
+        }
+        kwargs["elements_to_assign"] = Cathedra.search_form(**args)
 
     else:
 
@@ -59,11 +73,20 @@ def index(user_id):
             "to_assign": "Oficinas Disponibles"
         }
 
-        kwargs["assigned_elements"] = user.get_offices()
-        kwargs["elements_to_assign"] = Office.all_paginated(
-            page=page, per_page=per_page, ids=user.get_offices().collect(lambda each: each.id), only_ids=False)
+        form = OfficeSeeker(request.args)
 
-    return render_template("user/assignment.html", **kwargs)
+        kwargs["workplace"] = "office"
+        kwargs["assigned_elements"] = user.get_offices()
+        args = {
+            "name": form.name.data if form.name.data != "" else None,
+            "page": page,
+            "per_page": per_page,
+            "ids": user.get_offices().collect(lambda each: each.id),
+            "only_ids": False
+        }
+        kwargs["elements_to_assign"] = Office.search_form(**args)
+
+    return render_template("user/assignment.html", form=form, **kwargs)
 
 
 @permission('user_content_assign')

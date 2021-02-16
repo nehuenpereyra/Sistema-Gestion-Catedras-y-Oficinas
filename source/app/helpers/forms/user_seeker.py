@@ -20,4 +20,4 @@ class UserSeeker(TranslateForm):
         self.user_rol.choices = self.user_rol.choices + Role.all() \
             .collect(lambda each: (each.id, each.name))
         self.user_attributes.choices = [
-            (0, "Nombre"), (1, "Apellido"), (2, "Usuario")]
+            (0, "Usuario"), (1, "Nombre y Apellido"), (2, "Nombre"), (3, "Apellido")]
