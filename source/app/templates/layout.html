@@ -25,7 +25,7 @@
               <div class="col d-inline-flex">
                 {% if is_authenticated() %} <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button" style="color: white;">
                   <i class="fas fa-bars"></i></button>{% endif %}
-                  <img src="{{ url_for('static', filename='img/logo.png') }}" height="40">
+                  <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='img/logo.png') }}" height="40"></a>
               </div>
               {% if is_authenticated() %}
               <div class="col-auto d-flex align-items-center">

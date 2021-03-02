@@ -14,18 +14,11 @@ function get_excel(data, report_type_name) {
   var index = 0;
 
   /* Generar tabla */
+  ws_data.push(data["fields"]);
   for (const property in data.contents) {
-    ws_data.push([`${property}`, "", ""]);
-    merge.push({
-      s: { r: index, c: 0 },
-      e: { r: index, c: data["fields"].length - 1 },
-    });
-    ws_data.push(data["fields"]);
     for (let value of data.contents[property]) {
       ws_data.push(value);
     }
-    ws_data.push(["", "", ""]);
-    index = index + data.contents[property].length + 3;
   }
 
   var ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -41,10 +34,6 @@ function get_excel(data, report_type_name) {
   }
   ws["!cols"] = wscols;
 
-  /* Establcer los merges entra las filas correspondientes */
-  if (!ws["!merges"]) ws["!merges"] = [];
-  ws["!merges"] = merge;
-
   /* Exportar en XLSX */
   var wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
   saveAs(
@@ -55,47 +44,6 @@ function get_excel(data, report_type_name) {
       today.toLocaleDateString("es-AR") +
       ".xlsx"
   );
-
-  /*
-  var ws_data = [];
-  var merge = [];
-  var index = 0;
-
-  for (const property in data.contents) {
-    console.log(`${property}: ${data.contents[property]}`);
-    ws_data.push([`${property}`, "", ""]);
-    merge.push({
-      s: { r: index, c: 0 },
-      e: { r: index, c: data["fields"].length - 1 },
-    });
-    ws_data.push(data["fields"]);
-    for (let value of data.contents[property]) {
-      ws_data.push(value);
-    }
-    ws_data.push(["", "", ""]);
-    index = index + data.contents[property].length + 3;
-  }
-
-  console.log(ws_data);
-  console.log(merge);
-*/
-
-  /* merge cells A1:C1 */
-  //var merge = XLSX.utils.decode_range("A1:C1");
-  /*
-  var merge = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } },
-    { s: { r: 4, c: 0 }, e: { r: 4, c: 2 } },
-  ];*/
-
-  /* Establecer el ancho de las columnas 
-  var wscols = [{ wch: 30 }, { wch: 30 }, { wch: 30 }];
-  ws["!cols"] = wscols;*/
-
-  // this is equivalent var merge = { s: {r:0, c:0}, e: {r:0, c:1} };
-  /* add merges 
-  if (!ws["!merges"]) ws["!merges"] = [];
-  ws["!merges"] = merge;*/
 }
 
 function s2ab(s) {

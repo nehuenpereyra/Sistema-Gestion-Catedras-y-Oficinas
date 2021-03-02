@@ -188,7 +188,8 @@ class Career(db.Model):
         employee = []
 
         # Los campos en el orden en que se van a mostrar en el pdf y en el excel
-        fields = ["Cargo", "Nombre", "Apellido", "Email Institucional"]
+        fields = ["Carrera", "Cargo", "Nombre",
+                  "Apellido", "Email Institucional"]
         if show_dni:
             fields.add("DNI")
         if show_secondary_email:
@@ -198,7 +199,7 @@ class Career(db.Model):
         for charge_employee in job_positions:
             if not charge_employee.workplace.career.name in contents:
                 contents[charge_employee.workplace.career.name] = []
-            employee = [charge_employee.charge.name, charge_employee.employee.name,
+            employee = [charge_employee.workplace.career.name, charge_employee.charge.name, charge_employee.employee.name,
                         charge_employee.employee.surname, charge_employee.employee.institutional_email]
             if show_dni:
                 employee.add(charge_employee.employee.dni)
