@@ -13,11 +13,10 @@ class CareerSeeder(Seeder):
         print("[CareerSeeder]")
 
         [
-            Career(name="Enfermería Universitaria"),
-            Career(name="Licenciatura en Nutrición"),
-            Career(name="Licenciatura en Obstetricia"),
-            Career(name="Medicina"),
-            Career(name="Tecnicatura en Prácticas Cardiológicas")
+            Career(name="Licenciatura en Informática"),
+            Career(name="Licenciatura en Sistemas"),
+            Career(name="Ingeniería en Computación"),
+            Career(name="Analista Programador Universitario")
         ].do(lambda each: self.save(each))
 
     def save(self, career):

@@ -1,7 +1,5 @@
 # Sistema de Cátedras y oficinas
 
-## Integrantes
+Realizado por Pereyra Nehuen y Pereyra Iyael Lihue.
 
-Iyael Lihue Pereyra - 16440/6
-
-Nehuen Pereyra - 15926/1
+Más información del sistema en la sección de wiki.
